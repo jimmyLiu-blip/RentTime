@@ -1,0 +1,31 @@
+﻿################################################################################
+# 這個 .gitignore 檔案由 Microsoft(R) Visual Studio 自動建立。
+################################################################################
+
+/DataReaderDemo7
+/SqlStringDemo1
+/WindowsFormsDB_3
+
+# Visual Studio / .NET
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.pdb
+*.log
+
+# Packages / Test
+packages/
+TestResults/
+
+# LocalDB / DB files
+*.mdf
+*.ldf
+*.db
+*.bak
+
+# Build outputs
+*.exe
+*.dll
+/RF案件排程表_Spec.md
