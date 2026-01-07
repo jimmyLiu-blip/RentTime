@@ -632,10 +632,10 @@
             cmbDinnerMinutes.Location = new System.Drawing.Point(680, 570);
             cmbDinnerMinutes.Name = "cmbDinnerMinutes";
             cmbDinnerMinutes.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
-            cmbDinnerMinutes.Properties.ReadOnly = true;
             cmbDinnerMinutes.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             cmbDinnerMinutes.Size = new System.Drawing.Size(107, 28);
             cmbDinnerMinutes.TabIndex = 75;
+            cmbDinnerMinutes.EditValueChanged += cmbDinnerMinutes_EditValueChanged;
             // 
             // labelControl26
             // 

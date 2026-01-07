@@ -109,6 +109,11 @@ namespace RentProject
             InitTestModeCombo();
             InitEngineerCombo();
             InitDinnerMinutesCombo();
+
+            // // 加這行：只要綁一次（避免重複綁）
+            cmbDinnerMinutes.CustomDisplayText -= cmbDinnerMinutes_CustomDisplayText;
+            cmbDinnerMinutes.CustomDisplayText += cmbDinnerMinutes_CustomDisplayText;
+
             UpdateTestItem(cmbTestMode.Text?.Trim() ?? "");
 
             cmbJobNo.Properties.Items.Clear();
@@ -220,6 +225,23 @@ namespace RentProject
             }
         }
 
+        private void cmbDinnerMinutes_CustomDisplayText(object sender, DevExpress.XtraEditors.Controls.CustomDisplayTextEventArgs e)
+        {
+            if (e.Value is int v)
+            {
+                e.DisplayText = $"{v} 分";
+                return;
+            }
+
+            if (e.Value != null && int.TryParse(e.Value.ToString(), out var v2))
+            {
+                e.DisplayText = $"{v2} 分";
+                return;
+            }
+
+            e.DisplayText = "";
+        }
+
         // =========================
         // 5) 控制項事件：只負責觸發更新
         // =========================
@@ -242,6 +264,8 @@ namespace RentProject
         private void endDateEdit_EditValueChanged(object sender, EventArgs e) => RefreshMealAndEstimateUI();
         private void startTimeEdit_EditValueChanged(object sender, EventArgs e) => RefreshMealAndEstimateUI();
         private void endTimeEdit_EditValueChanged(object sender, EventArgs e) => RefreshMealAndEstimateUI();
+        private void cmbDinnerMinutes_EditValueChanged(object sender, EventArgs e) => RefreshMealAndEstimateUI();
+
 
         // 5-3 晚餐分鐘改變
         private void txtDinnerMinutes_EditValueChanged(object sender, EventArgs e)
@@ -259,7 +283,7 @@ namespace RentProject
 
         private void cmbProjectNo_EditValueChanged(object sender, EventArgs e)
         {
-            var projectNo = cmbProjectNo.Text?.Trim() ?? "";
+            var projectNo = txtProjectNo.Text?.Trim() ?? "";
             var p = _projects.FirstOrDefault(x => x.ProjectNo == projectNo);
 
             txtProjectName.Text = p?.ProjectName ?? "";
@@ -346,16 +370,13 @@ namespace RentProject
         }
 
         private void InitDinnerMinutesCombo()
-        { 
+        {
             cmbDinnerMinutes.Properties.Items.Clear();
             cmbDinnerMinutes.Properties.Items.AddRange(new object[] { 30, 60, 90, 120, 150, 180, 210, 240 });
 
             // 預設值
-            cmbDinnerMinutes.EditValue = 60; 
+            cmbDinnerMinutes.EditValue = 60;
         }
-
-
-
 
         // =========================
         // 6) UI 套用：午餐 / 晚餐規則
@@ -363,22 +384,22 @@ namespace RentProject
         private void ApplyLunchUI()
         {
             txtLunchMinutes.Properties.ReadOnly = true;
-            txtLunchMinutes.Text = chkHasLunch.Checked ? "60" : "0";
+            txtLunchMinutes.Text = chkHasLunch.Checked ? "60 分" : "0";
         }
 
         private void ApplyDinnerUI()
         {
-            cmbDinnerMinutes.Properties.ReadOnly = !chkHasDinner.Checked;
+            cmbDinnerMinutes.Enabled = chkHasDinner.Checked;
 
             if (!chkHasDinner.Checked)
             {
-                cmbDinnerMinutes.Text = null;
+                cmbDinnerMinutes.EditValue = null;
                 return;
             }
 
-            if (cmbDinnerMinutes.EditValue == null)
+            if (cmbDinnerMinutes.EditValue is not int)
             {
-                cmbDinnerMinutes.Text = "60";
+                cmbDinnerMinutes.EditValue = 60;
             }
         }
 
@@ -425,7 +446,7 @@ namespace RentProject
                 Sales = txtSales.Text.Trim(),
                 ProjectName = txtProjectName.Text.Trim(),
                 PE = txtPE.Text.Trim(),
-                ProjectNo = cmbProjectNo.Text.Trim(),
+                ProjectNo = txtProjectNo.Text.Trim(),
                 Location = cmbLocation.Text.Trim(),
 
                 ContactName = txtContactName.Text.Trim(),
@@ -459,7 +480,7 @@ namespace RentProject
             txtArea.Text = data.Area ?? "";
             cmbCompany.Text = data.CustomerName ?? "";
             txtSales.Text = data.Sales ?? "";
-            cmbProjectNo.Text = data.ProjectNo ?? "";
+            txtProjectNo.Text = data.ProjectNo ?? "";
             txtProjectName.Text = data.ProjectName ?? "";
             txtPE.Text = data.PE ?? "";
             cmbLocation.Text = data.Location ?? "";
@@ -487,7 +508,7 @@ namespace RentProject
             chkHasDinner.Checked = data.HasDinner;
 
             txtLunchMinutes.Text = data.HasLunch ? data.LunchMinutes.ToString() : "0";
-            cmbDinnerMinutes.Text = data.HasDinner ? data.DinnerMinutes.ToString() : "0";
+            cmbDinnerMinutes.EditValue = data.HasDinner ? data.DinnerMinutes : (object?)null;
 
             // 讓 UI 規則與預估時間重新刷新一次
             RefreshMealAndEstimateUI();
@@ -529,7 +550,7 @@ namespace RentProject
             if (minutes < 0) minutes = 0;
 
             var hours = Math.Round(minutes / 60m, 2);
-            txtEstimatedHours.Text = $"({hours})";
+            txtEstimatedHours.Text = $"{hours}";
         }
 
         // =========================
