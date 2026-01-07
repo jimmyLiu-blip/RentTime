@@ -39,7 +39,7 @@
             labelControl9 = new DevExpress.XtraEditors.LabelControl();
             labelControl10 = new DevExpress.XtraEditors.LabelControl();
             labelControl11 = new DevExpress.XtraEditors.LabelControl();
-            labelControl12 = new DevExpress.XtraEditors.LabelControl();
+            labelEstimatedHours = new DevExpress.XtraEditors.LabelControl();
             labelControl15 = new DevExpress.XtraEditors.LabelControl();
             labelControl16 = new DevExpress.XtraEditors.LabelControl();
             labelControl17 = new DevExpress.XtraEditors.LabelControl();
@@ -65,7 +65,7 @@
             labelControl24 = new DevExpress.XtraEditors.LabelControl();
             memoTestInformation = new DevExpress.XtraEditors.MemoEdit();
             memoNote = new DevExpress.XtraEditors.MemoEdit();
-            labelControl25 = new DevExpress.XtraEditors.LabelControl();
+            labelCreatedBy = new DevExpress.XtraEditors.LabelControl();
             txtCreatedBy = new DevExpress.XtraEditors.TextEdit();
             btnCreatedRentTime = new DevExpress.XtraEditors.SimpleButton();
             chkHasLunch = new DevExpress.XtraEditors.CheckEdit();
@@ -213,13 +213,13 @@
             labelControl11.TabIndex = 11;
             labelControl11.Text = "結束時間";
             // 
-            // labelControl12
+            // labelEstimatedHours
             // 
-            labelControl12.Location = new System.Drawing.Point(315, 615);
-            labelControl12.Name = "labelControl12";
-            labelControl12.Size = new System.Drawing.Size(72, 22);
-            labelControl12.TabIndex = 12;
-            labelControl12.Text = "預估時間";
+            labelEstimatedHours.Location = new System.Drawing.Point(315, 615);
+            labelEstimatedHours.Name = "labelEstimatedHours";
+            labelEstimatedHours.Size = new System.Drawing.Size(72, 22);
+            labelEstimatedHours.TabIndex = 12;
+            labelEstimatedHours.Text = "預估時間";
             // 
             // labelControl15
             // 
@@ -235,7 +235,7 @@
             labelControl16.Name = "labelControl16";
             labelControl16.Size = new System.Drawing.Size(72, 22);
             labelControl16.TabIndex = 16;
-            labelControl16.Text = "樣品型號";
+            labelControl16.Text = "產品型號";
             // 
             // labelControl17
             // 
@@ -275,7 +275,7 @@
             labelControl21.Name = "labelControl21";
             labelControl21.Size = new System.Drawing.Size(72, 22);
             labelControl21.TabIndex = 21;
-            labelControl21.Text = "樣品序號";
+            labelControl21.Text = "產品序號";
             // 
             // labelControl22
             // 
@@ -432,13 +432,13 @@
             memoNote.Size = new System.Drawing.Size(743, 88);
             memoNote.TabIndex = 50;
             // 
-            // labelControl25
+            // labelCreatedBy
             // 
-            labelControl25.Location = new System.Drawing.Point(425, 104);
-            labelControl25.Name = "labelControl25";
-            labelControl25.Size = new System.Drawing.Size(72, 22);
-            labelControl25.TabIndex = 51;
-            labelControl25.Text = "建單人員";
+            labelCreatedBy.Location = new System.Drawing.Point(425, 104);
+            labelCreatedBy.Name = "labelCreatedBy";
+            labelCreatedBy.Size = new System.Drawing.Size(72, 22);
+            labelCreatedBy.TabIndex = 51;
+            labelCreatedBy.Text = "建單人員";
             // 
             // txtCreatedBy
             // 
@@ -520,7 +520,6 @@
             // 
             txtSales.Location = new System.Drawing.Point(562, 155);
             txtSales.Name = "txtSales";
-            txtSales.Properties.ReadOnly = true;
             txtSales.Size = new System.Drawing.Size(225, 28);
             txtSales.TabIndex = 61;
             // 
@@ -676,7 +675,7 @@
             Controls.Add(chkHasLunch);
             Controls.Add(btnCreatedRentTime);
             Controls.Add(txtCreatedBy);
-            Controls.Add(labelControl25);
+            Controls.Add(labelCreatedBy);
             Controls.Add(memoNote);
             Controls.Add(memoTestInformation);
             Controls.Add(labelControl24);
@@ -702,7 +701,7 @@
             Controls.Add(labelControl17);
             Controls.Add(labelControl16);
             Controls.Add(labelControl15);
-            Controls.Add(labelControl12);
+            Controls.Add(labelEstimatedHours);
             Controls.Add(labelControl11);
             Controls.Add(labelControl10);
             Controls.Add(labelControl9);
@@ -769,7 +768,7 @@
         private DevExpress.XtraEditors.LabelControl labelControl9;
         private DevExpress.XtraEditors.LabelControl labelControl10;
         private DevExpress.XtraEditors.LabelControl labelControl11;
-        private DevExpress.XtraEditors.LabelControl labelControl12;
+        private DevExpress.XtraEditors.LabelControl labelEstimatedHours;
         private DevExpress.XtraEditors.LabelControl labelControl15;
         private DevExpress.XtraEditors.LabelControl labelControl16;
         private DevExpress.XtraEditors.LabelControl labelControl17;
@@ -795,7 +794,7 @@
         private DevExpress.XtraEditors.LabelControl labelControl24;
         private DevExpress.XtraEditors.MemoEdit memoTestInformation;
         private DevExpress.XtraEditors.MemoEdit memoNote;
-        private DevExpress.XtraEditors.LabelControl labelControl25;
+        private DevExpress.XtraEditors.LabelControl labelCreatedBy;
         private DevExpress.XtraEditors.TextEdit txtCreatedBy;
         private DevExpress.XtraEditors.SimpleButton btnCreatedRentTime;
         private DevExpress.XtraEditors.CheckEdit chkHasLunch;

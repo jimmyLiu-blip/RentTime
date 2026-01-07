@@ -28,6 +28,15 @@ namespace RentProject
         private readonly int? _editRentTimeId = null; // 要用 .Value 把「nullable 裡面的那個 int 值」拿出來。
         private static string _lastCreatedBy = "Jimmy";
 
+        // 控制「載入中」：避免 FillUIFromModel 時事件覆蓋
+        private bool _isLoading = false;
+
+        // 記錄使用者是否手動改過聯絡資訊 (同一家公司就不再覆蓋)
+        private bool _contactManuallyEdited = false;
+
+        // 記住上一次選的公司，用來判斷是否「換公司」
+        private string _lastCompany = "";
+
         private readonly List<LocationItem> _locations = new()
         {
             new LocationItem { Location = "Conducted 1", Area = "WG" },
@@ -105,6 +114,16 @@ namespace RentProject
         {
             _projects = _projectService.GetActiveProjects();
 
+            // 只要使用者改「聯絡人/電話/業務」，就會觸發 ContactFields_EditValueChanged
+            txtContactName.EditValueChanged -= ContactFields_EditValueChanged;
+            txtContactName.EditValueChanged += ContactFields_EditValueChanged;
+
+            txtContactPhone.EditValueChanged -= ContactFields_EditValueChanged;
+            txtContactPhone.EditValueChanged += ContactFields_EditValueChanged;
+
+            txtSales.EditValueChanged -= ContactFields_EditValueChanged;
+            txtSales.EditValueChanged += ContactFields_EditValueChanged;
+
             InitContactCompany();
             InitTestModeCombo();
             InitEngineerCombo();
@@ -128,6 +147,14 @@ namespace RentProject
             RefreshMealAndEstimateUI();
 
             btnDeletedRentTime.Visible = _editRentTimeId != null;
+            btnRestoreRentTime.Visible = _editRentTimeId != null;
+            btnRentTimeEnd.Visible = _editRentTimeId != null;
+            btnRentTimeStart.Visible = _editRentTimeId != null;
+            chkHandover.Visible = _editRentTimeId != null;
+            labelCreatedBy.Visible = _editRentTimeId != null;
+            txtCreatedBy.Visible = _editRentTimeId != null;
+            btnCopyRentTime.Visible = _editRentTimeId != null;
+            cmbEngineer.ReadOnly = _editRentTimeId != null;
 
             // 新增模式：預設建單人員 = Jimmy
             if (_editRentTimeId == null)
@@ -141,6 +168,7 @@ namespace RentProject
             FillUIFromModel(data);
 
             btnCreatedRentTime.Text = "儲存修改";
+            labelEstimatedHours.Text = "實際時間";
             this.Text = "修改租時單";
 
         }
@@ -242,6 +270,14 @@ namespace RentProject
             e.DisplayText = "";
         }
 
+        // 業務、電話、聯絡人，事件方法
+        private void ContactFields_EditValueChanged(object sender, EventArgs e)
+        {
+            // 程式塞值不算「手動改」
+            if (_isLoading) return;
+            _contactManuallyEdited = true;
+        }
+
         // =========================
         // 5) 控制項事件：只負責觸發更新
         // =========================
@@ -332,7 +368,6 @@ namespace RentProject
             UpdateTestItem(mode);
         }
 
-
         private void InitContactCompany()
         {
             var companies = _contactCompany
@@ -350,12 +385,37 @@ namespace RentProject
 
         private void cmbCompany_EditValueChanged(object sender, EventArgs e)
         {
+            if (_isLoading) return;
+
             var company = cmbCompany.Text?.Trim() ?? "";
+
+            // 1.判斷是不是換公司
+            bool companychanged = !string.Equals(company, _lastCompany, StringComparison.Ordinal);
+
+            // 2. 同公司 + 已手動改 => 不要再覆蓋
+            if (!companychanged && _contactManuallyEdited)
+                return;
+
+            // 3. 換公司 => 解除鎖定，允許自動帶入
+            if (companychanged)
+                _contactManuallyEdited = false;
+
             var c = _contactCompany.FirstOrDefault(x => x.Company == company);
 
-            txtContactName.Text = c?.ContactName ?? "";
-            txtContactPhone.Text = c?.ContactPhone ?? "";
-            txtSales.Text = c?.Sales ?? "";
+            // 4. 自動帶入 (用_isLoading 暫時壓住「手動改」事件）)
+            _isLoading = true;
+            try
+            {
+                txtContactName.Text = c?.ContactName ?? "";
+                txtContactPhone.Text = c?.ContactPhone ?? "";
+                txtSales.Text = c?.Sales ?? "";
+            }
+            finally
+            { 
+                _isLoading = false;
+            }
+
+            _lastCompany = company;
         }
 
         private void InitEngineerCombo()
@@ -384,7 +444,7 @@ namespace RentProject
         private void ApplyLunchUI()
         {
             txtLunchMinutes.Properties.ReadOnly = true;
-            txtLunchMinutes.Text = chkHasLunch.Checked ? "60 分" : "0";
+            txtLunchMinutes.Text = chkHasLunch.Checked ? "60分" : "0";
         }
 
         private void ApplyDinnerUI()
@@ -474,41 +534,50 @@ namespace RentProject
 
         private void FillUIFromModel(RentTime data)
         {
-            // 文字訊息
-            txtBookingNo.Text = data.BookingNo ?? "";
-            txtCreatedBy.Text = data.CreatedBy ?? "";
-            txtArea.Text = data.Area ?? "";
-            cmbCompany.Text = data.CustomerName ?? "";
-            txtSales.Text = data.Sales ?? "";
-            txtProjectNo.Text = data.ProjectNo ?? "";
-            txtProjectName.Text = data.ProjectName ?? "";
-            txtPE.Text = data.PE ?? "";
-            cmbLocation.Text = data.Location ?? "";
+            _isLoading = true;
+            try
+            {
 
-            txtContactName.Text = data.ContactName ?? "";
-            txtContactPhone.Text = data.Phone ?? "";
-            memoTestInformation.Text = data.TestInformation ?? "";
-            cmbEngineer.Text = string.IsNullOrWhiteSpace(data.EngineerName) ? "Jimmy" : data.EngineerName;
-            txtSampleModel.Text = data.SampleModel ?? "";
-            txtSampleNo.Text = data.SampleNo ?? "";
-            cmbTestMode.Text = data.TestMode ?? "";
-            cmbTestItem.Text = data.TestItem ?? "";
-            memoNote.Text = data.Notes ?? "";
+                // 文字訊息
+                txtBookingNo.Text = data.BookingNo ?? "";
+                txtCreatedBy.Text = data.CreatedBy ?? "";
+                txtArea.Text = data.Area ?? "";
+                cmbCompany.Text = data.CustomerName ?? "";
+                txtSales.Text = data.Sales ?? "";
+                txtProjectNo.Text = data.ProjectNo ?? "";
+                txtProjectName.Text = data.ProjectName ?? "";
+                txtPE.Text = data.PE ?? "";
+                cmbLocation.Text = data.Location ?? "";
 
-            //日期
-            startDateEdit.EditValue = data.StartDate;
-            endDateEdit.EditValue = data.EndDate;
+                txtContactName.Text = data.ContactName ?? "";
+                txtContactPhone.Text = data.Phone ?? "";
+                memoTestInformation.Text = data.TestInformation ?? "";
+                cmbEngineer.Text = string.IsNullOrWhiteSpace(data.EngineerName) ? "Jimmy" : data.EngineerName;
+                txtSampleModel.Text = data.SampleModel ?? "";
+                txtSampleNo.Text = data.SampleNo ?? "";
+                cmbTestMode.Text = data.TestMode ?? "";
+                cmbTestItem.Text = data.TestItem ?? "";
+                memoNote.Text = data.Notes ?? "";
 
-            //時間：TimeEdit 的 EditValue 通常要 DateTime，所以把 TimeSpan 轉成「今天日期 + TimeSpan」
-            startTimeEdit.EditValue = data.StartTime.HasValue ? DateTime.Today.Add(data.StartTime.Value) : null;
-            endTimeEdit.EditValue = data.EndTime.HasValue ? DateTime.Today.Add(data.EndTime.Value) : null;
+                //日期
+                startDateEdit.EditValue = data.StartDate;
+                endDateEdit.EditValue = data.EndDate;
 
-            // 午餐/晚餐
-            chkHasLunch.Checked = data.HasLunch;
-            chkHasDinner.Checked = data.HasDinner;
+                //時間：TimeEdit 的 EditValue 通常要 DateTime，所以把 TimeSpan 轉成「今天日期 + TimeSpan」
+                startTimeEdit.EditValue = data.StartTime.HasValue ? DateTime.Today.Add(data.StartTime.Value) : null;
+                endTimeEdit.EditValue = data.EndTime.HasValue ? DateTime.Today.Add(data.EndTime.Value) : null;
 
-            txtLunchMinutes.Text = data.HasLunch ? data.LunchMinutes.ToString() : "0";
-            cmbDinnerMinutes.EditValue = data.HasDinner ? data.DinnerMinutes : (object?)null;
+                // 午餐/晚餐
+                chkHasLunch.Checked = data.HasLunch;
+                chkHasDinner.Checked = data.HasDinner;
+
+                txtLunchMinutes.Text = data.HasLunch ? data.LunchMinutes.ToString() : "0";
+                cmbDinnerMinutes.EditValue = data.HasDinner ? data.DinnerMinutes : (object?)null;
+            }
+            finally
+            { 
+                _isLoading = false;
+            }
 
             // 讓 UI 規則與預估時間重新刷新一次
             RefreshMealAndEstimateUI();
@@ -529,7 +598,6 @@ namespace RentProject
 
             if (startDate is null || endDate is null || startTime is null || endTime is null)
             {
-                txtEstimatedHours.Text = "請輸入開始/結束日期時間";
                 return;
             }
 
@@ -538,7 +606,6 @@ namespace RentProject
 
             if (end < start)
             {
-                txtEstimatedHours.Text = "結束時間不能早於開始時間";
                 return;
             }
 

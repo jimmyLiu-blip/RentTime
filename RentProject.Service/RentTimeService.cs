@@ -6,6 +6,7 @@ namespace RentProject.Service
     public class RentTimeService
     {
         private readonly DapperRentTimeRepository _repo;
+        private static readonly int[] AllowedDinnerMinutes = { 30, 60, 90, 120, 150, 180, 210, 240 };
 
         public RentTimeService(DapperRentTimeRepository repo)
         { 
@@ -68,23 +69,36 @@ namespace RentProject.Service
 
         private static void ValidateRequired(RentTime model)
         {
-            if (string.IsNullOrWhiteSpace(model.Area)) throw new Exception("Area 必填");
-            if (string.IsNullOrWhiteSpace(model.CreatedBy)) throw new Exception("CreatedBy 必填");
-            if (string.IsNullOrWhiteSpace(model.ProjectName)) throw new Exception("ProjectName 必填");
-            if (string.IsNullOrWhiteSpace(model.PE)) throw new Exception("PE 必填");
-            if (string.IsNullOrWhiteSpace(model.ProjectNo)) throw new Exception("ProjectNo 必填");
-            if (string.IsNullOrWhiteSpace(model.Location)) throw new Exception("Location 必填");
+            //if (string.IsNullOrWhiteSpace(model.ProjectNo)) throw new Exception("ProjectNo 必填");
+            if (string.IsNullOrWhiteSpace(model.Location)) throw new Exception("場地必填");
+            if (string.IsNullOrWhiteSpace(model.CustomerName)) throw new Exception("客戶名稱必填");
+
+            //if (string.IsNullOrWhiteSpace(model.ProjectName)) throw new Exception("ProjectName 必填");
+            //if (string.IsNullOrWhiteSpace(model.PE)) throw new Exception("PE 必填");
+            if (string.IsNullOrWhiteSpace(model.Area)) throw new Exception("區域必填");
+            if (string.IsNullOrWhiteSpace(model.Sales)) throw new Exception("Sales 必填");
+
+            if (model.StartDate is null || model.StartTime is null || model.EndDate is null || model.EndTime is null)
+            {
+                throw new Exception("開始/結束日期時間必填");
+            }
+
+            if (model.HasLunch && model.LunchMinutes <= 0) throw new Exception("已勾午餐但 LunchMinutes 不正確");
+            if (!model.HasLunch) model.LunchMinutes = 0;
+
+            if (model.HasDinner)
+            {
+                if (model.DinnerMinutes <= 0) throw new Exception("已勾晚餐但 DinnerMinutes 未選");
+                if (!AllowedDinnerMinutes.Contains(model.DinnerMinutes)) throw new Exception("DinnerMinutes 不在允許範圍");
+            }
+            else
+            { 
+                model.DinnerMinutes = 0;
+            }
         }
 
         private static void CalculateEstimated(RentTime model)
         {
-            if (model.StartDate is null || model.EndDate is null || model.StartTime is null || model.EndTime is null)
-            { 
-                model.EstimatedMinutes = 0;
-                model.EstimatedHours = 0;
-                return; //結束這個方法，不要在往下算
-            }
-
             var start = model.StartDate.Value.Date + model.StartTime.Value;
             var end = model.EndDate.Value.Date + model.EndTime.Value;
 
@@ -100,7 +114,5 @@ namespace RentProject.Service
             model.EstimatedMinutes = minutes;
             model.EstimatedHours = Math.Round(minutes/60m, 2);
         }
-
-
     }
 }
