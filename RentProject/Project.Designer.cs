@@ -49,7 +49,6 @@
             labelControl21 = new DevExpress.XtraEditors.LabelControl();
             labelControl22 = new DevExpress.XtraEditors.LabelControl();
             labelControl23 = new DevExpress.XtraEditors.LabelControl();
-            cmbProjectNo = new DevExpress.XtraEditors.ComboBoxEdit();
             cmbLocation = new DevExpress.XtraEditors.ComboBoxEdit();
             startDateEdit = new DevExpress.XtraEditors.DateEdit();
             endDateEdit = new DevExpress.XtraEditors.DateEdit();
@@ -59,7 +58,6 @@
             txtArea = new DevExpress.XtraEditors.TextEdit();
             txtPE = new DevExpress.XtraEditors.TextEdit();
             txtProjectName = new DevExpress.XtraEditors.TextEdit();
-            txtDinnerMinutes = new DevExpress.XtraEditors.TextEdit();
             txtLunchMinutes = new DevExpress.XtraEditors.TextEdit();
             txtEstimatedHours = new DevExpress.XtraEditors.TextEdit();
             txtSampleModel = new DevExpress.XtraEditors.TextEdit();
@@ -80,7 +78,19 @@
             txtSales = new DevExpress.XtraEditors.TextEdit();
             txtContactPhone = new DevExpress.XtraEditors.TextEdit();
             cmbEngineer = new DevExpress.XtraEditors.ComboBoxEdit();
-            ((System.ComponentModel.ISupportInitialize)cmbProjectNo.Properties).BeginInit();
+            label1 = new System.Windows.Forms.Label();
+            textEdit1 = new DevExpress.XtraEditors.TextEdit();
+            txtProjectNo = new DevExpress.XtraEditors.TextEdit();
+            cmbJobNo = new DevExpress.XtraEditors.ComboBoxEdit();
+            labelControl13 = new DevExpress.XtraEditors.LabelControl();
+            labelControl14 = new DevExpress.XtraEditors.LabelControl();
+            btnRentTimeStart = new DevExpress.XtraEditors.SimpleButton();
+            btnRentTimeEnd = new DevExpress.XtraEditors.SimpleButton();
+            chkHandover = new DevExpress.XtraEditors.CheckEdit();
+            btnCopyRentTime = new DevExpress.XtraEditors.SimpleButton();
+            btnRestoreRentTime = new DevExpress.XtraEditors.SimpleButton();
+            cmbDinnerMinutes = new DevExpress.XtraEditors.ComboBoxEdit();
+            labelControl26 = new DevExpress.XtraEditors.LabelControl();
             ((System.ComponentModel.ISupportInitialize)cmbLocation.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)startDateEdit.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)startDateEdit.Properties.CalendarTimeProperties).BeginInit();
@@ -92,7 +102,6 @@
             ((System.ComponentModel.ISupportInitialize)txtArea.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)txtPE.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)txtProjectName.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)txtDinnerMinutes.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)txtLunchMinutes.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)txtEstimatedHours.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)txtSampleModel.Properties).BeginInit();
@@ -109,6 +118,11 @@
             ((System.ComponentModel.ISupportInitialize)txtSales.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)txtContactPhone.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)cmbEngineer.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)textEdit1.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)txtProjectNo.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)cmbJobNo.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)chkHandover.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)cmbDinnerMinutes.Properties).BeginInit();
             SuspendLayout();
             // 
             // labelControl1
@@ -153,7 +167,7 @@
             // 
             // labelControl6
             // 
-            labelControl6.Location = new System.Drawing.Point(44, 410);
+            labelControl6.Location = new System.Drawing.Point(425, 410);
             labelControl6.Name = "labelControl6";
             labelControl6.Size = new System.Drawing.Size(87, 22);
             labelControl6.TabIndex = 6;
@@ -279,16 +293,6 @@
             labelControl23.TabIndex = 23;
             labelControl23.Text = "電話";
             // 
-            // cmbProjectNo
-            // 
-            cmbProjectNo.Location = new System.Drawing.Point(162, 410);
-            cmbProjectNo.Name = "cmbProjectNo";
-            cmbProjectNo.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
-            cmbProjectNo.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            cmbProjectNo.Size = new System.Drawing.Size(225, 28);
-            cmbProjectNo.TabIndex = 24;
-            cmbProjectNo.EditValueChanged += cmbProjectNo_EditValueChanged;
-            // 
             // cmbLocation
             // 
             cmbLocation.Location = new System.Drawing.Point(162, 687);
@@ -349,7 +353,7 @@
             txtBookingNo.Location = new System.Drawing.Point(162, 50);
             txtBookingNo.Name = "txtBookingNo";
             txtBookingNo.Properties.ReadOnly = true;
-            txtBookingNo.Size = new System.Drawing.Size(439, 28);
+            txtBookingNo.Size = new System.Drawing.Size(368, 28);
             txtBookingNo.TabIndex = 30;
             // 
             // txtArea
@@ -370,22 +374,11 @@
             // 
             // txtProjectName
             // 
-            txtProjectName.Location = new System.Drawing.Point(562, 410);
+            txtProjectName.Location = new System.Drawing.Point(562, 450);
             txtProjectName.Name = "txtProjectName";
             txtProjectName.Properties.ReadOnly = true;
             txtProjectName.Size = new System.Drawing.Size(225, 28);
             txtProjectName.TabIndex = 38;
-            // 
-            // txtDinnerMinutes
-            // 
-            txtDinnerMinutes.Location = new System.Drawing.Point(680, 570);
-            txtDinnerMinutes.Name = "txtDinnerMinutes";
-            txtDinnerMinutes.Properties.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.NumericMaskManager));
-            txtDinnerMinutes.Properties.MaskSettings.Set("mask", "d");
-            txtDinnerMinutes.Properties.ReadOnly = true;
-            txtDinnerMinutes.Size = new System.Drawing.Size(107, 28);
-            txtDinnerMinutes.TabIndex = 39;
-            txtDinnerMinutes.EditValueChanged += txtDinnerMinutes_EditValueChanged;
             // 
             // txtLunchMinutes
             // 
@@ -400,7 +393,7 @@
             txtEstimatedHours.Location = new System.Drawing.Point(415, 615);
             txtEstimatedHours.Name = "txtEstimatedHours";
             txtEstimatedHours.Properties.ReadOnly = true;
-            txtEstimatedHours.Size = new System.Drawing.Size(186, 28);
+            txtEstimatedHours.Size = new System.Drawing.Size(151, 28);
             txtEstimatedHours.TabIndex = 41;
             // 
             // txtSampleModel
@@ -419,7 +412,7 @@
             // 
             // labelControl24
             // 
-            labelControl24.Location = new System.Drawing.Point(425, 410);
+            labelControl24.Location = new System.Drawing.Point(425, 453);
             labelControl24.Name = "labelControl24";
             labelControl24.Size = new System.Drawing.Size(105, 22);
             labelControl24.TabIndex = 48;
@@ -458,7 +451,7 @@
             // 
             btnCreatedRentTime.Location = new System.Drawing.Point(44, 1020);
             btnCreatedRentTime.Name = "btnCreatedRentTime";
-            btnCreatedRentTime.Size = new System.Drawing.Size(168, 51);
+            btnCreatedRentTime.Size = new System.Drawing.Size(118, 51);
             btnCreatedRentTime.TabIndex = 53;
             btnCreatedRentTime.Text = "建立租時單";
             btnCreatedRentTime.Click += btnCreatedRentTime_Click;
@@ -483,9 +476,9 @@
             // 
             // btnDeletedRentTime
             // 
-            btnDeletedRentTime.Location = new System.Drawing.Point(607, 1020);
+            btnDeletedRentTime.Location = new System.Drawing.Point(663, 1020);
             btnDeletedRentTime.Name = "btnDeletedRentTime";
-            btnDeletedRentTime.Size = new System.Drawing.Size(168, 51);
+            btnDeletedRentTime.Size = new System.Drawing.Size(124, 51);
             btnDeletedRentTime.TabIndex = 56;
             btnDeletedRentTime.Text = "刪除租時";
             btnDeletedRentTime.Click += btnDeletedRentTime_Click;
@@ -520,7 +513,6 @@
             // 
             txtContactName.Location = new System.Drawing.Point(162, 209);
             txtContactName.Name = "txtContactName";
-            txtContactName.Properties.ReadOnly = true;
             txtContactName.Size = new System.Drawing.Size(225, 28);
             txtContactName.TabIndex = 60;
             // 
@@ -536,7 +528,6 @@
             // 
             txtContactPhone.Location = new System.Drawing.Point(562, 209);
             txtContactPhone.Name = "txtContactPhone";
-            txtContactPhone.Properties.ReadOnly = true;
             txtContactPhone.Size = new System.Drawing.Size(225, 28);
             txtContactPhone.TabIndex = 62;
             // 
@@ -548,12 +539,131 @@
             cmbEngineer.Size = new System.Drawing.Size(225, 28);
             cmbEngineer.TabIndex = 63;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(539, 53);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(17, 22);
+            label1.TabIndex = 64;
+            label1.Text = "-";
+            // 
+            // textEdit1
+            // 
+            textEdit1.Location = new System.Drawing.Point(562, 50);
+            textEdit1.Name = "textEdit1";
+            textEdit1.Properties.ReadOnly = true;
+            textEdit1.Size = new System.Drawing.Size(80, 28);
+            textEdit1.TabIndex = 65;
+            // 
+            // txtProjectNo
+            // 
+            txtProjectNo.Location = new System.Drawing.Point(562, 407);
+            txtProjectNo.Name = "txtProjectNo";
+            txtProjectNo.Properties.ReadOnly = true;
+            txtProjectNo.Size = new System.Drawing.Size(225, 28);
+            txtProjectNo.TabIndex = 66;
+            // 
+            // cmbJobNo
+            // 
+            cmbJobNo.Location = new System.Drawing.Point(162, 407);
+            cmbJobNo.Name = "cmbJobNo";
+            cmbJobNo.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
+            cmbJobNo.Size = new System.Drawing.Size(225, 28);
+            cmbJobNo.TabIndex = 67;
+            // 
+            // labelControl13
+            // 
+            labelControl13.Location = new System.Drawing.Point(43, 410);
+            labelControl13.Name = "labelControl13";
+            labelControl13.Size = new System.Drawing.Size(61, 22);
+            labelControl13.TabIndex = 68;
+            labelControl13.Text = "Job No.";
+            // 
+            // labelControl14
+            // 
+            labelControl14.Location = new System.Drawing.Point(256, 382);
+            labelControl14.Name = "labelControl14";
+            labelControl14.Size = new System.Drawing.Size(0, 22);
+            labelControl14.TabIndex = 69;
+            // 
+            // btnRentTimeStart
+            // 
+            btnRentTimeStart.Location = new System.Drawing.Point(182, 1020);
+            btnRentTimeStart.Name = "btnRentTimeStart";
+            btnRentTimeStart.Size = new System.Drawing.Size(118, 51);
+            btnRentTimeStart.TabIndex = 70;
+            btnRentTimeStart.Text = "租時開始";
+            // 
+            // btnRentTimeEnd
+            // 
+            btnRentTimeEnd.Location = new System.Drawing.Point(315, 1020);
+            btnRentTimeEnd.Name = "btnRentTimeEnd";
+            btnRentTimeEnd.Size = new System.Drawing.Size(118, 51);
+            btnRentTimeEnd.TabIndex = 71;
+            btnRentTimeEnd.Text = "租時完成";
+            // 
+            // chkHandover
+            // 
+            chkHandover.Location = new System.Drawing.Point(451, 1033);
+            chkHandover.Name = "chkHandover";
+            chkHandover.Properties.Caption = "交接";
+            chkHandover.Size = new System.Drawing.Size(79, 27);
+            chkHandover.TabIndex = 72;
+            // 
+            // btnCopyRentTime
+            // 
+            btnCopyRentTime.Location = new System.Drawing.Point(669, 35);
+            btnCopyRentTime.Name = "btnCopyRentTime";
+            btnCopyRentTime.Size = new System.Drawing.Size(118, 51);
+            btnCopyRentTime.TabIndex = 73;
+            btnCopyRentTime.Text = "複製單據";
+            // 
+            // btnRestoreRentTime
+            // 
+            btnRestoreRentTime.Location = new System.Drawing.Point(536, 1020);
+            btnRestoreRentTime.Name = "btnRestoreRentTime";
+            btnRestoreRentTime.Size = new System.Drawing.Size(118, 51);
+            btnRestoreRentTime.TabIndex = 74;
+            btnRestoreRentTime.Text = "回復狀態";
+            // 
+            // cmbDinnerMinutes
+            // 
+            cmbDinnerMinutes.Location = new System.Drawing.Point(680, 570);
+            cmbDinnerMinutes.Name = "cmbDinnerMinutes";
+            cmbDinnerMinutes.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
+            cmbDinnerMinutes.Properties.ReadOnly = true;
+            cmbDinnerMinutes.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+            cmbDinnerMinutes.Size = new System.Drawing.Size(107, 28);
+            cmbDinnerMinutes.TabIndex = 75;
+            // 
+            // labelControl26
+            // 
+            labelControl26.Location = new System.Drawing.Point(572, 618);
+            labelControl26.Name = "labelControl26";
+            labelControl26.Size = new System.Drawing.Size(18, 22);
+            labelControl26.TabIndex = 76;
+            labelControl26.Text = "時";
+            // 
             // Project
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSize = true;
             ClientSize = new System.Drawing.Size(830, 1091);
+            Controls.Add(labelControl26);
+            Controls.Add(cmbDinnerMinutes);
+            Controls.Add(btnRestoreRentTime);
+            Controls.Add(btnCopyRentTime);
+            Controls.Add(chkHandover);
+            Controls.Add(btnRentTimeEnd);
+            Controls.Add(btnRentTimeStart);
+            Controls.Add(labelControl14);
+            Controls.Add(labelControl13);
+            Controls.Add(cmbJobNo);
+            Controls.Add(txtProjectNo);
+            Controls.Add(textEdit1);
+            Controls.Add(label1);
             Controls.Add(cmbEngineer);
             Controls.Add(txtContactPhone);
             Controls.Add(txtSales);
@@ -574,7 +684,6 @@
             Controls.Add(txtSampleModel);
             Controls.Add(txtEstimatedHours);
             Controls.Add(txtLunchMinutes);
-            Controls.Add(txtDinnerMinutes);
             Controls.Add(txtProjectName);
             Controls.Add(txtPE);
             Controls.Add(txtArea);
@@ -584,7 +693,6 @@
             Controls.Add(endDateEdit);
             Controls.Add(startDateEdit);
             Controls.Add(cmbLocation);
-            Controls.Add(cmbProjectNo);
             Controls.Add(labelControl23);
             Controls.Add(labelControl22);
             Controls.Add(labelControl21);
@@ -612,7 +720,6 @@
             Name = "Project";
             Text = "新增租時單";
             Load += Project_Load;
-            ((System.ComponentModel.ISupportInitialize)cmbProjectNo.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)cmbLocation.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)startDateEdit.Properties.CalendarTimeProperties).EndInit();
             ((System.ComponentModel.ISupportInitialize)startDateEdit.Properties).EndInit();
@@ -624,7 +731,6 @@
             ((System.ComponentModel.ISupportInitialize)txtArea.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)txtPE.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)txtProjectName.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)txtDinnerMinutes.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)txtLunchMinutes.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)txtEstimatedHours.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)txtSampleModel.Properties).EndInit();
@@ -641,6 +747,11 @@
             ((System.ComponentModel.ISupportInitialize)txtSales.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)txtContactPhone.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)cmbEngineer.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)textEdit1.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)txtProjectNo.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)cmbJobNo.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)chkHandover.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)cmbDinnerMinutes.Properties).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -668,7 +779,6 @@
         private DevExpress.XtraEditors.LabelControl labelControl21;
         private DevExpress.XtraEditors.LabelControl labelControl22;
         private DevExpress.XtraEditors.LabelControl labelControl23;
-        private DevExpress.XtraEditors.ComboBoxEdit cmbProjectNo;
         private DevExpress.XtraEditors.ComboBoxEdit cmbLocation;
         private DevExpress.XtraEditors.DateEdit startDateEdit;
         private DevExpress.XtraEditors.DateEdit endDateEdit;
@@ -678,7 +788,6 @@
         private DevExpress.XtraEditors.TextEdit txtArea;
         private DevExpress.XtraEditors.TextEdit txtPE;
         private DevExpress.XtraEditors.TextEdit txtProjectName;
-        private DevExpress.XtraEditors.TextEdit txtDinnerMinutes;
         private DevExpress.XtraEditors.TextEdit txtLunchMinutes;
         private DevExpress.XtraEditors.TextEdit txtEstimatedHours;
         private DevExpress.XtraEditors.TextEdit txtSampleModel;
@@ -699,5 +808,18 @@
         private DevExpress.XtraEditors.TextEdit txtSales;
         private DevExpress.XtraEditors.TextEdit txtContactPhone;
         private DevExpress.XtraEditors.ComboBoxEdit cmbEngineer;
+        private System.Windows.Forms.Label label1;
+        private DevExpress.XtraEditors.TextEdit textEdit1;
+        private DevExpress.XtraEditors.TextEdit txtProjectNo;
+        private DevExpress.XtraEditors.ComboBoxEdit cmbJobNo;
+        private DevExpress.XtraEditors.LabelControl labelControl13;
+        private DevExpress.XtraEditors.LabelControl labelControl14;
+        private DevExpress.XtraEditors.SimpleButton btnRentTimeStart;
+        private DevExpress.XtraEditors.SimpleButton btnRentTimeEnd;
+        private DevExpress.XtraEditors.CheckEdit chkHandover;
+        private DevExpress.XtraEditors.SimpleButton btnCopyRentTime;
+        private DevExpress.XtraEditors.SimpleButton btnRestoreRentTime;
+        private DevExpress.XtraEditors.ComboBoxEdit cmbDinnerMinutes;
+        private DevExpress.XtraEditors.LabelControl labelControl26;
     }
 }

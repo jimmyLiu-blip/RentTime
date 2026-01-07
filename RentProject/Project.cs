@@ -65,6 +65,7 @@ namespace RentProject
             new TestModeTestItem { TestMode = "Normal", TestItem = "Receiver Blocking"},
             new TestModeTestItem { TestMode = "Normal", TestItem = "DFS"},
             new TestModeTestItem { TestMode = "Normal", TestItem = "PWS"},
+            new TestModeTestItem { TestMode = "Setup", TestItem = "Debug"},
         };
 
         private readonly List<ContactCompany> _contactCompany = new()
@@ -107,10 +108,11 @@ namespace RentProject
             InitContactCompany();
             InitTestModeCombo();
             InitEngineerCombo();
+            InitDinnerMinutesCombo();
             UpdateTestItem(cmbTestMode.Text?.Trim() ?? "");
 
-            cmbProjectNo.Properties.Items.Clear();
-            cmbProjectNo.Properties.Items.AddRange(_projects.Select(p => p.ProjectNo).ToArray());
+            cmbJobNo.Properties.Items.Clear();
+            cmbJobNo.Properties.Items.AddRange(_projects.Select(p => p.JobNo).ToArray());
 
             startDateEdit.EditValue = null;
             endDateEdit.EditValue = null;
@@ -343,6 +345,16 @@ namespace RentProject
             cmbEngineer.Text = "";
         }
 
+        private void InitDinnerMinutesCombo()
+        { 
+            cmbDinnerMinutes.Properties.Items.Clear();
+            cmbDinnerMinutes.Properties.Items.AddRange(new object[] { 30, 60, 90, 120, 150, 180, 210, 240 });
+
+            // 預設值
+            cmbDinnerMinutes.EditValue = 60; 
+        }
+
+
 
 
         // =========================
@@ -356,18 +368,17 @@ namespace RentProject
 
         private void ApplyDinnerUI()
         {
-            txtDinnerMinutes.Properties.ReadOnly = !chkHasDinner.Checked;
+            cmbDinnerMinutes.Properties.ReadOnly = !chkHasDinner.Checked;
 
             if (!chkHasDinner.Checked)
             {
-                txtDinnerMinutes.Text = "0";
+                cmbDinnerMinutes.Text = null;
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(txtDinnerMinutes.Text))
+            if (cmbDinnerMinutes.EditValue == null)
             {
-                txtDinnerMinutes.Text = "0";
-                return;
+                cmbDinnerMinutes.Text = "60";
             }
         }
 
@@ -404,6 +415,8 @@ namespace RentProject
         // =========================
         private RentTime BuildModelFormUI()
         {
+            int dinnerMin = cmbDinnerMinutes.EditValue is int v ? v : 0;
+
             return new RentTime
             {
                 CreatedBy = txtCreatedBy.Text.Trim(),
@@ -429,7 +442,7 @@ namespace RentProject
                 LunchMinutes = chkHasLunch.Checked ? 60 : 0,
 
                 HasDinner = chkHasDinner.Checked,
-                DinnerMinutes = chkHasDinner.Checked ? ParseIntOrZero(txtDinnerMinutes.Text) : 0,
+                DinnerMinutes = chkHasDinner.Checked ? dinnerMin : 0,
 
                 StartDate = startDateEdit.EditValue as DateTime?,
                 EndDate = endDateEdit.EditValue as DateTime?,
@@ -474,7 +487,7 @@ namespace RentProject
             chkHasDinner.Checked = data.HasDinner;
 
             txtLunchMinutes.Text = data.HasLunch ? data.LunchMinutes.ToString() : "0";
-            txtDinnerMinutes.Text = data.HasDinner ? data.DinnerMinutes.ToString() : "0";
+            cmbDinnerMinutes.Text = data.HasDinner ? data.DinnerMinutes.ToString() : "0";
 
             // 讓 UI 規則與預估時間重新刷新一次
             RefreshMealAndEstimateUI();
@@ -489,6 +502,9 @@ namespace RentProject
             var endDate = endDateEdit.EditValue as DateTime?;
             var startTime = startTimeEdit.EditValue is DateTime t1 ? t1.TimeOfDay : (TimeSpan?)null;
             var endTime = endTimeEdit.EditValue is DateTime t2 ? t2.TimeOfDay : (TimeSpan?)null;
+
+            // 晚餐時間
+            int dinnerMin = cmbDinnerMinutes.EditValue is int v ? v : 0;
 
             if (startDate is null || endDate is null || startTime is null || endTime is null)
             {
@@ -508,12 +524,12 @@ namespace RentProject
             var minutes = (int)(end - start).TotalMinutes;
 
             if (chkHasLunch.Checked) minutes -= 60;
-            if (chkHasDinner.Checked) minutes -= ParseIntOrZero(txtDinnerMinutes.Text);
+            if (chkHasDinner.Checked) minutes -= dinnerMin;
 
             if (minutes < 0) minutes = 0;
 
             var hours = Math.Round(minutes / 60m, 2);
-            txtEstimatedHours.Text = $"{minutes} 分鐘 ({hours} 小時)";
+            txtEstimatedHours.Text = $"({hours})";
         }
 
         // =========================

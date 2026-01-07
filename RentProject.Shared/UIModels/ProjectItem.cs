@@ -2,6 +2,8 @@
 {
     public class ProjectItem
     {
+        public string JobNo { get; set; } = "";
+
         public string ProjectNo { get; set; } = "";
 
         public string ProjectName { get; set; } = "";
