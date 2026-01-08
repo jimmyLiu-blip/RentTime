@@ -273,7 +273,8 @@ namespace RentProject.Repository
             var sql = @"
                 UPDATE dbo.RentTimes
                 SET
-                    Status = 1,
+                    Status = 1,    
+                    EngineerName = COALESCE(NULLIF(LTRIM(RTRIM(EngineerName)), ''), @ModifiedBy),
                     ActualStartAt = COALESCE(ActualStartAt, @Now), --避免重複時覆蓋
                     ModifiedBy = @ModifiedBy,
                     ModifiedDate = @Now
@@ -299,7 +300,6 @@ namespace RentProject.Repository
                 UPDATE dbo.RentTimes
                 SET
                     Status = 2,
-                    ActualEndAt = @Now,
                     ModifiedBy = @ModifiedBy,
                     ModifiedDate = @Now
                 WHERE RentTimeId = @RentTimeId

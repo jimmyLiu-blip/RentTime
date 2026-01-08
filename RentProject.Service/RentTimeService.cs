@@ -1,5 +1,6 @@
 ﻿using RentProject.Domain;
 using RentProject.Repository;
+using System.Reflection;
 
 namespace RentProject.Service
 {
@@ -57,6 +58,31 @@ namespace RentProject.Service
             var rows = _repo.UpdateRentTime(model);
             if (rows != 1) throw new Exception($"更新失敗，受影響筆數={rows}");
         }
+
+        public void StartRentTimeById(int rentTimeId, string modifiedBy)
+        {
+            if (rentTimeId <= 0) throw new Exception("RentTimeId 不正確");
+
+            var rows = _repo.StartRentTime(rentTimeId, modifiedBy, DateTime.Now);
+            if (rows != 1) throw new Exception($"租時開始失敗（可能不是 Draft 狀態），受影響筆數={rows}");
+        }
+
+        public void FinishRentTimeById(int rentTimeId, string modifiedBy)
+        {
+            if (rentTimeId <= 0) throw new Exception("RentTimeId 不正確");
+
+            var rows = _repo.FinishRentTime(rentTimeId, modifiedBy, DateTime.Now);
+            if (rows != 1) throw new Exception($"租時完成失敗（可能不是 Started 狀態），受影響筆數={rows}");
+        }
+
+        public void RestoreToDraftById(int rentTimeId, string modifiedBy)
+        {
+            if (rentTimeId <= 0) throw new Exception("RentTimeId 不正確");
+
+            var rows = _repo.RestoreToDraft(rentTimeId, modifiedBy, DateTime.Now);
+            if (rows != 1) throw new Exception($"回復狀態失敗（可能已是 Finished 或找不到資料），受影響筆數={rows}");
+        }
+
 
         // 刪除租時單
         public void DeletedRentTime(int rentTimeId, string createdBy, DateTime modifiedDate)

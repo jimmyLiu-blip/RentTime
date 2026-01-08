@@ -488,6 +488,7 @@
             cmbTestMode.Location = new System.Drawing.Point(162, 780);
             cmbTestMode.Name = "cmbTestMode";
             cmbTestMode.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
+            cmbTestMode.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             cmbTestMode.Size = new System.Drawing.Size(625, 28);
             cmbTestMode.TabIndex = 57;
             cmbTestMode.EditValueChanged += cmbTestMode_EditValueChanged;
@@ -497,6 +498,7 @@
             cmbTestItem.Location = new System.Drawing.Point(162, 828);
             cmbTestItem.Name = "cmbTestItem";
             cmbTestItem.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
+            cmbTestItem.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             cmbTestItem.Size = new System.Drawing.Size(625, 28);
             cmbTestItem.TabIndex = 58;
             // 
@@ -535,6 +537,7 @@
             cmbEngineer.Location = new System.Drawing.Point(562, 684);
             cmbEngineer.Name = "cmbEngineer";
             cmbEngineer.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
+            cmbEngineer.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             cmbEngineer.Size = new System.Drawing.Size(225, 28);
             cmbEngineer.TabIndex = 63;
             // 
@@ -594,6 +597,7 @@
             btnRentTimeStart.Size = new System.Drawing.Size(118, 51);
             btnRentTimeStart.TabIndex = 70;
             btnRentTimeStart.Text = "租時開始";
+            btnRentTimeStart.Click += btnRentTimeStart_Click;
             // 
             // btnRentTimeEnd
             // 
@@ -602,6 +606,7 @@
             btnRentTimeEnd.Size = new System.Drawing.Size(118, 51);
             btnRentTimeEnd.TabIndex = 71;
             btnRentTimeEnd.Text = "租時完成";
+            btnRentTimeEnd.Click += btnRentTimeEnd_Click;
             // 
             // chkHandover
             // 
@@ -626,6 +631,7 @@
             btnRestoreRentTime.Size = new System.Drawing.Size(118, 51);
             btnRestoreRentTime.TabIndex = 74;
             btnRestoreRentTime.Text = "回復狀態";
+            btnRestoreRentTime.Click += btnRestoreRentTime_Click;
             // 
             // cmbDinnerMinutes
             // 

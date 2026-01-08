@@ -42,7 +42,7 @@ namespace RentProject
         private long? _bookingBatchId;
 
         // 目前這張單在 UI 上該用哪個狀態顯示
-        private enum UiRentStatus { Draft = 0, Started = 1, Finished = 2};
+        private enum UiRentStatus { Draft = 0, Started = 1, Finished = 2 };
         private UiRentStatus _uiStatus = UiRentStatus.Draft;
 
         // =========================================================
@@ -140,6 +140,16 @@ namespace RentProject
 
             txtSales.EditValueChanged -= ContactFields_EditValueChanged;
             txtSales.EditValueChanged += ContactFields_EditValueChanged;
+
+            // 綁定租時開始、租時完成、回復狀態
+            btnRentTimeStart.Click -= btnRentTimeStart_Click;
+            btnRentTimeStart.Click += btnRentTimeStart_Click;
+
+            btnRentTimeEnd.Click -= btnRentTimeEnd_Click;
+            btnRentTimeEnd.Click += btnRentTimeEnd_Click;
+
+            btnRestoreRentTime.Click -= btnRestoreRentTime_Click;
+            btnRestoreRentTime.Click += btnRestoreRentTime_Click;
 
             // 手動輸入後，自動保存(Validated 事件)
             cmbJobNo.Validated -= cmbJobNo_Validated;
@@ -262,6 +272,83 @@ namespace RentProject
             }
         }
 
+        private void btnRentTimeStart_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_editRentTimeId == null) return;
+
+                var confirm = XtraMessageBox.Show(
+                    " 確認要「租時開始」嗎？",
+                    "租時開始",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (confirm != DialogResult.Yes) return;
+
+                var user = txtCreatedBy.Text.Trim();
+
+                _rentTimeService.StartRentTimeById(_editRentTimeId.Value, user);
+
+                ReloadRentTimeFromDb(); //立刻刷新 UI 狀態
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show($"{ex.GetType().Name}-{ex.Message}", "Error");
+            }
+        }
+
+        private void btnRentTimeEnd_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_editRentTimeId == null) return;
+
+                var confirm = XtraMessageBox.Show(
+                    "確認要「租時完成」嗎？完成後會鎖定不可修改。",
+                    "租時完成",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning);
+
+                if (confirm != DialogResult.Yes) return;
+
+                var user = txtCreatedBy.Text.Trim();
+                _rentTimeService.FinishRentTimeById(_editRentTimeId.Value, user);
+
+                ReloadRentTimeFromDb(); // 完成後 UI 應該立刻鎖住 + Copy 亮起
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", "Error");
+            }
+
+        }
+
+        private void btnRestoreRentTime_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_editRentTimeId == null) return;
+
+                var confirm = XtraMessageBox.Show(
+                    "確認要「回復狀態」到 Draft 嗎？(只允許 0/1)",
+                    "回復狀態",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (confirm != DialogResult.Yes) return;
+
+                var user = txtCreatedBy.Text.Trim();
+                _rentTimeService.RestoreToDraftById(_editRentTimeId.Value, user);
+
+                ReloadRentTimeFromDb(); // 回復後 UI 應該解鎖
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", "Error");
+            }
+        }
+
         private void btnDeletedRentTime_Click(object sender, EventArgs e)
         {
             try
@@ -347,7 +434,7 @@ namespace RentProject
                 txtPE.Text = j?.PE ?? "";
             }
             finally
-            { 
+            {
                 _isLoading = false;
             }
         }
@@ -417,6 +504,19 @@ namespace RentProject
             }
 
             _lastCompany = company;
+        }
+
+        // 更新後重新讀 DB 並套用 UI 狀態
+        private void ReloadRentTimeFromDb()
+        {
+            if (_editRentTimeId == null) return;
+
+            var data = _rentTimeService.GetRentTimeById(_editRentTimeId.Value);
+
+            FillUIFromModel(data);
+            _uiStatus = (UiRentStatus)data.Status;
+
+            ApplyUiStatus();
         }
 
         // =========================================================
@@ -566,7 +666,7 @@ namespace RentProject
 
         // 決定哪些按鈕狀態
         private void ApplyUiStatus()
-        { 
+        {
             bool isEdit = _editRentTimeId != null;
             bool isStarted = _uiStatus == UiRentStatus.Started;
             bool isFinished = _uiStatus == UiRentStatus.Finished;
@@ -578,7 +678,7 @@ namespace RentProject
             btnRentTimeStart.Enabled = isEdit && !isFinished && !isStarted;
 
             // 租時完成：只有在編輯模式 + 租時開始 才能按
-            btnRentTimeEnd.Enabled = isEdit&& !isFinished && isStarted;
+            btnRentTimeEnd.Enabled = isEdit && !isFinished && isStarted;
 
             // 刪除租時：完成租時不能刪
             btnDeletedRentTime.Enabled = isEdit && !isFinished;
@@ -591,11 +691,17 @@ namespace RentProject
 
             // Finished：只能檢視
             SetFormEditable(!isFinished);
+
+            if (_uiStatus == UiRentStatus.Finished)
+            {
+                startDateEdit.Properties.ReadOnly = true;
+                startTimeEdit.Properties.ReadOnly = true;
+            }
         }
 
         // 決定欄位能不能編輯
         private void SetFormEditable(bool editable)
-        { 
+        {
             cmbLocation.Properties.ReadOnly = !editable;
             cmbJobNo.Properties.ReadOnly = !editable;
             cmbCompany.Properties.ReadOnly = !editable;
@@ -639,7 +745,7 @@ namespace RentProject
             int? jobId = null;
 
             if (!string.IsNullOrWhiteSpace(jobNo))
-            { 
+            {
                 jobId = _jobNoService.GetOrCreateJobId(jobNo);
             }
 
@@ -701,20 +807,27 @@ namespace RentProject
                 txtContactName.Text = data.ContactName ?? "";
                 txtContactPhone.Text = data.Phone ?? "";
                 memoTestInformation.Text = data.TestInformation ?? "";
-                cmbEngineer.Text = string.IsNullOrWhiteSpace(data.EngineerName) ? "Jimmy" : data.EngineerName;
+                cmbEngineer.Text = string.IsNullOrWhiteSpace(data.EngineerName) ? "" : data.EngineerName;
                 txtSampleModel.Text = data.SampleModel ?? "";
                 txtSampleNo.Text = data.SampleNo ?? "";
                 cmbTestMode.Text = data.TestMode ?? "";
                 cmbTestItem.Text = data.TestItem ?? "";
                 memoNote.Text = data.Notes ?? "";
 
+                // ===== 顯示用時間：有 Actual 就顯示 Actual，沒有就顯示預排 =====
+                var plannedStart = Combine(data.StartDate, data.StartTime);
+                var plannedEnd = Combine(data.EndDate, data.EndTime);
+
+                var displayStart = data.ActualStartAt ?? plannedStart;
+                var displayEnd = data.ActualEndAt ?? plannedEnd;
+
                 // 日期
-                startDateEdit.EditValue = data.StartDate;
-                endDateEdit.EditValue = data.EndDate;
+                startDateEdit.EditValue = displayStart?.Date;
+                endDateEdit.EditValue = displayEnd?.Date;
 
                 // 時間：TimeEdit 的 EditValue 通常要 DateTime
-                startTimeEdit.EditValue = data.StartTime.HasValue ? DateTime.Today.Add(data.StartTime.Value) : null;
-                endTimeEdit.EditValue = data.EndTime.HasValue ? DateTime.Today.Add(data.EndTime.Value) : null;
+                startTimeEdit.EditValue = displayStart.HasValue ? DateTime.Today.Add(displayStart.Value.TimeOfDay) : null;
+                endTimeEdit.EditValue = displayEnd.HasValue ? DateTime.Today.Add(displayEnd.Value.TimeOfDay) : null;
 
                 // 午餐/晚餐
                 chkHasLunch.Checked = data.HasLunch;
@@ -786,7 +899,7 @@ namespace RentProject
             var parts = bookingNo.Split('-');
 
             if (parts.Length < 3)
-            { 
+            {
                 txtBookingNo.Text = bookingNo;
                 return;
             }
@@ -798,7 +911,14 @@ namespace RentProject
             var prefix = string.Join("-", parts.Take(parts.Length - 1)); // "RF-000004"
 
             txtBookingNo.Text = prefix;
-            txtBookingSeq.Text = seq; 
+            txtBookingSeq.Text = seq;
+        }
+
+        // 組合預排的 Date+Time
+        private static DateTime? Combine(DateTime? date, TimeSpan? time)
+        { 
+            if (date is null || time is null) return null;
+            return date.Value.Date + time.Value;
         }
     }
 }
