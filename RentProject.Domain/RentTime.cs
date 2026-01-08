@@ -71,12 +71,18 @@
 
         public decimal EstimatedHours { get; set; }
 
-        public string Status { get; set; } = "Draft";
+        public int Status { get; set; } = 0; // Draft = 0, Started = 1, Finished = 2
 
         public bool IsDeleted { get; set; }
 
         public int? JobId { get; set; }
 
         public string? JobNo { get; set; }
+
+        public DateTime? ActualStartAt { get; set; }
+
+        public DateTime? ActualEndAt { get; set; }
+
+        public bool IsHandOver { get; set; }
     }
 }

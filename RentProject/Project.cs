@@ -41,6 +41,10 @@ namespace RentProject
         // 紀錄BookingBatchId
         private long? _bookingBatchId;
 
+        // 目前這張單在 UI 上該用哪個狀態顯示
+        private enum UiRentStatus { Draft = 0, Started = 1, Finished = 2};
+        private UiRentStatus _uiStatus = UiRentStatus.Draft;
+
         // =========================================================
         // B) 假資料 / 資料來源
         // =========================================================
@@ -175,10 +179,10 @@ namespace RentProject
             labelCreatedBy.Visible = _editRentTimeId != null;
             txtCreatedBy.Visible = _editRentTimeId != null;
             btnCopyRentTime.Visible = _editRentTimeId != null;
-            cmbEngineer.ReadOnly = _editRentTimeId != null;
-            txtCreatedBy.ReadOnly = _editRentTimeId != null;
-            cmbCompany.ReadOnly = _editRentTimeId != null;
-            txtSales.ReadOnly = _editRentTimeId != null;
+            //cmbEngineer.ReadOnly = _editRentTimeId != null;
+            //txtCreatedBy.ReadOnly = _editRentTimeId != null;
+            //cmbCompany.ReadOnly = _editRentTimeId != null;
+            //txtSales.ReadOnly = _editRentTimeId != null;
 
             // 新增模式：預設建單人員
             if (_editRentTimeId == null)
@@ -190,12 +194,20 @@ namespace RentProject
                 txtBookingSeq.Text = "1";
 
                 txtCreatedBy.Text = "Jimmy";
+
+                _uiStatus = UiRentStatus.Draft;
+
+                ApplyUiStatus();
+
                 return;
             }
 
             // 編輯模式：讀 DB 填回 UI
             var data = _rentTimeService.GetRentTimeById(_editRentTimeId.Value);
             FillUIFromModel(data);
+
+            _uiStatus = (UiRentStatus)data.Status;
+            ApplyUiStatus();
 
             btnCreatedRentTime.Text = "儲存修改";
             labelEstimatedHours.Text = "實際時間";
@@ -552,6 +564,70 @@ namespace RentProject
             e.DisplayText = "";
         }
 
+        // 決定哪些按鈕狀態
+        private void ApplyUiStatus()
+        { 
+            bool isEdit = _editRentTimeId != null;
+            bool isStarted = _uiStatus == UiRentStatus.Started;
+            bool isFinished = _uiStatus == UiRentStatus.Finished;
+
+            // 儲存修改：Finished 不可改
+            btnCreatedRentTime.Enabled = !isFinished;
+
+            // 租時開始：只有在編輯模式 + Draft 才能按
+            btnRentTimeStart.Enabled = isEdit && !isFinished && !isStarted;
+
+            // 租時完成：只有在編輯模式 + 租時開始 才能按
+            btnRentTimeEnd.Enabled = isEdit&& !isFinished && isStarted;
+
+            // 刪除租時：完成租時不能刪
+            btnDeletedRentTime.Enabled = isEdit && !isFinished;
+
+            // 回復狀態：Draft/Started 可按，Finished 不可按
+            btnRestoreRentTime.Enabled = isEdit && !isFinished;
+
+            // 複製單據：建立完成 + 租時完成才可以按
+            btnCopyRentTime.Enabled = isEdit && isFinished;
+
+            // Finished：只能檢視
+            SetFormEditable(!isFinished);
+        }
+
+        // 決定欄位能不能編輯
+        private void SetFormEditable(bool editable)
+        { 
+            cmbLocation.Properties.ReadOnly = !editable;
+            cmbJobNo.Properties.ReadOnly = !editable;
+            cmbCompany.Properties.ReadOnly = !editable;
+
+            txtContactName.Properties.ReadOnly = !editable;
+            txtContactPhone.Properties.ReadOnly = !editable;
+            txtSales.Properties.ReadOnly = !editable;
+            txtSampleModel.Properties.ReadOnly = !editable;
+            txtSampleNo.Properties.ReadOnly = !editable;
+
+            startDateEdit.Properties.ReadOnly = !editable;
+            endDateEdit.Properties.ReadOnly = !editable;
+            startTimeEdit.Properties.ReadOnly = !editable;
+            endTimeEdit.Properties.ReadOnly = !editable;
+
+            chkHasLunch.Properties.ReadOnly = !editable;
+            chkHasDinner.Properties.ReadOnly = !editable;
+            cmbDinnerMinutes.Properties.ReadOnly = !editable;
+
+            cmbEngineer.Properties.ReadOnly = !editable;
+            cmbTestMode.Properties.ReadOnly = !editable;
+            cmbTestItem.Properties.ReadOnly = !editable;
+
+            memoTestInformation.Properties.ReadOnly = !editable;
+            memoNote.Properties.ReadOnly = !editable;
+
+            chkHandover.Properties.ReadOnly = !editable;
+
+            // CreatedBy 通常永遠不可改（可留著鎖）
+            txtCreatedBy.Properties.ReadOnly = true;
+        }
+
         // =========================================================
         // J) UI <-> Model：組 Model / 回填 UI
         // =========================================================
@@ -595,6 +671,8 @@ namespace RentProject
 
                 HasDinner = chkHasDinner.Checked,
                 DinnerMinutes = chkHasDinner.Checked ? dinnerMin : 0,
+
+                IsHandOver = chkHandover.Checked,
 
                 StartDate = startDateEdit.EditValue as DateTime?,
                 EndDate = endDateEdit.EditValue as DateTime?,
@@ -641,6 +719,9 @@ namespace RentProject
                 // 午餐/晚餐
                 chkHasLunch.Checked = data.HasLunch;
                 chkHasDinner.Checked = data.HasDinner;
+
+                // 交接
+                chkHandover.Checked = data.IsHandOver;
 
                 txtLunchMinutes.Text = data.HasLunch ? data.LunchMinutes.ToString() : "0";
                 cmbDinnerMinutes.EditValue = data.HasDinner ? data.DinnerMinutes : (object?)null;

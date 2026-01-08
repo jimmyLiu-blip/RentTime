@@ -209,7 +209,8 @@ namespace RentProject.Repository
                         r.ContactName, r.Phone, r.TestInformation, r.ProjectNo, r.ProjectName,
                         r.PE, r.Location, r.StartDate, r.EndDate, r.StartTime, r.EndTime, r.HasLunch,
                         r.LunchMinutes, r.HasDinner, r.DinnerMinutes, r.EngineerName, r.SampleModel,
-                        r.SampleNo, r.TestMode, r.TestItem, r.Notes, r.JobId, jm.JobNo
+                        r.SampleNo, r.TestMode, r.TestItem, r.Notes, r.JobId, jm.JobNo, 
+                        r.Status, r.ActualStartAt, r.ActualEndAt, r.IsHandOver, r.IsDeleted
                         FROM dbo.RentTimes r
                         LEFT JOIN dbo.JobNoMaster jm ON jm.JobId = r.JobId
                         WHERE r.RentTimeId = @RentTimeId;";
@@ -255,10 +256,87 @@ namespace RentProject.Repository
                         EstimatedMinutes = @EstimatedMinutes,
                         EstimatedHours = @EstimatedHours,
                         ModifiedBy = @ModifiedBy,
-                        ModifiedDate = @ModifiedDate
+                        ModifiedDate = @ModifiedDate,
+                        IsHandOver = @IsHandOver
                         WHERE RentTimeId = @RentTimeId;";
 
             return connection.Execute(sql, model);
+        }
+
+        // 租時開始：Draft(0) -> Started(1)
+        // 只有在還沒 Finished(2) 時才允許更新
+        public int StartRentTime(int rentTimeId, string modifiedBy, DateTime now)
+        { 
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+
+            var sql = @"
+                UPDATE dbo.RentTimes
+                SET
+                    Status = 1,
+                    ActualStartAt = COALESCE(ActualStartAt, @Now), --避免重複時覆蓋
+                    ModifiedBy = @ModifiedBy,
+                    ModifiedDate = @Now
+                WHERE RentTimeId = @RentTimeId
+                AND Status = 0;"; // 只允許 Draft -> Started
+
+            return connection.Execute(sql, new
+            {
+                RentTimeId = rentTimeId,
+                ModifiedBy = modifiedBy,
+                Now = now
+            });
+        }
+
+        // 租時完成：Started(1) -> Finished(2)
+        // 只允許 Started 才能完成
+        public int FinishRentTime(int rentTimeId, string modifiedBy, DateTime now)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+
+            var sql = @"
+                UPDATE dbo.RentTimes
+                SET
+                    Status = 2,
+                    ActualEndAt = @Now,
+                    ModifiedBy = @ModifiedBy,
+                    ModifiedDate = @Now
+                WHERE RentTimeId = @RentTimeId
+                AND Status = 1;"; // 只允許 Started -> Finished
+
+            return connection.Execute(sql, new
+            {
+                RentTimeId = rentTimeId,
+                ModifiedBy = modifiedBy,
+                Now = now
+            });
+        }
+
+        // 回復狀態：Draft/Started(0/1) -> Draft(0)
+        // Finished 不能回復，只處理 0/1
+        public int RestoreToDraft(int rentTimeId, string modifiedBy, DateTime now)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+
+            var sql = @"
+                UPDATE dbo.RentTimes
+                SET 
+                    Status = 0,
+                    ActualStartAt = NULL,
+                    ActualEndAt = NULL,
+                    ModifiedBy = @ModifiedBy,
+                    ModifiedDate = @Now
+                WHERE RentTimeId = @RentTimeId
+                AND Status In (0,1);";
+
+            return connection.Execute(sql, new
+            {
+                RentTimeId = rentTimeId,
+                ModifiedBy = modifiedBy,
+                Now = now
+            });
         }
 
         public int DeletedRentTime(int rentTimeId, string createdBy, DateTime modifiedDate)
