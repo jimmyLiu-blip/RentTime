@@ -38,6 +38,9 @@ namespace RentProject
         // 記錄上一次選的公司（用來判斷是否換公司）
         private string _lastCompany = "";
 
+        // 紀錄BookingBatchId
+        private long? _bookingBatchId;
+
         // =========================================================
         // B) 假資料 / 資料來源
         // =========================================================
@@ -180,6 +183,12 @@ namespace RentProject
             // 新增模式：預設建單人員
             if (_editRentTimeId == null)
             {
+                _bookingBatchId = _rentTimeService.CreateBookingBatch();
+
+                txtBookingNo.Text = $"RF-{_bookingBatchId.Value:D7}";
+
+                txtBookingSeq.Text = "1";
+
                 txtCreatedBy.Text = "Jimmy";
                 return;
             }
@@ -205,10 +214,10 @@ namespace RentProject
                 // 新增
                 if (_editRentTimeId == null)
                 {
-                    var result = _rentTimeService.CreateRentTime(model);
+                    var result = _rentTimeService.CreateRentTime(model, _bookingBatchId);
 
                     _lastCreatedBy = "Jimmy"; // 之後要刪除
-                    txtBookingNo.Text = result.BookingNo;
+                    SetBookingNoToUI(result.BookingNo);
 
                     XtraMessageBox.Show(
                         $"建立成功! \nRentTimeId：{result.RentTimeId}\nBookingNo：{result.BookingNo}",
@@ -600,7 +609,7 @@ namespace RentProject
             try
             {
                 // 文字訊息
-                txtBookingNo.Text = data.BookingNo ?? "";
+                SetBookingNoToUI(data.BookingNo);
                 txtCreatedBy.Text = data.CreatedBy ?? "";
                 txtArea.Text = data.Area ?? "";
                 cmbCompany.Text = data.CustomerName ?? "";
@@ -683,6 +692,32 @@ namespace RentProject
         {
             ApplyMealEnableByEndTime();
             UpdateEstimatedUI();
+        }
+
+        private void SetBookingNoToUI(string? bookingNo)
+        {
+            txtBookingNo.Text = "";
+            txtBookingSeq.Text = "";
+
+            if (string.IsNullOrWhiteSpace(bookingNo))
+                return;
+
+            var parts = bookingNo.Split('-');
+
+            if (parts.Length < 3)
+            { 
+                txtBookingNo.Text = bookingNo;
+                return;
+            }
+
+            // 最後一段是流水號
+            var seq = parts[^1]; // "2"
+
+            // 前面全部當作主號
+            var prefix = string.Join("-", parts.Take(parts.Length - 1)); // "RF-000004"
+
+            txtBookingNo.Text = prefix;
+            txtBookingSeq.Text = seq; 
         }
     }
 }

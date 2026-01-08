@@ -14,12 +14,13 @@ namespace RentProject.Service
         }
 
         // 新增租時單
-        public CreateRentTimeResult CreateRentTime(RentTime model)
+        // long? bookingBatchId = null，代表：這個參數是「可為空的 long」，而且預設值是 null，所以呼叫時可以不傳。
+        public CreateRentTimeResult CreateRentTime(RentTime model, long? bookingBatchId = null)
         {
             ValidateRequired(model);
             CalculateEstimated(model);
 
-            return _repo.CreateRentTime(model);
+            return _repo.CreateRentTime(model, bookingBatchId);
         }
 
         // 取得案件清單
@@ -65,6 +66,11 @@ namespace RentProject.Service
             var rows = _repo.DeletedRentTime(rentTimeId, createdBy,DateTime.Now);
 
             if (rows != 1) throw new Exception($"刪除失敗，受影響筆數={rows}");
+        }
+
+        public long CreateBookingBatch()
+        { 
+            return _repo.CreateBookingBatch();
         }
 
         private static void ValidateRequired(RentTime model)

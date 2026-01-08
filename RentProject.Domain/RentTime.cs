@@ -6,6 +6,8 @@
 
         public string BookingNo { get; set; } = null!;
 
+        public string? BookingSeq { get; set; }
+
         public string CreatedBy { get; set; } = null!;
 
         public DateTime CreatedDate { get; set; }

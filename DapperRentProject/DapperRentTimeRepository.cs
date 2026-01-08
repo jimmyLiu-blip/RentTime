@@ -36,7 +36,7 @@ namespace RentProject.Repository
         }
 
         // 新增租時單
-        public CreateRentTimeResult CreateRentTime(RentTime model)
+        public CreateRentTimeResult CreateRentTime(RentTime model, long? bookingBatchId = null)
         {
             using var connection = new SqlConnection(_connectionString);
 
@@ -46,79 +46,118 @@ namespace RentProject.Repository
 
             try
             {
+                // (1) 先拿一個新的 BatchId（同一次新增跨天，都共用這個 BatchId）
+                var batchIdSql = @"
+                    INSERT INTO dbo.BookingBatch DEFAULT VALUES;
+                    SELECT CAST(SCOPE_IDENTITY() AS BIGINT);";
+
+                long batchId;
+
+                if (bookingBatchId.HasValue)
+                {
+                    batchId = bookingBatchId.Value; // 用表單先拿到的 batchId
+                }
+                else
+                {
+                    batchId = connection.ExecuteScalar<long>(batchIdSql, transaction: tx);
+                }   
+
+                // (2) 算這次要產生幾天（沒填日期就當 1 筆）
+                DateTime? start = model.StartDate?.Date;
+                DateTime? end = model.EndDate?.Date;
+
+                int days = 1;
+                if (start.HasValue && end.HasValue)
+                {
+                    if (end.Value < start.Value)
+                        throw new Exception("EndDate 不可小於 StartDate");
+
+                    days = (end.Value - start.Value).Days + 1;
+                }
+
+                // (3) 每一天都 INSERT 一筆 RentTimes，BookingNo 直接寫入（不再 UPDATE）
                 var insertSql = @"
-                INSERT INTO dbo.RentTimes
-                (
-                    JobId, BookingNo, CreatedBy, Area, CustomerName, Sales, ProjectNo, ProjectName, PE, Location,
-                    ContactName, Phone, TestInformation, EngineerName, SampleModel, SampleNo,
-                    TestMode, TestItem, Notes, 
-                    StartDate, EndDate, StartTime, EndTime, EstimatedMinutes, EstimatedHours,
-                    HasLunch, LunchMinutes, HasDinner, DinnerMinutes
-                )
-                OUTPUT INSERTED.RentTimeId
-                VALUES
-                (
-                    @JobId, NULL, @CreatedBy, @Area, @CustomerName, @Sales, @ProjectNo, @ProjectName, @PE, @Location,
-                    @ContactName, @Phone, @TestInformation, @EngineerName, @SampleModel, @SampleNo,
-                    @TestMode, @TestItem, @Notes, 
-                    @StartDate, @EndDate, @StartTime, @EndTime, @EstimatedMinutes, @EstimatedHours,
-                    @HasLunch, @LunchMinutes, @HasDinner, @DinnerMinutes
-                );";
+                    INSERT INTO dbo.RentTimes
+                    (
+                        JobId, BookingNo, CreatedBy, Area, CustomerName, Sales, ProjectNo, ProjectName, PE, Location,
+                        ContactName, Phone, TestInformation, EngineerName, SampleModel, SampleNo,
+                        TestMode, TestItem, Notes, 
+                        StartDate, EndDate, StartTime, EndTime, EstimatedMinutes, EstimatedHours,
+                        HasLunch, LunchMinutes, HasDinner, DinnerMinutes
+                    )
+                    OUTPUT INSERTED.RentTimeId
+                    VALUES
+                    (
+                        @JobId, @BookingNo, @CreatedBy, @Area, @CustomerName, @Sales, @ProjectNo, @ProjectName, @PE, @Location,
+                        @ContactName, @Phone, @TestInformation, @EngineerName, @SampleModel, @SampleNo,
+                        @TestMode, @TestItem, @Notes, 
+                        @StartDate, @EndDate, @StartTime, @EndTime, @EstimatedMinutes, @EstimatedHours,
+                        @HasLunch, @LunchMinutes, @HasDinner, @DinnerMinutes
+                    );";
 
-                int rentTimeId = connection.ExecuteScalar<int>(insertSql, new
+                int firstRentTimeId = 0;
+                string firstBookingNo = "";
+
+                for (int seq = 1; seq <= days; seq++)
                 {
-                    model.CreatedBy,
-                    model.Area,
-                    model.CustomerName,
-                    model.Sales,
-                    model.JobId,
-                    model.ProjectNo,
-                    model.ProjectName,
-                    model.PE,
-                    model.Location,
+                    // 如果有跨天：每筆 StartDate/EndDate 都固定為同一天
+                    DateTime? day = start.HasValue ? start.Value.AddDays(seq - 1) : (DateTime?)null;
 
-                    model.ContactName,
-                    model.Phone,
-                    model.TestInformation,
-                    model.EngineerName,
-                    model.SampleModel,
-                    model.SampleNo,
-                    model.TestMode,
-                    model.TestItem,
-                    model.Notes,
+                    // BookingNo：RF -{ BatchId(補7碼)}-{ seq}
+                    string bookingNo = $"RF-{batchId:D7}-{seq}";
 
-                    model.StartDate,
-                    model.EndDate,
-                    model.StartTime,
-                    model.EndTime,
-                    model.EstimatedMinutes,
-                    model.EstimatedHours,
+                    int rentTimeId = connection.ExecuteScalar<int>(insertSql, new
+                    {
+                        model.JobId,
+                        BookingNo = bookingNo,
 
-                    model.HasLunch,
-                    model.LunchMinutes,
-                    model.HasDinner,
-                    model.DinnerMinutes,
+                        model.CreatedBy,
+                        model.Area,
+                        model.CustomerName,
+                        model.Sales,
+                        model.ProjectNo,
+                        model.ProjectName,
+                        model.PE,
+                        model.Location,
 
-                }, transaction: tx);
+                        model.ContactName,
+                        model.Phone,
+                        model.TestInformation,
+                        model.EngineerName,
+                        model.SampleModel,
+                        model.SampleNo,
+                        model.TestMode,
+                        model.TestItem,
+                        model.Notes,
 
-                string bookingNo = $"RF-{rentTimeId:D8}";
+                        StartDate = day,
+                        EndDate = day,
+                        model.StartTime,
+                        model.EndTime,
+                        model.EstimatedMinutes,
+                        model.EstimatedHours,
 
-                var updateSql = @"UPDATE dbo.RentTimes 
-                                SET BookingNo = @BookingNo
-                                WHERE RentTimeId = @RentTimeId;";
+                        model.HasLunch,
+                        model.LunchMinutes,
+                        model.HasDinner,
+                        model.DinnerMinutes,
 
-                connection.Execute(updateSql, new
-                {
-                    BookingNo = bookingNo,
-                    RentTimeId = rentTimeId
-                }, transaction: tx);
+                    }, transaction: tx);
+
+                    // 回傳先用第一筆（避免你其他 UI/Service 大改）
+                    if (seq == 1)
+                    {
+                        firstRentTimeId = rentTimeId;
+                        firstBookingNo = bookingNo;
+                    }
+                }
 
                 tx.Commit();
 
                 return new CreateRentTimeResult
                 {
-                    RentTimeId = rentTimeId,
-                    BookingNo = bookingNo,
+                    RentTimeId = firstRentTimeId,
+                    BookingNo = firstBookingNo,
                 };
             }
             catch
@@ -141,7 +180,19 @@ namespace RentProject.Repository
                         ProjectNo, ProjectName
                         FROM dbo.RentTimes
                         WHERE IsDeleted = 0
-                        ORDER BY CreatedDate DESC;";
+                        ORDER BY
+                        -- 主號：RF-0000009-4  取出 0000009
+                        CASE WHEN BookingNo LIKE 'RF-%-%' 
+                             THEN TRY_CONVERT(BIGINT, SUBSTRING(BookingNo, 4, CHARINDEX('-', BookingNo, 4) - 4))
+                             ELSE 0 END DESC,
+
+                        -- 流水號：RF-0000009-4  取出 4
+                        CASE WHEN BookingNo LIKE 'RF-%-%'
+                             THEN TRY_CONVERT(INT, SUBSTRING(BookingNo, CHARINDEX('-', BookingNo, 4) + 1, 20))
+                             ELSE 0 END ASC,
+
+                        -- 同號同流水都一樣時，才用建立時間
+                        CreatedDate DESC;";
 
             return connection.Query<RentTime>(sql).ToList();
         }
@@ -227,6 +278,19 @@ namespace RentProject.Repository
                 ModifiedBy = createdBy,
                 ModifiedDate = modifiedDate
             });
+        }
+
+        public long CreateBookingBatch()
+        {
+            using var connection = new SqlConnection(_connectionString);
+
+            connection.Open();
+
+            var sql = @"
+                INSERT INTO dbo.BookingBatch DEFAULT VALUES;
+                SELECT CAST(SCOPE_IDENTITY() AS BIGINT);";
+
+            return connection.ExecuteScalar<long>(sql);
         }
     }
 }

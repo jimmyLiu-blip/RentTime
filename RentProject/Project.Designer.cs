@@ -79,7 +79,7 @@
             txtContactPhone = new DevExpress.XtraEditors.TextEdit();
             cmbEngineer = new DevExpress.XtraEditors.ComboBoxEdit();
             label1 = new System.Windows.Forms.Label();
-            textEdit1 = new DevExpress.XtraEditors.TextEdit();
+            txtBookingSeq = new DevExpress.XtraEditors.TextEdit();
             txtProjectNo = new DevExpress.XtraEditors.TextEdit();
             cmbJobNo = new DevExpress.XtraEditors.ComboBoxEdit();
             labelControl13 = new DevExpress.XtraEditors.LabelControl();
@@ -118,7 +118,7 @@
             ((System.ComponentModel.ISupportInitialize)txtSales.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)txtContactPhone.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)cmbEngineer.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)textEdit1.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)txtBookingSeq.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)txtProjectNo.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)cmbJobNo.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)chkHandover.Properties).BeginInit();
@@ -547,13 +547,13 @@
             label1.TabIndex = 64;
             label1.Text = "-";
             // 
-            // textEdit1
+            // txtBookingSeq
             // 
-            textEdit1.Location = new System.Drawing.Point(562, 50);
-            textEdit1.Name = "textEdit1";
-            textEdit1.Properties.ReadOnly = true;
-            textEdit1.Size = new System.Drawing.Size(80, 28);
-            textEdit1.TabIndex = 65;
+            txtBookingSeq.Location = new System.Drawing.Point(562, 50);
+            txtBookingSeq.Name = "txtBookingSeq";
+            txtBookingSeq.Properties.ReadOnly = true;
+            txtBookingSeq.Size = new System.Drawing.Size(80, 28);
+            txtBookingSeq.TabIndex = 65;
             // 
             // txtProjectNo
             // 
@@ -662,7 +662,7 @@
             Controls.Add(labelControl13);
             Controls.Add(cmbJobNo);
             Controls.Add(txtProjectNo);
-            Controls.Add(textEdit1);
+            Controls.Add(txtBookingSeq);
             Controls.Add(label1);
             Controls.Add(cmbEngineer);
             Controls.Add(txtContactPhone);
@@ -747,7 +747,7 @@
             ((System.ComponentModel.ISupportInitialize)txtSales.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)txtContactPhone.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)cmbEngineer.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)textEdit1.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)txtBookingSeq.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)txtProjectNo.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)cmbJobNo.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)chkHandover.Properties).EndInit();
@@ -809,7 +809,7 @@
         private DevExpress.XtraEditors.TextEdit txtContactPhone;
         private DevExpress.XtraEditors.ComboBoxEdit cmbEngineer;
         private System.Windows.Forms.Label label1;
-        private DevExpress.XtraEditors.TextEdit textEdit1;
+        private DevExpress.XtraEditors.TextEdit txtBookingSeq;
         private DevExpress.XtraEditors.TextEdit txtProjectNo;
         private DevExpress.XtraEditors.ComboBoxEdit cmbJobNo;
         private DevExpress.XtraEditors.LabelControl labelControl13;
