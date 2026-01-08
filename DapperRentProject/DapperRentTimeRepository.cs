@@ -49,7 +49,7 @@ namespace RentProject.Repository
                 var insertSql = @"
                 INSERT INTO dbo.RentTimes
                 (
-                    BookingNo,CreatedBy, Area, CustomerName, Sales, ProjectNo, ProjectName, PE, Location,
+                    JobId, BookingNo, CreatedBy, Area, CustomerName, Sales, ProjectNo, ProjectName, PE, Location,
                     ContactName, Phone, TestInformation, EngineerName, SampleModel, SampleNo,
                     TestMode, TestItem, Notes, 
                     StartDate, EndDate, StartTime, EndTime, EstimatedMinutes, EstimatedHours,
@@ -58,7 +58,7 @@ namespace RentProject.Repository
                 OUTPUT INSERTED.RentTimeId
                 VALUES
                 (
-                    NULL, @CreatedBy, @Area, @CustomerName, @Sales, @ProjectNo, @ProjectName, @PE, @Location,
+                    @JobId, NULL, @CreatedBy, @Area, @CustomerName, @Sales, @ProjectNo, @ProjectName, @PE, @Location,
                     @ContactName, @Phone, @TestInformation, @EngineerName, @SampleModel, @SampleNo,
                     @TestMode, @TestItem, @Notes, 
                     @StartDate, @EndDate, @StartTime, @EndTime, @EstimatedMinutes, @EstimatedHours,
@@ -71,6 +71,7 @@ namespace RentProject.Repository
                     model.Area,
                     model.CustomerName,
                     model.Sales,
+                    model.JobId,
                     model.ProjectNo,
                     model.ProjectName,
                     model.PE,
@@ -153,13 +154,14 @@ namespace RentProject.Repository
             connection.Open();
 
             var sql = @"SELECT 
-                        RentTimeId, BookingNo, Area, CustomerName, Sales, CreatedBy,
-                        ContactName, Phone, TestInformation, ProjectNo, ProjectName,
-                        PE, Location, StartDate, EndDate, StartTime, EndTime, HasLunch,
-                        LunchMinutes, HasDinner, DinnerMinutes, EngineerName, SampleModel,
-                        SampleNo,TestMode, TestItem, Notes
-                        FROM dbo.RentTimes
-                        WHERE RentTimeId = @RentTimeId;";
+                        r.RentTimeId, r.BookingNo, r.Area, r.CustomerName, r.Sales, r.CreatedBy,
+                        r.ContactName, r.Phone, r.TestInformation, r.ProjectNo, r.ProjectName,
+                        r.PE, r.Location, r.StartDate, r.EndDate, r.StartTime, r.EndTime, r.HasLunch,
+                        r.LunchMinutes, r.HasDinner, r.DinnerMinutes, r.EngineerName, r.SampleModel,
+                        r.SampleNo, r.TestMode, r.TestItem, r.Notes, r.JobId, jm.JobNo
+                        FROM dbo.RentTimes r
+                        LEFT JOIN dbo.JobNoMaster jm ON jm.JobId = r.JobId
+                        WHERE r.RentTimeId = @RentTimeId;";
 
             return connection.QueryFirstOrDefault<RentTime>(sql, new { RentTimeId = rentTimeId });
         }
@@ -180,6 +182,7 @@ namespace RentProject.Repository
                         ContactName = @ContactName,
                         Phone = @Phone,
                         TestInformation = @TestInformation,
+                        JobId = @JobId,
                         ProjectNo = @ProjectNo,
                         ProjectName = @ProjectName,
                         PE = @PE,

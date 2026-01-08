@@ -69,12 +69,9 @@ namespace RentProject.Service
 
         private static void ValidateRequired(RentTime model)
         {
-            //if (string.IsNullOrWhiteSpace(model.ProjectNo)) throw new Exception("ProjectNo 必填");
             if (string.IsNullOrWhiteSpace(model.Location)) throw new Exception("場地必填");
             if (string.IsNullOrWhiteSpace(model.CustomerName)) throw new Exception("客戶名稱必填");
 
-            //if (string.IsNullOrWhiteSpace(model.ProjectName)) throw new Exception("ProjectName 必填");
-            //if (string.IsNullOrWhiteSpace(model.PE)) throw new Exception("PE 必填");
             if (string.IsNullOrWhiteSpace(model.Area)) throw new Exception("區域必填");
             if (string.IsNullOrWhiteSpace(model.Sales)) throw new Exception("Sales 必填");
 

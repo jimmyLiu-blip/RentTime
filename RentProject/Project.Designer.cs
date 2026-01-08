@@ -570,6 +570,7 @@
             cmbJobNo.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             cmbJobNo.Size = new System.Drawing.Size(225, 28);
             cmbJobNo.TabIndex = 67;
+            cmbJobNo.EditValueChanged += cmbJobNo_EditValueChanged;
             // 
             // labelControl13
             // 

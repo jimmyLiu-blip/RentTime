@@ -72,5 +72,9 @@
         public string Status { get; set; } = "Draft";
 
         public bool IsDeleted { get; set; }
+
+        public int? JobId { get; set; }
+
+        public string? JobNo { get; set; }
     }
 }

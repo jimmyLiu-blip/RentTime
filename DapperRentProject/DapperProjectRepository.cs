@@ -19,12 +19,15 @@ namespace RentProject.Repository
 
             connection.Open();
 
-            var selectSql = @"SELECT ProjectNo, ProjectName, JobPM
-                              FROM dbo.Projects
-                              WHERE IsActive = 1
+            var selectSql = @"SELECT jm.JobNo, p.ProjectNo, p.ProjectName, p.PE
+                              FROM dbo.Projects p
+                              LEFT JOIN dbo.JobNoMaster jm ON jm.JobId = p.JobId 
+                              WHERE p.IsActive = 1
+                              AND (jm.IsActive IS NULL OR jm.IsActive = 1)
                               ORDER BY ProjectNo;";
 
             return connection.Query<ProjectItem>(selectSql).ToList();
         }
+
     }
 }
