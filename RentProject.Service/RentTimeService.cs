@@ -24,6 +24,13 @@ namespace RentProject.Service
             return _repo.CreateRentTime(model, bookingBatchId);
         }
 
+        // 複製單據
+        public CreateRentTimeResult CopyRentTime(int sourceRentTimeId, bool isHandOver, string createdBy)
+        {
+            return _repo.CopyRentTime(sourceRentTimeId, isHandOver, createdBy, DateTime.Now);
+        }
+
+
         // 取得案件清單
         public List<RentTime> GetProjectViewList()
         {
@@ -47,6 +54,22 @@ namespace RentProject.Service
         public void UpdateRentTimeById(RentTime model)
         {
             if (model.RentTimeId <= 0) throw new Exception("RentTimeId 不正確");
+
+            // 先讀 DB，知道目前狀態（Draft/Started/Finished）
+            var db = _repo.GetRentTimeById(model.RentTimeId);
+            if (db == null) throw new Exception("找不到 RentTime");
+
+            // 依 DB 狀態決定檢查哪一組時間
+            if (db.Status == 0)
+            {
+                var plannedStart = Combine(model.StartDate, model.StartTime);
+                var plannedEnd = Combine(model.EndDate, model.EndTime);
+                EnsureEndNotBeforeStart(plannedStart, plannedEnd, "預排時間");
+            }
+            else // Started/Finished：檢查實際
+            {
+                EnsureEndNotBeforeStart(model.ActualStartAt, model.ActualEndAt, "實際時間");
+            }
 
             // Update 前也要做：必填驗證 + 預估重算
             ValidateRequired(model);
@@ -99,6 +122,7 @@ namespace RentProject.Service
             return _repo.CreateBookingBatch();
         }
 
+        // 小工具
         private static void ValidateRequired(RentTime model)
         {
             if (string.IsNullOrWhiteSpace(model.Location)) throw new Exception("場地必填");
@@ -142,6 +166,22 @@ namespace RentProject.Service
 
             model.EstimatedMinutes = minutes;
             model.EstimatedHours = Math.Round(minutes/60m, 2);
+        }
+
+        private static DateTime? Combine(DateTime? date, TimeSpan? time)
+        {
+            if ( date is null || time is null)
+            {
+                return null;
+            }
+            return date.Value.Date + time.Value;
+        }
+
+        private static void EnsureEndNotBeforeStart(DateTime? start, DateTime? end, string label)
+        {
+            if (start is null || end is null) return; 
+            if (end.Value < start.Value)
+                throw new Exception($"{label}：結束時間不可早於開始時間");
         }
     }
 }

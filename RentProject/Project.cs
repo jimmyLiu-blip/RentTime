@@ -45,6 +45,9 @@ namespace RentProject
         private enum UiRentStatus { Draft = 0, Started = 1, Finished = 2 };
         private UiRentStatus _uiStatus = UiRentStatus.Draft;
 
+        // 快照保存從DB獨到的原始資料
+        private RentTime? _loadedRentTime;
+
         // =========================================================
         // B) 假資料 / 資料來源
         // =========================================================
@@ -189,17 +192,13 @@ namespace RentProject
             labelCreatedBy.Visible = _editRentTimeId != null;
             txtCreatedBy.Visible = _editRentTimeId != null;
             btnCopyRentTime.Visible = _editRentTimeId != null;
-            //cmbEngineer.ReadOnly = _editRentTimeId != null;
-            //txtCreatedBy.ReadOnly = _editRentTimeId != null;
-            //cmbCompany.ReadOnly = _editRentTimeId != null;
-            //txtSales.ReadOnly = _editRentTimeId != null;
 
             // 新增模式：預設建單人員
             if (_editRentTimeId == null)
             {
                 _bookingBatchId = _rentTimeService.CreateBookingBatch();
 
-                txtBookingNo.Text = $"RF-{_bookingBatchId.Value:D7}";
+                txtBookingNo.Text = $"TMP-{_bookingBatchId.Value:D7}";
 
                 txtBookingSeq.Text = "1";
 
@@ -214,14 +213,15 @@ namespace RentProject
 
             // 編輯模式：讀 DB 填回 UI
             var data = _rentTimeService.GetRentTimeById(_editRentTimeId.Value);
+            _loadedRentTime = data;
             FillUIFromModel(data);
 
             _uiStatus = (UiRentStatus)data.Status;
             ApplyUiStatus();
 
-            btnCreatedRentTime.Text = "儲存修改";
-            labelEstimatedHours.Text = "實際時間";
-            this.Text = "修改租時單";
+            //btnCreatedRentTime.Text = "儲存修改";
+            //labelEstimatedHours.Text = "實際時間";
+            //this.Text = "修改租時單";
         }
 
         // =========================================================
@@ -229,6 +229,12 @@ namespace RentProject
         // =========================================================
         private void btnCreatedRentTime_Click(object sender, EventArgs e)
         {
+            if (_uiStatus == UiRentStatus.Finished)
+            {
+                PrintRentTime();
+                return;
+            }
+
             try
             {
                 var model = BuildModelFormUI();
@@ -274,6 +280,12 @@ namespace RentProject
 
         private void btnRentTimeStart_Click(object sender, EventArgs e)
         {
+            if (_uiStatus == UiRentStatus.Finished)
+            {
+                UploadScanCopy();
+                return;
+            }
+
             try
             {
                 if (_editRentTimeId == null) return;
@@ -286,11 +298,17 @@ namespace RentProject
 
                 if (confirm != DialogResult.Yes) return;
 
-                var user = txtCreatedBy.Text.Trim();
+                // (1) 先把 UI 當下內容存回 DB（包含 ActualStartAt / ActualEndAt）
+                var model = BuildModelFormUI();
+                model.RentTimeId = _editRentTimeId.Value;
+                _rentTimeService.UpdateRentTimeById(model);
 
+                // (2) 再把狀態改成 Started（並寫入 ActualStartAt = now）
+                var user = txtCreatedBy.Text.Trim();
                 _rentTimeService.StartRentTimeById(_editRentTimeId.Value, user);
 
-                ReloadRentTimeFromDb(); //立刻刷新 UI 狀態
+                // (3) 重新讀 DB 刷新 UI
+                ReloadRentTimeFromDb();
             }
             catch (Exception ex)
             {
@@ -300,21 +318,46 @@ namespace RentProject
 
         private void btnRentTimeEnd_Click(object sender, EventArgs e)
         {
+            if (_uiStatus == UiRentStatus.Finished)
+            {
+                SubmitToAssistant();
+                return;
+            }
+
             try
             {
                 if (_editRentTimeId == null) return;
 
-                var confirm = XtraMessageBox.Show(
+                if (chkHandover.Checked)
+                {
+                    var confirm = XtraMessageBox.Show(
                     "確認要「租時完成」嗎？完成後會鎖定不可修改。",
-                    "租時完成",
+                    "租時單管理 - 提示訊息",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning);
+                    if (confirm != DialogResult.Yes) return;
+                }
+                else
+                {
+                    var confirmHandOver = XtraMessageBox.Show("" +
+                        "確認租時單沒有需要交接，並完成租時?", "租時單管理 - 提示訊息",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning);
 
-                if (confirm != DialogResult.Yes) return;
+                    if (confirmHandOver != DialogResult.Yes) return;
+                }
 
                 var user = txtCreatedBy.Text.Trim();
+
+                // (A) 先把 UI 當下內容存回 DB（包含 ActualStartAt / ActualEndAt）
+                var model = BuildModelFormUI();
+                model.RentTimeId = _editRentTimeId.Value;
+                _rentTimeService.UpdateRentTimeById(model);
+
+                // (B) 再把狀態改成 Finished
                 _rentTimeService.FinishRentTimeById(_editRentTimeId.Value, user);
 
+                // (C) 立刻刷新 UI
                 ReloadRentTimeFromDb(); // 完成後 UI 應該立刻鎖住 + Copy 亮起
             }
             catch (Exception ex)
@@ -331,7 +374,7 @@ namespace RentProject
                 if (_editRentTimeId == null) return;
 
                 var confirm = XtraMessageBox.Show(
-                    "確認要「回復狀態」到 Draft 嗎？(只允許 0/1)",
+                    "確認要「回復狀態」到 Draft 嗎？",
                     "回復狀態",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
@@ -366,6 +409,62 @@ namespace RentProject
                 var createdBy = txtCreatedBy.Text.Trim();
                 _rentTimeService.DeletedRentTime(_editRentTimeId.Value, createdBy, DateTime.Now);
 
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", "Error");
+            }
+        }
+
+        // 複製單據
+        private void btnCopyRentTime_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_editRentTimeId == null) return;
+
+                var createdBy = txtCreatedBy.Text.Trim();
+
+                // 真正決定「要走哪一套複製規則」的變數
+                bool continueSeq = chkHandover.Checked;
+
+                // 新規則：交接有勾 -> 讓使用者選「延續流水」或「開新單」
+                if (chkHandover.Checked)
+                {
+                    var r = XtraMessageBox.Show(
+                        "此租時單前一筆紀錄有選取交接，要開新一筆租時單嗎？\n\n" +
+                        "確定：開新的一筆\n" +
+                        "取消：延續前一筆流水號續開",
+                        "租時單管理 - 提示訊息",
+                        MessageBoxButtons.OKCancel,
+                        MessageBoxIcon.Warning);
+
+                    if (r == DialogResult.OK)
+                    {
+                        // 確定 = 開新
+                        continueSeq = false;
+                    }
+                    else
+                    {
+                        // 取消 = 延續
+                        continueSeq = true;
+                    }
+                }
+
+                // 1. 先複製 -> DB 產生新 RentTime
+                var result = _rentTimeService.CopyRentTime(_editRentTimeId.Value, continueSeq, createdBy);
+
+                // 2. 直接打開新單（新 RentTimeId）
+                this.Hide(); // 先把舊表單藏起來，避免畫面跳來跳去 
+
+                using (var f = new Project(_rentTimeService, _projectService, _jobNoService, result.RentTimeId))
+                {
+                    f.ShowDialog(this); // 用 this 當 owner（可不加，但加了比較穩）
+                }
+
+                // 3) 新單關掉後：把舊單也關掉，回傳 OK 讓外層刷新列表
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
@@ -512,6 +611,8 @@ namespace RentProject
             if (_editRentTimeId == null) return;
 
             var data = _rentTimeService.GetRentTimeById(_editRentTimeId.Value);
+
+            _loadedRentTime = data;
 
             FillUIFromModel(data);
             _uiStatus = (UiRentStatus)data.Status;
@@ -671,27 +772,35 @@ namespace RentProject
             bool isStarted = _uiStatus == UiRentStatus.Started;
             bool isFinished = _uiStatus == UiRentStatus.Finished;
 
-            // 儲存修改：Finished 不可改
-            btnCreatedRentTime.Enabled = !isFinished;
+            // 先處理標題/按鈕文字
+            ApplyUiTextByStatus();
 
-            // 租時開始：只有在編輯模式 + Draft 才能按
-            btnRentTimeStart.Enabled = isEdit && !isFinished && !isStarted;
+            if (!isFinished)
+            {
+                // 原本狀態邏輯
+                btnCreatedRentTime.Enabled = true;                 // 建立/儲存修改
+                btnRentTimeStart.Enabled = isEdit && !isStarted;   // Draft 才能開始
+                btnRentTimeEnd.Enabled = isEdit && isStarted;      // Started 才能完成
+                btnDeletedRentTime.Enabled = isEdit;               // 未完成可刪
+                btnRestoreRentTime.Enabled = isEdit;               // 未完成可回復
+                btnCopyRentTime.Enabled = isEdit && isFinished;    // 這行其實永遠 false，但先保留你原本的樣子也行
+            }
+            else
+            {
+                // Finished：只能檢視 + 允許三個新動作
+                btnCreatedRentTime.Enabled = true;   // 列印
+                btnRentTimeStart.Enabled = true;     // 上傳掃描影本
+                btnRentTimeEnd.Enabled = true;       // 送出給助理
 
-            // 租時完成：只有在編輯模式 + 租時開始 才能按
-            btnRentTimeEnd.Enabled = isEdit && !isFinished && isStarted;
-
-            // 刪除租時：完成租時不能刪
-            btnDeletedRentTime.Enabled = isEdit && !isFinished;
-
-            // 回復狀態：Draft/Started 可按，Finished 不可按
-            btnRestoreRentTime.Enabled = isEdit && !isFinished;
-
-            // 複製單據：建立完成 + 租時完成才可以按
-            btnCopyRentTime.Enabled = isEdit && isFinished;
+                btnDeletedRentTime.Enabled = false;  // 完成後不能刪
+                btnRestoreRentTime.Enabled = false;  // 完成後不能回復（依你需求）
+                btnCopyRentTime.Enabled = isEdit;    // 完成後可複製（你原本也是這個想法）
+            }
 
             // Finished：只能檢視
             SetFormEditable(!isFinished);
 
+            // 原本額外鎖的欄位保留（雖然 SetFormEditable 已鎖，這段可留）
             if (_uiStatus == UiRentStatus.Finished)
             {
                 startDateEdit.Properties.ReadOnly = true;
@@ -734,6 +843,47 @@ namespace RentProject
             txtCreatedBy.Properties.ReadOnly = true;
         }
 
+        private void ApplyUiTextByStatus()
+        {
+            bool isFinished = _uiStatus == UiRentStatus.Finished;
+
+            if (isFinished)
+            {
+                var full = _loadedRentTime?.BookingNo.Trim();
+
+                // full 例：RF-0000123-1  或 TMP-0000123-1
+                // 目標：只留下 RF-0000123 或 TMP-0000123
+                string bookingMain;
+
+                if (string.IsNullOrWhiteSpace(full) && full.Contains("-"))
+                {
+                    var parts = full.Split('-');    // ["RF","0000123","1"]
+                    bookingMain = string.Join("-", parts.Take(parts.Length - 1)); // "RF-0000123"
+                }
+                else
+                {
+                    // DB沒有就退回UI主號
+                    bookingMain = !string.IsNullOrWhiteSpace(txtBookingNo.Text)
+                        ? txtBookingNo.Text.Trim()
+                        : (full ?? "");
+                }
+
+                this.Text = $"檢視租時單 - Booking No. {bookingMain}";
+
+                btnCreatedRentTime.Text = "列印";
+                btnRentTimeStart.Text = "上傳掃描影本";
+                btnRentTimeEnd.Text = "送出給助理";
+            }
+            else
+            {
+                // 還原成原本流程用字
+                this.Text = _editRentTimeId == null ? "新增租時單" : "編輯租時單";
+                btnCreatedRentTime.Text = _editRentTimeId == null ? "建立租時單" : "儲存修改";
+                btnRentTimeStart.Text = "租時開始";
+                btnRentTimeEnd.Text = "租時完成";
+            }
+        }
+
         // =========================================================
         // J) UI <-> Model：組 Model / 回填 UI
         // =========================================================
@@ -749,7 +899,10 @@ namespace RentProject
                 jobId = _jobNoService.GetOrCreateJobId(jobNo);
             }
 
-            return new RentTime
+            var uiStart = GetUiStartDateTime();
+            var uiEnd = GetUiEndDateTime();
+
+            var model = new RentTime
             {
                 CreatedBy = txtCreatedBy.Text.Trim(),
                 Area = txtArea.Text.Trim(),
@@ -779,12 +932,35 @@ namespace RentProject
                 DinnerMinutes = chkHasDinner.Checked ? dinnerMin : 0,
 
                 IsHandOver = chkHandover.Checked,
-
-                StartDate = startDateEdit.EditValue as DateTime?,
-                EndDate = endDateEdit.EditValue as DateTime?,
-                StartTime = startTimeEdit.EditValue is DateTime t1 ? t1.TimeOfDay : (TimeSpan?)null,
-                EndTime = endTimeEdit.EditValue is DateTime t2 ? t2.TimeOfDay : (TimeSpan?)null,
             };
+
+            // 時間欄位：依狀態分流
+            // Draft：用 UI 寫「預排」欄位
+            if (_uiStatus == UiRentStatus.Draft || _loadedRentTime == null)
+            {
+                model.StartDate = startDateEdit.EditValue as DateTime?;
+                model.EndDate = endDateEdit.EditValue as DateTime?;
+                model.StartTime = startTimeEdit.EditValue is DateTime t1 ? t1.TimeOfDay : (TimeSpan?)null;
+                model.EndTime = endTimeEdit.EditValue is DateTime t2 ? t2.TimeOfDay : (TimeSpan?)null;
+
+                // Actual 先沿用 DB（通常是 null）
+                model.ActualStartAt = _loadedRentTime?.ActualStartAt;
+                model.ActualEndAt = _loadedRentTime?.ActualEndAt;
+            }
+            else
+            {
+                // Started/Finished：預排沿用 DB，不讓 UI 改壞
+                model.StartDate = _loadedRentTime.StartDate;
+                model.EndDate = _loadedRentTime.EndDate;
+                model.StartTime = _loadedRentTime.StartTime;
+                model.EndTime = _loadedRentTime.EndTime;
+
+                // Actual 用 UI
+                model.ActualStartAt = uiStart ?? _loadedRentTime.ActualStartAt;
+                model.ActualEndAt = uiEnd ?? _loadedRentTime.ActualEndAt; ;
+            }
+
+            return model;
         }
 
         private void FillUIFromModel(RentTime data)
@@ -818,8 +994,24 @@ namespace RentProject
                 var plannedStart = Combine(data.StartDate, data.StartTime);
                 var plannedEnd = Combine(data.EndDate, data.EndTime);
 
-                var displayStart = data.ActualStartAt ?? plannedStart;
-                var displayEnd = data.ActualEndAt ?? plannedEnd;
+                DateTime? displayStart;
+                DateTime? displayEnd;
+
+                if (data.Status == 0) // Draft:顯示預排
+                {
+                    displayStart = plannedStart;
+                    displayEnd = plannedEnd;
+                }
+                else if (data.Status == 1) //Started：Start 顯示實際，End 先空白(除非已填實際)
+                {
+                    displayStart = data.ActualStartAt ?? plannedStart;
+                    displayEnd = data.ActualEndAt ?? plannedEnd;
+                }
+                else // Finished：顯示實際（沒有就退回預排）
+                {
+                    displayStart = data.ActualStartAt ?? plannedStart;
+                    displayEnd = data.ActualEndAt ?? plannedEnd;
+                }
 
                 // 日期
                 startDateEdit.EditValue = displayStart?.Date;
@@ -916,9 +1108,42 @@ namespace RentProject
 
         // 組合預排的 Date+Time
         private static DateTime? Combine(DateTime? date, TimeSpan? time)
-        { 
+        {
             if (date is null || time is null) return null;
             return date.Value.Date + time.Value;
+        }
+
+        //
+        private DateTime? GetUiStartDateTime()
+        {
+            var d = startDateEdit.EditValue as DateTime?;
+            var t = startTimeEdit.EditValue is DateTime dt ? dt.TimeOfDay : (TimeSpan?)null;
+            return Combine(d, t);
+        }
+
+        private DateTime? GetUiEndDateTime()
+        {
+            var d = endDateEdit.EditValue as DateTime?;
+            var t = endTimeEdit.EditValue is DateTime dt ? dt.TimeOfDay : (TimeSpan?)null;
+            return Combine(d, t);
+        }
+
+        // 列印空方法
+        private void PrintRentTime()
+        {
+            XtraMessageBox.Show("列印功能尚未實作", "列印");
+        }
+
+        // 上傳掃描影本空方法
+        private void UploadScanCopy()
+        {
+            XtraMessageBox.Show("上傳掃描影本尚未實作", "上傳掃描影本");
+        }
+
+        // 送出給助理空方法
+        private void SubmitToAssistant()
+        {
+            XtraMessageBox.Show("送出給助理尚未實作", "送出給助理");
         }
     }
 }

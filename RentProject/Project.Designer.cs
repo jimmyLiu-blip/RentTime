@@ -623,6 +623,7 @@
             btnCopyRentTime.Size = new System.Drawing.Size(118, 51);
             btnCopyRentTime.TabIndex = 73;
             btnCopyRentTime.Text = "複製單據";
+            btnCopyRentTime.Click += btnCopyRentTime_Click;
             // 
             // btnRestoreRentTime
             // 
