@@ -1,4 +1,6 @@
 ﻿using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.Controls;
+using DevExpress.XtraEditors.Mask;
 using RentProject.Domain;
 using RentProject.Service;
 using RentProject.Shared.UIModels;
@@ -131,6 +133,29 @@ namespace RentProject
         {
             _projects = _projectService.GetActiveProjects();
 
+            // ===== 新增：修正 DateEdit 和 TimeEdit 的 Mask 問題 =====
+
+            // 1. 設定 DateEdit（處理日期輸入問題）
+            ConfigureDateEdit(startDateEdit);
+            ConfigureDateEdit(endDateEdit);
+
+            // 2. 設定 TimeEdit - 完整設定（關鍵：先設定格式）
+            startTimeEdit.Properties.Mask.MaskType = MaskType.None;
+            startTimeEdit.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard;
+            startTimeEdit.Properties.DisplayFormat.FormatString = "HH:mm";
+            startTimeEdit.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Custom;  // ← 改成 Custom
+            startTimeEdit.Properties.EditFormat.FormatString = "HH:mm";
+            startTimeEdit.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Custom;     // ← 改成 Custom
+            ConfigureTimeEdit(startTimeEdit);
+
+            endTimeEdit.Properties.Mask.MaskType = MaskType.None;
+            endTimeEdit.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard;
+            endTimeEdit.Properties.DisplayFormat.FormatString = "HH:mm";
+            endTimeEdit.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Custom;    // ← 改成 Custom
+            endTimeEdit.Properties.EditFormat.FormatString = "HH:mm";
+            endTimeEdit.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Custom;       // ← 改成 Custom
+            ConfigureTimeEdit(endTimeEdit);
+
             // 綁定「聯絡資訊」手動修改偵測
             cmbJobNo.EditValueChanged -= cmbJobNo_EditValueChanged;
             cmbJobNo.EditValueChanged += cmbJobNo_EditValueChanged;
@@ -207,7 +232,7 @@ namespace RentProject
                 _uiStatus = UiRentStatus.Draft;
 
                 ApplyUiStatus();
-
+                ApplyTabByStatus();
                 return;
             }
 
@@ -218,7 +243,7 @@ namespace RentProject
 
             _uiStatus = (UiRentStatus)data.Status;
             ApplyUiStatus();
-
+            ApplyTabByStatus();
             //btnCreatedRentTime.Text = "儲存修改";
             //labelEstimatedHours.Text = "實際時間";
             //this.Text = "修改租時單";
@@ -237,6 +262,16 @@ namespace RentProject
 
             try
             {
+                dxErrorProvider1.ClearErrors();
+
+                if (!ValidateLocationUI()) return;
+                if (!ValidateCompanyUI()) return;
+                if (!ValidateSalesUI()) return;
+                if (!ValidateStartDateUI()) return;
+                if (!ValidateEndDateUI()) return;
+                if (!ValidateStartTimeUI()) return;
+                if (!ValidateEndTimeUI()) return;
+
                 var model = BuildModelFormUI();
 
                 // 新增
@@ -618,6 +653,7 @@ namespace RentProject
             _uiStatus = (UiRentStatus)data.Status;
 
             ApplyUiStatus();
+            ApplyTabByStatus();
         }
 
         // =========================================================
@@ -1018,9 +1054,26 @@ namespace RentProject
                 endDateEdit.EditValue = displayEnd?.Date;
 
                 // 時間：TimeEdit 的 EditValue 通常要 DateTime
-                startTimeEdit.EditValue = displayStart.HasValue ? DateTime.Today.Add(displayStart.Value.TimeOfDay) : null;
-                endTimeEdit.EditValue = displayEnd.HasValue ? DateTime.Today.Add(displayEnd.Value.TimeOfDay) : null;
+                // startTimeEdit.EditValue = displayStart.HasValue ? DateTime.Today.Add(displayStart.Value.TimeOfDay) : null;
+                // endTimeEdit.EditValue = displayEnd.HasValue ? DateTime.Today.Add(displayEnd.Value.TimeOfDay) : null;
+                // 時間：用 Time 屬性
+                if (displayStart.HasValue)
+                {
+                    startTimeEdit.Time = new DateTime(1900, 1, 1, displayStart.Value.Hour, displayStart.Value.Minute, 0);
+                }
+                else
+                {
+                    startTimeEdit.EditValue = null;
+                }
 
+                if (displayEnd.HasValue)
+                {
+                    endTimeEdit.Time = new DateTime(1900, 1, 1, displayEnd.Value.Hour, displayEnd.Value.Minute, 0);
+                }
+                else
+                {
+                    endTimeEdit.EditValue = null;
+                }
                 // 午餐/晚餐
                 chkHasLunch.Checked = data.HasLunch;
                 chkHasDinner.Checked = data.HasDinner;
@@ -1144,6 +1197,504 @@ namespace RentProject
         private void SubmitToAssistant()
         {
             XtraMessageBox.Show("送出給助理尚未實作", "送出給助理");
+        }
+
+        // 取得表單內所有控制
+        private static IEnumerable<Control> GetAllControls(Control root)
+        {
+            foreach (Control c in root.Controls) // 把表單裡「所有控制項」都找出來（包含巢狀）
+            {
+                // 先吐出「這一層」看到的控制項
+                yield return c; // yield return：一個一個吐出結果(不用先把全部放到List才回傳)
+
+                // 再去吐出「c 裡面」的控制項
+                foreach (var child in GetAllControls(c))
+                    yield return child;
+            }
+        }
+
+        // 反射設定 TabStop （確認這個家具有沒有「開關」可以關 Tab；有我才關，沒有就不碰它）
+        private static void SetTabStop(Control c, bool value)
+        {
+            var prop = c.GetType().GetProperty("TabStop");
+
+            if (prop != null && prop.PropertyType == typeof(bool) && prop.CanWrite)
+                prop.SetValue(c, value);
+        }
+
+        // 套用某條「Tab 路線」：先全部關，再只開你指定的順序
+        private void ApplyTabSequence(params Control[] sequence)
+        {
+            // 先全部跳過 Tab（避免不該停的欄位被停到）
+            foreach (var c in GetAllControls(this))
+                SetTabStop(c, false);
+
+            // 再把這條路線上的欄位依序打開 + 排 TabIndex
+            for (int i = 0; i < sequence.Length; i++)
+            {
+                var ctl = sequence[i];
+                if (ctl == null) continue;
+
+                SetTabStop(ctl, true);
+                ctl.TabIndex = i;
+            }
+
+            // 焦點進到第一個欄位
+            if (sequence.Length > 0 && sequence[0] != null)
+                this.ActiveControl = sequence[0];
+        }
+
+        private void ApplyTabByStatus()
+        {
+            bool isCreate = _editRentTimeId == null;
+
+            // Finished：通常是檢視，不需要填欄位，就把 Tab 都關掉，避免游標亂跑
+            if (_uiStatus == UiRentStatus.Finished)
+            {
+                ApplyTabSequence(
+                btnCreatedRentTime,   // 列印
+                btnRentTimeStart,     // 上傳掃描影本
+                btnRentTimeEnd,       // 送出給助理
+                btnCopyRentTime       // 複製
+                 );
+                return;
+            }
+
+            if (_uiStatus == UiRentStatus.Started)
+            {
+                ApplyTabSequence(
+                cmbCompany,
+                txtSales,
+                txtContactName,
+                txtContactPhone,
+                memoTestInformation,
+
+                cmbJobNo,
+
+                startDateEdit,
+                endDateEdit,
+                startTimeEdit,
+                endTimeEdit,
+                chkHasLunch,
+                chkHasDinner,
+                cmbDinnerMinutes,
+
+                cmbLocation,
+
+                txtSampleModel,
+                txtSampleNo,
+
+                cmbTestMode,
+                cmbTestItem,
+                memoNote,
+
+                chkHandover,
+
+                btnCreatedRentTime,  // 儲存修改（或建立）
+                btnRentTimeEnd       // 租時完成
+            );
+                return;
+            }
+
+            // Draft：新增/編輯各自一套（你說你要分開）
+            if (isCreate)
+            {
+                // 新增 Draft
+                ApplyTabSequence(
+                    cmbCompany,
+                    txtSales,
+
+                    startDateEdit,
+                    endDateEdit,
+                    startTimeEdit,
+                    endTimeEdit,
+
+                    cmbLocation,
+
+                    btnCreatedRentTime // 建立租時單
+                );
+            }
+            else
+            {
+                // 編輯 Draft
+                ApplyTabSequence(
+                    cmbCompany,
+                    txtSales,
+                    txtContactName,
+                    txtContactPhone,
+                    memoTestInformation,
+
+                    cmbJobNo,
+
+                    cmbLocation,
+
+                    txtSampleModel,
+                    txtSampleNo,
+
+                    cmbTestMode,
+                    cmbTestItem,
+                    memoNote,
+
+                    btnCreatedRentTime,  // 儲存修改
+                    btnRentTimeStart,    // 租時開始
+                    btnRestoreRentTime,  // 回復
+                    btnDeletedRentTime  // 刪除
+                );
+            }
+        }
+
+        // 設定 DateEdit：讓日期可以正常連續輸入
+        private void ConfigureDateEdit(DateEdit dateEdit)
+        {
+            dateEdit.Properties.Mask.MaskType = MaskType.None;
+            dateEdit.Properties.DisplayFormat.FormatString = "yyyy/M/d";
+            dateEdit.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
+            dateEdit.Properties.EditFormat.FormatString = "yyyy/M/d";
+            dateEdit.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
+            dateEdit.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard;
+
+            dateEdit.Leave -= DateEdit_Leave;
+            dateEdit.Leave += DateEdit_Leave;
+
+            // 改用 Click 事件（更可靠）
+            dateEdit.Click -= DateTimeEdit_Click;
+            dateEdit.Click += DateTimeEdit_Click;
+        }
+
+        private void DateEdit_Leave(object sender, EventArgs e)
+        {
+            if (sender is not DateEdit dateEdit) return;
+
+            var input = dateEdit.Text?.Trim().Replace("/", "").Replace("-", "").Replace(" ", "") ?? "";
+            if (string.IsNullOrWhiteSpace(input)) return;
+
+            // 處理 8 位數字：20260105 → 2026/1/5
+            if (input.Length == 8 && int.TryParse(input, out _))
+            {
+                var year = input.Substring(0, 4);
+                var month = input.Substring(4, 2);
+                var day = input.Substring(6, 2);
+
+                if (DateTime.TryParse($"{year}/{month}/{day}", out DateTime parsed))
+                {
+                    dateEdit.EditValue = parsed;
+                    dateEdit.Text = parsed.ToString("yyyy/M/d"); // 強制更新顯示
+                    return;
+                }
+            }
+
+            // 處理 6 位數字：260105 → 2026/1/5（假設 20xx 年）
+            if (input.Length == 6 && int.TryParse(input, out _))
+            {
+                var year = "20" + input.Substring(0, 2);
+                var month = input.Substring(2, 2);
+                var day = input.Substring(4, 2);
+
+                if (DateTime.TryParse($"{year}/{month}/{day}", out DateTime parsed))
+                {
+                    dateEdit.EditValue = parsed;
+                    dateEdit.Text = parsed.ToString("yyyy/M/d");
+                    return;
+                }
+            }
+
+            // 處理一般格式：2026/1/5 或 2026-1-5
+            if (DateTime.TryParse(input, out DateTime result))
+            {
+                dateEdit.EditValue = result;
+                dateEdit.Text = result.ToString("yyyy/M/d");
+            }
+        }
+
+        private void ConfigureTimeEdit(TimeEdit timeEdit)
+        {
+            timeEdit.KeyPress -= TimeEdit_KeyPress;
+            timeEdit.KeyPress += TimeEdit_KeyPress;
+
+            timeEdit.Leave -= TimeEdit_Leave;
+            timeEdit.Leave += TimeEdit_Leave;
+
+            timeEdit.Properties.Spin -= TimeEdit_Spin;
+            timeEdit.Properties.Spin += TimeEdit_Spin;
+
+            // 改用 Click 事件（更可靠）
+            timeEdit.Click -= DateTimeEdit_Click;
+            timeEdit.Click += DateTimeEdit_Click;
+        }
+
+        private void TimeEdit_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // 只允許數字和冒號
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != ':' && e.KeyChar != '\b')
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void TimeEdit_Leave(object sender, EventArgs e)
+        {
+            if (sender is not TimeEdit timeEdit) return;
+
+            var input = timeEdit.Text?.Trim().Replace("_", "").Replace(" ", "") ?? "";
+            if (string.IsNullOrWhiteSpace(input)) return;
+
+            DateTime? parsed = null;
+
+            // 純數字當小時：12 → 12:00
+            if (!input.Contains(":") && int.TryParse(input, out int h) && h >= 0 && h <= 23)
+            {
+                parsed = new DateTime(1900, 1, 1, h, 0, 0);  // ← 改用固定日期
+            }
+            // HH:mm 格式：12:30
+            else if (input.Contains(":"))
+            {
+                var parts = input.Split(':');
+                if (parts.Length == 2 &&
+                    int.TryParse(parts[0], out int hour) &&
+                    int.TryParse(parts[1], out int min) &&
+                    hour >= 0 && hour <= 23 && min >= 0 && min <= 59)
+                {
+                    parsed = new DateTime(1900, 1, 1, hour, min, 0);  // ← 改用固定日期
+                }
+            }
+            // 處理 4 位數字：1230 → 12:30
+            else if (input.Length == 4 && int.TryParse(input, out int hhmm))
+            {
+                int hour = hhmm / 100;
+                int min = hhmm % 100;
+
+                if (hour >= 0 && hour <= 23 && min >= 0 && min <= 59)
+                {
+                    parsed = new DateTime(1900, 1, 1, hour, min, 0);  // ← 改用固定日期
+                }
+            }
+            // 處理 3 位數字：930 → 09:30
+            else if (input.Length == 3 && int.TryParse(input, out int hmm))
+            {
+                int hour = hmm / 100;
+                int min = hmm % 100;
+
+                if (hour >= 0 && hour <= 23 && min >= 0 && min <= 59)
+                {
+                    parsed = new DateTime(1900, 1, 1, hour, min, 0);  // ← 改用固定日期
+                }
+            }
+
+            // 強制更新 - 改用 Time 屬性
+            if (parsed.HasValue)
+            {
+                timeEdit.Time = parsed.Value;  // ← 改用 Time 屬性，不用清空
+            }
+        }
+
+        private void TimeEdit_Spin(object sender, SpinEventArgs e)
+        {
+            if (sender is not TimeEdit timeEdit) return;
+
+            // 取得目前時間（如果是空的，預設 00:00）
+            DateTime current;
+            try
+            {
+                current = timeEdit.Time;
+            }
+            catch
+            {
+                // 如果 Time 是 null 或無效，設為 00:00
+                current = new DateTime(1900, 1, 1, 0, 0, 0);
+                timeEdit.Time = current;
+                e.Handled = true;
+                return;
+            }
+
+            // 上下調整（每次 30 分鐘）
+            if (e.IsSpinUp)
+            {
+                current = current.AddMinutes(30);
+
+                // 超過 23:59 就停在 23:59
+                if (current.Hour > 23 || (current.Hour == 23 && current.Minute > 59))
+                {
+                    current = new DateTime(1900, 1, 1, 23, 30, 0); // 最大值 23:30
+                }
+            }
+            else
+            {
+                // 減少 30 分鐘，但不能低於 00:00
+                if (current.Hour == 0 && current.Minute == 0)
+                {
+                    // 已經是 00:00，不再減少
+                    e.Handled = true;
+                    return;
+                }
+
+                current = current.AddMinutes(-30);
+
+                // 防止變成前一天
+                if (current.Hour < 0 || current.Day != 1)
+                {
+                    current = new DateTime(1900, 1, 1, 0, 0, 0);
+                }
+            }
+
+            timeEdit.Time = current;
+            e.Handled = true;
+        }
+
+
+        // 改名並改用 Click 事件
+        private void DateTimeEdit_Click(object sender, EventArgs e)
+        {
+            if (sender is BaseEdit edit)
+            {
+                edit.SelectAll();
+            }
+        }
+
+        // 驗證場地必填
+        private bool ValidateLocationUI()
+        {
+            var location = cmbLocation.Text?.Trim() ?? "";
+
+            if (string.IsNullOrWhiteSpace(location))
+            {
+                dxErrorProvider1.SetError(cmbLocation, "場地名稱必填");
+
+                lblLocationRequired.Visible = true;
+
+                cmbLocation.Focus();
+
+                return false;
+            }
+
+            dxErrorProvider1.SetError(cmbLocation, "");
+            lblLocationRequired.Visible = false;
+            return true;
+        }
+
+
+        // 驗證客戶名稱必填，回傳true代表通過驗證
+        private bool ValidateCompanyUI()
+        {
+            var company = cmbCompany.Text?.Trim() ?? "";
+
+            if (string.IsNullOrWhiteSpace(company))
+            {
+                // 1. 顯示 DevExpress 錯誤圖示 + 提示文字
+                dxErrorProvider1.SetError(cmbCompany, "客戶名稱必填");
+
+                // 2. 顯示你做的「欄位下方紅字」
+                lblCompanyRequired.Visible = true;
+
+                // 3. 直接跳到欄位
+                cmbCompany.Focus();
+
+                return false;
+            }
+
+            dxErrorProvider1.SetError(cmbCompany, "");
+            lblCompanyRequired.Visible = false;
+            return true;
+        }
+
+        // 驗證業務必填
+        private bool ValidateSalesUI()
+        {
+            var sales = txtSales.Text?.Trim();
+
+            if (string.IsNullOrWhiteSpace(sales))
+            {
+                dxErrorProvider1.SetError(txtSales, "業務必填");
+
+                lblSalesRequired.Visible = true;
+
+                txtSales.Focus();
+
+                return false;
+            }
+
+            dxErrorProvider1.SetError(txtSales, "");
+            lblSalesRequired.Visible = false;
+            return true;
+        }
+
+        private bool ValidateStartDateUI()
+        { 
+            var startDate = startDateEdit.Text?.Trim();
+
+            if (string.IsNullOrWhiteSpace(startDate))
+            {
+                dxErrorProvider1.SetError(startDateEdit, "開始日期必填");
+
+                lblStartDateRequired.Visible = true;
+
+                startDateEdit.Focus();
+
+                return false;
+            }
+
+            dxErrorProvider1.SetError(startDateEdit, "");
+            lblStartDateRequired.Visible = false;
+            return true;
+        }
+
+        private bool ValidateEndDateUI()
+        {
+            var endDate = endDateEdit.Text?.Trim();
+
+            if (string.IsNullOrWhiteSpace(endDate))
+            {
+                dxErrorProvider1.SetError(endDateEdit, "結束日期必填");
+
+                lblEndDateRequired.Visible = true;
+
+                endDateEdit.Focus();
+
+                return false;
+            }
+
+            dxErrorProvider1.SetError(endDateEdit, "");
+            lblEndDateRequired.Visible = false;
+            return true;
+        }
+
+        private bool ValidateStartTimeUI()
+        {
+            var startTime = startTimeEdit.Text?.Trim();
+
+            if (string.IsNullOrWhiteSpace(startTime))
+            {
+                dxErrorProvider1.SetError(startTimeEdit, "開始日期必填");
+
+                lblStartTimeRequired.Visible = true;
+
+                startTimeEdit.Focus();
+
+                return false;
+            }
+
+            dxErrorProvider1.SetError(startTimeEdit, "");
+            lblStartTimeRequired.Visible = false;
+            return true;
+        }
+
+        private bool ValidateEndTimeUI()
+        {
+            var endTime = endTimeEdit.Text?.Trim();
+
+            if (string.IsNullOrWhiteSpace(endTime))
+            {
+                dxErrorProvider1.SetError(endTimeEdit, "結束日期必填");
+
+                lblEndTimeRequired.Visible = true;
+
+                endTimeEdit.Focus();
+
+                return false;
+            }
+
+            dxErrorProvider1.SetError(endTimeEdit, "");
+            lblEndTimeRequired.Visible = false;
+            return true;
         }
     }
 }
