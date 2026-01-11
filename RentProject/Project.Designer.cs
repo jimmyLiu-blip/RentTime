@@ -755,22 +755,22 @@
             // 
             lblCompanyRequired.Appearance.ForeColor = System.Drawing.Color.Red;
             lblCompanyRequired.Appearance.Options.UseForeColor = true;
-            lblCompanyRequired.Location = new System.Drawing.Point(238, 193);
+            lblCompanyRequired.Location = new System.Drawing.Point(256, 193);
             lblCompanyRequired.Name = "lblCompanyRequired";
-            lblCompanyRequired.Size = new System.Drawing.Size(108, 22);
+            lblCompanyRequired.Size = new System.Drawing.Size(72, 22);
             lblCompanyRequired.TabIndex = 84;
-            lblCompanyRequired.Text = "客戶名稱必填";
+            lblCompanyRequired.Text = "必填欄位";
             lblCompanyRequired.Visible = false;
             // 
             // lblLocationRequired
             // 
             lblLocationRequired.Appearance.ForeColor = System.Drawing.Color.Red;
             lblLocationRequired.Appearance.Options.UseForeColor = true;
-            lblLocationRequired.Location = new System.Drawing.Point(238, 136);
+            lblLocationRequired.Location = new System.Drawing.Point(256, 136);
             lblLocationRequired.Name = "lblLocationRequired";
             lblLocationRequired.Size = new System.Drawing.Size(72, 22);
             lblLocationRequired.TabIndex = 85;
-            lblLocationRequired.Text = "場地必填";
+            lblLocationRequired.Text = "必填欄位";
             lblLocationRequired.Visible = false;
             // 
             // lblSalesRequired
@@ -781,51 +781,51 @@
             lblSalesRequired.Name = "lblSalesRequired";
             lblSalesRequired.Size = new System.Drawing.Size(72, 22);
             lblSalesRequired.TabIndex = 86;
-            lblSalesRequired.Text = "業務必填";
+            lblSalesRequired.Text = "必填欄位";
             lblSalesRequired.Visible = false;
             // 
             // lblStartDateRequired
             // 
             lblStartDateRequired.Appearance.ForeColor = System.Drawing.Color.Red;
             lblStartDateRequired.Appearance.Options.UseForeColor = true;
-            lblStartDateRequired.Location = new System.Drawing.Point(192, 432);
+            lblStartDateRequired.Location = new System.Drawing.Point(203, 432);
             lblStartDateRequired.Name = "lblStartDateRequired";
-            lblStartDateRequired.Size = new System.Drawing.Size(108, 22);
+            lblStartDateRequired.Size = new System.Drawing.Size(72, 22);
             lblStartDateRequired.TabIndex = 87;
-            lblStartDateRequired.Text = "開始日期必填";
+            lblStartDateRequired.Text = "必填欄位";
             lblStartDateRequired.Visible = false;
             // 
             // lblEndDateRequired
             // 
             lblEndDateRequired.Appearance.ForeColor = System.Drawing.Color.Red;
             lblEndDateRequired.Appearance.Options.UseForeColor = true;
-            lblEndDateRequired.Location = new System.Drawing.Point(464, 432);
+            lblEndDateRequired.Location = new System.Drawing.Point(480, 432);
             lblEndDateRequired.Name = "lblEndDateRequired";
-            lblEndDateRequired.Size = new System.Drawing.Size(108, 22);
+            lblEndDateRequired.Size = new System.Drawing.Size(72, 22);
             lblEndDateRequired.TabIndex = 88;
-            lblEndDateRequired.Text = "結束日期必填";
+            lblEndDateRequired.Text = "必填欄位";
             lblEndDateRequired.Visible = false;
             // 
             // lblStartTimeRequired
             // 
             lblStartTimeRequired.Appearance.ForeColor = System.Drawing.Color.Red;
             lblStartTimeRequired.Appearance.Options.UseForeColor = true;
-            lblStartTimeRequired.Location = new System.Drawing.Point(192, 489);
+            lblStartTimeRequired.Location = new System.Drawing.Point(203, 489);
             lblStartTimeRequired.Name = "lblStartTimeRequired";
-            lblStartTimeRequired.Size = new System.Drawing.Size(108, 22);
+            lblStartTimeRequired.Size = new System.Drawing.Size(72, 22);
             lblStartTimeRequired.TabIndex = 89;
-            lblStartTimeRequired.Text = "開始時間必填";
+            lblStartTimeRequired.Text = "必填欄位";
             lblStartTimeRequired.Visible = false;
             // 
             // lblEndTimeRequired
             // 
             lblEndTimeRequired.Appearance.ForeColor = System.Drawing.Color.Red;
             lblEndTimeRequired.Appearance.Options.UseForeColor = true;
-            lblEndTimeRequired.Location = new System.Drawing.Point(464, 489);
+            lblEndTimeRequired.Location = new System.Drawing.Point(480, 489);
             lblEndTimeRequired.Name = "lblEndTimeRequired";
-            lblEndTimeRequired.Size = new System.Drawing.Size(108, 22);
+            lblEndTimeRequired.Size = new System.Drawing.Size(72, 22);
             lblEndTimeRequired.TabIndex = 90;
-            lblEndTimeRequired.Text = "結束時間必填";
+            lblEndTimeRequired.Text = "必填欄位";
             lblEndTimeRequired.Visible = false;
             // 
             // Project
