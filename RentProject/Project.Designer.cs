@@ -29,339 +29,521 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            labelControl1 = new DevExpress.XtraEditors.LabelControl();
-            labelControl2 = new DevExpress.XtraEditors.LabelControl();
-            labelControl3 = new DevExpress.XtraEditors.LabelControl();
-            labelControl4 = new DevExpress.XtraEditors.LabelControl();
-            labelControl5 = new DevExpress.XtraEditors.LabelControl();
-            labelControl6 = new DevExpress.XtraEditors.LabelControl();
-            labelControl7 = new DevExpress.XtraEditors.LabelControl();
-            labelControl8 = new DevExpress.XtraEditors.LabelControl();
-            labelControl9 = new DevExpress.XtraEditors.LabelControl();
-            labelControl10 = new DevExpress.XtraEditors.LabelControl();
-            labelControl11 = new DevExpress.XtraEditors.LabelControl();
-            labelEstimatedHours = new DevExpress.XtraEditors.LabelControl();
-            labelControl15 = new DevExpress.XtraEditors.LabelControl();
-            labelControl16 = new DevExpress.XtraEditors.LabelControl();
-            labelControl17 = new DevExpress.XtraEditors.LabelControl();
-            labelControl18 = new DevExpress.XtraEditors.LabelControl();
-            labelControl19 = new DevExpress.XtraEditors.LabelControl();
-            labelControl20 = new DevExpress.XtraEditors.LabelControl();
-            labelControl21 = new DevExpress.XtraEditors.LabelControl();
-            labelControl22 = new DevExpress.XtraEditors.LabelControl();
-            labelControl23 = new DevExpress.XtraEditors.LabelControl();
-            cmbLocation = new DevExpress.XtraEditors.ComboBoxEdit();
-            startDateEdit = new DevExpress.XtraEditors.DateEdit();
-            endDateEdit = new DevExpress.XtraEditors.DateEdit();
-            startTimeEdit = new DevExpress.XtraEditors.TimeEdit();
-            endTimeEdit = new DevExpress.XtraEditors.TimeEdit();
-            txtBookingNo = new DevExpress.XtraEditors.TextEdit();
-            txtArea = new DevExpress.XtraEditors.TextEdit();
-            txtPE = new DevExpress.XtraEditors.TextEdit();
-            txtProjectName = new DevExpress.XtraEditors.TextEdit();
-            txtLunchMinutes = new DevExpress.XtraEditors.TextEdit();
-            txtEstimatedHours = new DevExpress.XtraEditors.TextEdit();
-            txtSampleModel = new DevExpress.XtraEditors.TextEdit();
-            txtSampleNo = new DevExpress.XtraEditors.TextEdit();
-            labelControl24 = new DevExpress.XtraEditors.LabelControl();
-            memoTestInformation = new DevExpress.XtraEditors.MemoEdit();
-            memoNote = new DevExpress.XtraEditors.MemoEdit();
-            labelCreatedBy = new DevExpress.XtraEditors.LabelControl();
-            txtCreatedBy = new DevExpress.XtraEditors.TextEdit();
-            btnCreatedRentTime = new DevExpress.XtraEditors.SimpleButton();
-            chkHasLunch = new DevExpress.XtraEditors.CheckEdit();
-            chkHasDinner = new DevExpress.XtraEditors.CheckEdit();
-            btnDeletedRentTime = new DevExpress.XtraEditors.SimpleButton();
-            cmbTestMode = new DevExpress.XtraEditors.ComboBoxEdit();
-            cmbTestItem = new DevExpress.XtraEditors.ComboBoxEdit();
-            cmbCompany = new DevExpress.XtraEditors.ComboBoxEdit();
-            txtContactName = new DevExpress.XtraEditors.TextEdit();
-            txtSales = new DevExpress.XtraEditors.TextEdit();
-            txtContactPhone = new DevExpress.XtraEditors.TextEdit();
-            cmbEngineer = new DevExpress.XtraEditors.ComboBoxEdit();
-            label1 = new System.Windows.Forms.Label();
-            txtBookingSeq = new DevExpress.XtraEditors.TextEdit();
-            txtProjectNo = new DevExpress.XtraEditors.TextEdit();
-            cmbJobNo = new DevExpress.XtraEditors.ComboBoxEdit();
-            labelControl13 = new DevExpress.XtraEditors.LabelControl();
-            labelControl14 = new DevExpress.XtraEditors.LabelControl();
-            btnRentTimeStart = new DevExpress.XtraEditors.SimpleButton();
-            btnRentTimeEnd = new DevExpress.XtraEditors.SimpleButton();
-            chkHandover = new DevExpress.XtraEditors.CheckEdit();
-            btnCopyRentTime = new DevExpress.XtraEditors.SimpleButton();
-            btnRestoreRentTime = new DevExpress.XtraEditors.SimpleButton();
-            cmbDinnerMinutes = new DevExpress.XtraEditors.ComboBoxEdit();
-            labelControl26 = new DevExpress.XtraEditors.LabelControl();
-            labelControl12 = new DevExpress.XtraEditors.LabelControl();
-            labelControl25 = new DevExpress.XtraEditors.LabelControl();
-            labelControl27 = new DevExpress.XtraEditors.LabelControl();
-            labelControl28 = new DevExpress.XtraEditors.LabelControl();
-            labelControl29 = new DevExpress.XtraEditors.LabelControl();
-            labelControl30 = new DevExpress.XtraEditors.LabelControl();
-            labelControl31 = new DevExpress.XtraEditors.LabelControl();
             dxErrorProvider1 = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(components);
-            lblCompanyRequired = new DevExpress.XtraEditors.LabelControl();
-            lblLocationRequired = new DevExpress.XtraEditors.LabelControl();
-            lblSalesRequired = new DevExpress.XtraEditors.LabelControl();
-            lblStartDateRequired = new DevExpress.XtraEditors.LabelControl();
-            lblEndDateRequired = new DevExpress.XtraEditors.LabelControl();
-            lblStartTimeRequired = new DevExpress.XtraEditors.LabelControl();
+            splitContainerControl1 = new DevExpress.XtraEditors.SplitContainerControl();
+            grpTop = new DevExpress.XtraEditors.GroupControl();
+            labelControl11 = new DevExpress.XtraEditors.LabelControl();
             lblEndTimeRequired = new DevExpress.XtraEditors.LabelControl();
-            ((System.ComponentModel.ISupportInitialize)cmbLocation.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)startDateEdit.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)startDateEdit.Properties.CalendarTimeProperties).BeginInit();
+            lblStartTimeRequired = new DevExpress.XtraEditors.LabelControl();
+            lblEndDateRequired = new DevExpress.XtraEditors.LabelControl();
+            lblStartDateRequired = new DevExpress.XtraEditors.LabelControl();
+            lblSalesRequired = new DevExpress.XtraEditors.LabelControl();
+            lblLocationRequired = new DevExpress.XtraEditors.LabelControl();
+            lblCompanyRequired = new DevExpress.XtraEditors.LabelControl();
+            labelControl31 = new DevExpress.XtraEditors.LabelControl();
+            labelControl30 = new DevExpress.XtraEditors.LabelControl();
+            labelControl29 = new DevExpress.XtraEditors.LabelControl();
+            labelControl28 = new DevExpress.XtraEditors.LabelControl();
+            labelControl27 = new DevExpress.XtraEditors.LabelControl();
+            labelControl25 = new DevExpress.XtraEditors.LabelControl();
+            labelControl12 = new DevExpress.XtraEditors.LabelControl();
+            labelControl26 = new DevExpress.XtraEditors.LabelControl();
+            cmbDinnerMinutes = new DevExpress.XtraEditors.ComboBoxEdit();
+            btnCopyRentTime = new DevExpress.XtraEditors.SimpleButton();
+            txtBookingSeq = new DevExpress.XtraEditors.TextEdit();
+            label1 = new System.Windows.Forms.Label();
+            txtContactPhone = new DevExpress.XtraEditors.TextEdit();
+            txtSales = new DevExpress.XtraEditors.TextEdit();
+            txtContactName = new DevExpress.XtraEditors.TextEdit();
+            cmbCompany = new DevExpress.XtraEditors.ComboBoxEdit();
+            chkHasDinner = new DevExpress.XtraEditors.CheckEdit();
+            chkHasLunch = new DevExpress.XtraEditors.CheckEdit();
+            txtCreatedBy = new DevExpress.XtraEditors.TextEdit();
+            labelCreatedBy = new DevExpress.XtraEditors.LabelControl();
+            memoTestInformation = new DevExpress.XtraEditors.MemoEdit();
+            txtEstimatedHours = new DevExpress.XtraEditors.TextEdit();
+            txtLunchMinutes = new DevExpress.XtraEditors.TextEdit();
+            txtBookingNo = new DevExpress.XtraEditors.TextEdit();
+            endTimeEdit = new DevExpress.XtraEditors.TimeEdit();
+            startTimeEdit = new DevExpress.XtraEditors.TimeEdit();
+            endDateEdit = new DevExpress.XtraEditors.DateEdit();
+            startDateEdit = new DevExpress.XtraEditors.DateEdit();
+            cmbLocation = new DevExpress.XtraEditors.ComboBoxEdit();
+            labelControl23 = new DevExpress.XtraEditors.LabelControl();
+            labelControl22 = new DevExpress.XtraEditors.LabelControl();
+            labelControl15 = new DevExpress.XtraEditors.LabelControl();
+            labelEstimatedHours = new DevExpress.XtraEditors.LabelControl();
+            labelControl10 = new DevExpress.XtraEditors.LabelControl();
+            labelControl9 = new DevExpress.XtraEditors.LabelControl();
+            labelControl8 = new DevExpress.XtraEditors.LabelControl();
+            labelControl5 = new DevExpress.XtraEditors.LabelControl();
+            labelControl4 = new DevExpress.XtraEditors.LabelControl();
+            labelControl3 = new DevExpress.XtraEditors.LabelControl();
+            labelControl1 = new DevExpress.XtraEditors.LabelControl();
+            grpBottom = new DevExpress.XtraEditors.GroupControl();
+            splitContainerControl2 = new DevExpress.XtraEditors.SplitContainerControl();
+            btnRestoreRentTime = new DevExpress.XtraEditors.SimpleButton();
+            chkHandover = new DevExpress.XtraEditors.CheckEdit();
+            btnRentTimeEnd = new DevExpress.XtraEditors.SimpleButton();
+            btnRentTimeStart = new DevExpress.XtraEditors.SimpleButton();
+            btnDeletedRentTime = new DevExpress.XtraEditors.SimpleButton();
+            btnCreatedRentTime = new DevExpress.XtraEditors.SimpleButton();
+            labelControl13 = new DevExpress.XtraEditors.LabelControl();
+            cmbJobNo = new DevExpress.XtraEditors.ComboBoxEdit();
+            txtProjectNo = new DevExpress.XtraEditors.TextEdit();
+            cmbEngineer = new DevExpress.XtraEditors.ComboBoxEdit();
+            cmbTestItem = new DevExpress.XtraEditors.ComboBoxEdit();
+            cmbTestMode = new DevExpress.XtraEditors.ComboBoxEdit();
+            memoNote = new DevExpress.XtraEditors.MemoEdit();
+            labelControl24 = new DevExpress.XtraEditors.LabelControl();
+            txtSampleNo = new DevExpress.XtraEditors.TextEdit();
+            txtSampleModel = new DevExpress.XtraEditors.TextEdit();
+            txtProjectName = new DevExpress.XtraEditors.TextEdit();
+            txtPE = new DevExpress.XtraEditors.TextEdit();
+            txtArea = new DevExpress.XtraEditors.TextEdit();
+            labelControl21 = new DevExpress.XtraEditors.LabelControl();
+            labelControl20 = new DevExpress.XtraEditors.LabelControl();
+            labelControl19 = new DevExpress.XtraEditors.LabelControl();
+            labelControl18 = new DevExpress.XtraEditors.LabelControl();
+            labelControl17 = new DevExpress.XtraEditors.LabelControl();
+            labelControl16 = new DevExpress.XtraEditors.LabelControl();
+            labelControl7 = new DevExpress.XtraEditors.LabelControl();
+            labelControl6 = new DevExpress.XtraEditors.LabelControl();
+            labelControl2 = new DevExpress.XtraEditors.LabelControl();
+            ((System.ComponentModel.ISupportInitialize)dxErrorProvider1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)splitContainerControl1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)splitContainerControl1.Panel1).BeginInit();
+            splitContainerControl1.Panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainerControl1.Panel2).BeginInit();
+            splitContainerControl1.Panel2.SuspendLayout();
+            splitContainerControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)grpTop).BeginInit();
+            grpTop.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)cmbDinnerMinutes.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)txtBookingSeq.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)txtContactPhone.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)txtSales.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)txtContactName.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)cmbCompany.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)chkHasDinner.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)chkHasLunch.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)txtCreatedBy.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)memoTestInformation.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)txtEstimatedHours.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)txtLunchMinutes.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)txtBookingNo.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)endTimeEdit.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)startTimeEdit.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)endDateEdit.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)endDateEdit.Properties.CalendarTimeProperties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)startTimeEdit.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)endTimeEdit.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)txtBookingNo.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)txtArea.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)txtPE.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)txtProjectName.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)txtLunchMinutes.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)txtEstimatedHours.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)txtSampleModel.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)txtSampleNo.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)memoTestInformation.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)memoNote.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)txtCreatedBy.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)chkHasLunch.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)chkHasDinner.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)cmbTestMode.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)cmbTestItem.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)cmbCompany.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)txtContactName.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)txtSales.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)txtContactPhone.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)cmbEngineer.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)txtBookingSeq.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)txtProjectNo.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)cmbJobNo.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)startDateEdit.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)startDateEdit.Properties.CalendarTimeProperties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)cmbLocation.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)grpBottom).BeginInit();
+            grpBottom.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainerControl2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)splitContainerControl2.Panel1).BeginInit();
+            splitContainerControl2.Panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainerControl2.Panel2).BeginInit();
+            splitContainerControl2.Panel2.SuspendLayout();
+            splitContainerControl2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)chkHandover.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)cmbDinnerMinutes.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dxErrorProvider1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)cmbJobNo.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)txtProjectNo.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)cmbEngineer.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)cmbTestItem.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)cmbTestMode.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)memoNote.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)txtSampleNo.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)txtSampleModel.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)txtProjectName.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)txtPE.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)txtArea.Properties).BeginInit();
             SuspendLayout();
             // 
-            // labelControl1
+            // dxErrorProvider1
             // 
-            labelControl1.Location = new System.Drawing.Point(44, 50);
-            labelControl1.Name = "labelControl1";
-            labelControl1.Size = new System.Drawing.Size(97, 22);
-            labelControl1.TabIndex = 1;
-            labelControl1.Text = "Booking No.";
+            dxErrorProvider1.ContainerControl = this;
             // 
-            // labelControl2
+            // splitContainerControl1
             // 
-            labelControl2.Location = new System.Drawing.Point(434, 575);
-            labelControl2.Name = "labelControl2";
-            labelControl2.Size = new System.Drawing.Size(36, 22);
-            labelControl2.TabIndex = 2;
-            labelControl2.Text = "區域";
+            splitContainerControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            splitContainerControl1.Horizontal = false;
+            splitContainerControl1.IsSplitterFixed = true;
+            splitContainerControl1.Location = new System.Drawing.Point(0, 0);
+            splitContainerControl1.Name = "splitContainerControl1";
+            splitContainerControl1.Padding = new System.Windows.Forms.Padding(12);
             // 
-            // labelControl3
+            // splitContainerControl1.Panel1
             // 
-            labelControl3.Location = new System.Drawing.Point(44, 164);
-            labelControl3.Name = "labelControl3";
-            labelControl3.Size = new System.Drawing.Size(72, 22);
-            labelControl3.TabIndex = 3;
-            labelControl3.Text = "客戶名稱";
+            splitContainerControl1.Panel1.Controls.Add(grpTop);
+            splitContainerControl1.Panel1.Text = "Panel1";
             // 
-            // labelControl4
+            // splitContainerControl1.Panel2
             // 
-            labelControl4.Location = new System.Drawing.Point(44, 221);
-            labelControl4.Name = "labelControl4";
-            labelControl4.Size = new System.Drawing.Size(54, 22);
-            labelControl4.TabIndex = 4;
-            labelControl4.Text = "聯絡人";
+            splitContainerControl1.Panel2.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Default;
+            splitContainerControl1.Panel2.Controls.Add(grpBottom);
+            splitContainerControl1.Panel2.Text = "Panel2";
+            splitContainerControl1.Size = new System.Drawing.Size(830, 1163);
+            splitContainerControl1.SplitterPosition = 550;
+            splitContainerControl1.TabIndex = 91;
             // 
-            // labelControl5
+            // grpTop
             // 
-            labelControl5.Location = new System.Drawing.Point(44, 278);
-            labelControl5.Name = "labelControl5";
-            labelControl5.Size = new System.Drawing.Size(72, 22);
-            labelControl5.TabIndex = 5;
-            labelControl5.Text = "測試資訊";
-            // 
-            // labelControl6
-            // 
-            labelControl6.Location = new System.Drawing.Point(434, 627);
-            labelControl6.Name = "labelControl6";
-            labelControl6.Size = new System.Drawing.Size(87, 22);
-            labelControl6.TabIndex = 6;
-            labelControl6.Text = "Project No.";
-            // 
-            // labelControl7
-            // 
-            labelControl7.Location = new System.Drawing.Point(44, 679);
-            labelControl7.Name = "labelControl7";
-            labelControl7.Size = new System.Drawing.Size(20, 22);
-            labelControl7.TabIndex = 7;
-            labelControl7.Text = "PE";
-            // 
-            // labelControl8
-            // 
-            labelControl8.Location = new System.Drawing.Point(44, 403);
-            labelControl8.Name = "labelControl8";
-            labelControl8.Size = new System.Drawing.Size(72, 22);
-            labelControl8.TabIndex = 8;
-            labelControl8.Text = "開始日期";
-            // 
-            // labelControl9
-            // 
-            labelControl9.Location = new System.Drawing.Point(44, 460);
-            labelControl9.Name = "labelControl9";
-            labelControl9.Size = new System.Drawing.Size(72, 22);
-            labelControl9.TabIndex = 9;
-            labelControl9.Text = "開始時間";
-            // 
-            // labelControl10
-            // 
-            labelControl10.Location = new System.Drawing.Point(328, 403);
-            labelControl10.Name = "labelControl10";
-            labelControl10.Size = new System.Drawing.Size(72, 22);
-            labelControl10.TabIndex = 10;
-            labelControl10.Text = "結束日期";
+            grpTop.Appearance.BackColor = System.Drawing.Color.White;
+            grpTop.Appearance.Options.UseBackColor = true;
+            grpTop.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            grpTop.Controls.Add(labelControl11);
+            grpTop.Controls.Add(lblEndTimeRequired);
+            grpTop.Controls.Add(lblStartTimeRequired);
+            grpTop.Controls.Add(lblEndDateRequired);
+            grpTop.Controls.Add(lblStartDateRequired);
+            grpTop.Controls.Add(lblSalesRequired);
+            grpTop.Controls.Add(lblLocationRequired);
+            grpTop.Controls.Add(lblCompanyRequired);
+            grpTop.Controls.Add(labelControl31);
+            grpTop.Controls.Add(labelControl30);
+            grpTop.Controls.Add(labelControl29);
+            grpTop.Controls.Add(labelControl28);
+            grpTop.Controls.Add(labelControl27);
+            grpTop.Controls.Add(labelControl25);
+            grpTop.Controls.Add(labelControl12);
+            grpTop.Controls.Add(labelControl26);
+            grpTop.Controls.Add(cmbDinnerMinutes);
+            grpTop.Controls.Add(btnCopyRentTime);
+            grpTop.Controls.Add(txtBookingSeq);
+            grpTop.Controls.Add(label1);
+            grpTop.Controls.Add(txtContactPhone);
+            grpTop.Controls.Add(txtSales);
+            grpTop.Controls.Add(txtContactName);
+            grpTop.Controls.Add(cmbCompany);
+            grpTop.Controls.Add(chkHasDinner);
+            grpTop.Controls.Add(chkHasLunch);
+            grpTop.Controls.Add(txtCreatedBy);
+            grpTop.Controls.Add(labelCreatedBy);
+            grpTop.Controls.Add(memoTestInformation);
+            grpTop.Controls.Add(txtEstimatedHours);
+            grpTop.Controls.Add(txtLunchMinutes);
+            grpTop.Controls.Add(txtBookingNo);
+            grpTop.Controls.Add(endTimeEdit);
+            grpTop.Controls.Add(startTimeEdit);
+            grpTop.Controls.Add(endDateEdit);
+            grpTop.Controls.Add(startDateEdit);
+            grpTop.Controls.Add(cmbLocation);
+            grpTop.Controls.Add(labelControl23);
+            grpTop.Controls.Add(labelControl22);
+            grpTop.Controls.Add(labelControl15);
+            grpTop.Controls.Add(labelEstimatedHours);
+            grpTop.Controls.Add(labelControl10);
+            grpTop.Controls.Add(labelControl9);
+            grpTop.Controls.Add(labelControl8);
+            grpTop.Controls.Add(labelControl5);
+            grpTop.Controls.Add(labelControl4);
+            grpTop.Controls.Add(labelControl3);
+            grpTop.Controls.Add(labelControl1);
+            grpTop.Dock = System.Windows.Forms.DockStyle.Fill;
+            grpTop.GroupStyle = DevExpress.Utils.GroupStyle.Card;
+            grpTop.Location = new System.Drawing.Point(0, 0);
+            grpTop.Name = "grpTop";
+            grpTop.Padding = new System.Windows.Forms.Padding(3);
+            grpTop.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            grpTop.ShowCaption = false;
+            grpTop.Size = new System.Drawing.Size(806, 550);
+            grpTop.TabIndex = 139;
+            grpTop.Text = "基本資料";
             // 
             // labelControl11
             // 
-            labelControl11.Location = new System.Drawing.Point(328, 460);
+            labelControl11.Location = new System.Drawing.Point(331, 508);
             labelControl11.Name = "labelControl11";
             labelControl11.Size = new System.Drawing.Size(72, 22);
-            labelControl11.TabIndex = 11;
+            labelControl11.TabIndex = 186;
             labelControl11.Text = "結束時間";
             // 
-            // labelEstimatedHours
+            // lblEndTimeRequired
             // 
-            labelEstimatedHours.Location = new System.Drawing.Point(328, 517);
-            labelEstimatedHours.Name = "labelEstimatedHours";
-            labelEstimatedHours.Size = new System.Drawing.Size(72, 22);
-            labelEstimatedHours.TabIndex = 12;
-            labelEstimatedHours.Text = "預估時間";
+            lblEndTimeRequired.Appearance.ForeColor = System.Drawing.Color.Red;
+            lblEndTimeRequired.Appearance.Options.UseForeColor = true;
+            lblEndTimeRequired.Location = new System.Drawing.Point(437, 477);
+            lblEndTimeRequired.Name = "lblEndTimeRequired";
+            lblEndTimeRequired.Size = new System.Drawing.Size(72, 22);
+            lblEndTimeRequired.TabIndex = 185;
+            lblEndTimeRequired.Text = "必填欄位";
+            lblEndTimeRequired.Visible = false;
             // 
-            // labelControl15
+            // lblStartTimeRequired
             // 
-            labelControl15.Location = new System.Drawing.Point(44, 107);
-            labelControl15.Name = "labelControl15";
-            labelControl15.Size = new System.Drawing.Size(36, 22);
-            labelControl15.TabIndex = 15;
-            labelControl15.Text = "場地";
+            lblStartTimeRequired.Appearance.ForeColor = System.Drawing.Color.Red;
+            lblStartTimeRequired.Appearance.Options.UseForeColor = true;
+            lblStartTimeRequired.Location = new System.Drawing.Point(165, 477);
+            lblStartTimeRequired.Name = "lblStartTimeRequired";
+            lblStartTimeRequired.Size = new System.Drawing.Size(72, 22);
+            lblStartTimeRequired.TabIndex = 184;
+            lblStartTimeRequired.Text = "必填欄位";
+            lblStartTimeRequired.Visible = false;
             // 
-            // labelControl16
+            // lblEndDateRequired
             // 
-            labelControl16.Location = new System.Drawing.Point(44, 731);
-            labelControl16.Name = "labelControl16";
-            labelControl16.Size = new System.Drawing.Size(72, 22);
-            labelControl16.TabIndex = 16;
-            labelControl16.Text = "產品型號";
+            lblEndDateRequired.Appearance.ForeColor = System.Drawing.Color.Red;
+            lblEndDateRequired.Appearance.Options.UseForeColor = true;
+            lblEndDateRequired.Location = new System.Drawing.Point(437, 420);
+            lblEndDateRequired.Name = "lblEndDateRequired";
+            lblEndDateRequired.Size = new System.Drawing.Size(72, 22);
+            lblEndDateRequired.TabIndex = 183;
+            lblEndDateRequired.Text = "必填欄位";
+            lblEndDateRequired.Visible = false;
             // 
-            // labelControl17
+            // lblStartDateRequired
             // 
-            labelControl17.Location = new System.Drawing.Point(44, 783);
-            labelControl17.Name = "labelControl17";
-            labelControl17.Size = new System.Drawing.Size(90, 22);
-            labelControl17.TabIndex = 17;
-            labelControl17.Text = "測試模式：";
+            lblStartDateRequired.Appearance.ForeColor = System.Drawing.Color.Red;
+            lblStartDateRequired.Appearance.Options.UseForeColor = true;
+            lblStartDateRequired.Location = new System.Drawing.Point(165, 420);
+            lblStartDateRequired.Name = "lblStartDateRequired";
+            lblStartDateRequired.Size = new System.Drawing.Size(72, 22);
+            lblStartDateRequired.TabIndex = 182;
+            lblStartDateRequired.Text = "必填欄位";
+            lblStartDateRequired.Visible = false;
             // 
-            // labelControl18
+            // lblSalesRequired
             // 
-            labelControl18.Location = new System.Drawing.Point(44, 831);
-            labelControl18.Name = "labelControl18";
-            labelControl18.Size = new System.Drawing.Size(90, 22);
-            labelControl18.TabIndex = 18;
-            labelControl18.Text = "測試項目：";
+            lblSalesRequired.Appearance.ForeColor = System.Drawing.Color.Red;
+            lblSalesRequired.Appearance.Options.UseForeColor = true;
+            lblSalesRequired.Location = new System.Drawing.Point(565, 181);
+            lblSalesRequired.Name = "lblSalesRequired";
+            lblSalesRequired.Size = new System.Drawing.Size(72, 22);
+            lblSalesRequired.TabIndex = 181;
+            lblSalesRequired.Text = "必填欄位";
+            lblSalesRequired.Visible = false;
             // 
-            // labelControl19
+            // lblLocationRequired
             // 
-            labelControl19.Location = new System.Drawing.Point(44, 879);
-            labelControl19.Name = "labelControl19";
-            labelControl19.Size = new System.Drawing.Size(54, 22);
-            labelControl19.TabIndex = 19;
-            labelControl19.Text = "備註：";
+            lblLocationRequired.Appearance.ForeColor = System.Drawing.Color.Red;
+            lblLocationRequired.Appearance.Options.UseForeColor = true;
+            lblLocationRequired.Location = new System.Drawing.Point(165, 124);
+            lblLocationRequired.Name = "lblLocationRequired";
+            lblLocationRequired.Size = new System.Drawing.Size(72, 22);
+            lblLocationRequired.TabIndex = 180;
+            lblLocationRequired.Text = "必填欄位";
+            lblLocationRequired.Visible = false;
             // 
-            // labelControl20
+            // lblCompanyRequired
             // 
-            labelControl20.Location = new System.Drawing.Point(44, 575);
-            labelControl20.Name = "labelControl20";
-            labelControl20.Size = new System.Drawing.Size(54, 22);
-            labelControl20.TabIndex = 20;
-            labelControl20.Text = "工程師";
+            lblCompanyRequired.Appearance.ForeColor = System.Drawing.Color.Red;
+            lblCompanyRequired.Appearance.Options.UseForeColor = true;
+            lblCompanyRequired.Location = new System.Drawing.Point(165, 181);
+            lblCompanyRequired.Name = "lblCompanyRequired";
+            lblCompanyRequired.Size = new System.Drawing.Size(72, 22);
+            lblCompanyRequired.TabIndex = 179;
+            lblCompanyRequired.Text = "必填欄位";
+            lblCompanyRequired.Visible = false;
             // 
-            // labelControl21
+            // labelControl31
             // 
-            labelControl21.Location = new System.Drawing.Point(434, 731);
-            labelControl21.Name = "labelControl21";
-            labelControl21.Size = new System.Drawing.Size(72, 22);
-            labelControl21.TabIndex = 21;
-            labelControl21.Text = "產品序號";
+            labelControl31.Appearance.ForeColor = System.Drawing.Color.Red;
+            labelControl31.Appearance.Options.UseForeColor = true;
+            labelControl31.Location = new System.Drawing.Point(125, 448);
+            labelControl31.Name = "labelControl31";
+            labelControl31.Size = new System.Drawing.Size(10, 22);
+            labelControl31.TabIndex = 178;
+            labelControl31.Text = "*";
             // 
-            // labelControl22
+            // labelControl30
             // 
-            labelControl22.Location = new System.Drawing.Point(434, 164);
-            labelControl22.Name = "labelControl22";
-            labelControl22.Size = new System.Drawing.Size(40, 22);
-            labelControl22.TabIndex = 22;
-            labelControl22.Text = "Sales";
+            labelControl30.Appearance.ForeColor = System.Drawing.Color.Red;
+            labelControl30.Appearance.Options.UseForeColor = true;
+            labelControl30.Location = new System.Drawing.Point(409, 448);
+            labelControl30.Name = "labelControl30";
+            labelControl30.Size = new System.Drawing.Size(10, 22);
+            labelControl30.TabIndex = 177;
+            labelControl30.Text = "*";
             // 
-            // labelControl23
+            // labelControl29
             // 
-            labelControl23.Location = new System.Drawing.Point(434, 221);
-            labelControl23.Name = "labelControl23";
-            labelControl23.Size = new System.Drawing.Size(36, 22);
-            labelControl23.TabIndex = 23;
-            labelControl23.Text = "電話";
+            labelControl29.Appearance.ForeColor = System.Drawing.Color.Red;
+            labelControl29.Appearance.Options.UseForeColor = true;
+            labelControl29.Location = new System.Drawing.Point(409, 391);
+            labelControl29.Name = "labelControl29";
+            labelControl29.Size = new System.Drawing.Size(10, 22);
+            labelControl29.TabIndex = 176;
+            labelControl29.Text = "*";
             // 
-            // cmbLocation
+            // labelControl28
             // 
-            cmbLocation.Location = new System.Drawing.Point(162, 107);
-            cmbLocation.Name = "cmbLocation";
-            cmbLocation.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
-            cmbLocation.Properties.Items.AddRange(new object[] { "Conducted 1", "Conducted 2", "Conducted 3", "Conducted 4", "Conducted 5", "Conducted 6", "Setup Room 1", "SAC 1", "SAC 2", "SAC 3", "FAC 1", "Conducted A", "Conducted B", " Conducted C", "Conducted D", "Conducted E", "Conducted F", "Setup Room A", "SAC C", "SAC D", "SAC G", "FAC A" });
-            cmbLocation.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            cmbLocation.Size = new System.Drawing.Size(225, 28);
-            cmbLocation.TabIndex = 13;
-            cmbLocation.EditValueChanged += cmbLocation_EditValueChanged;
+            labelControl28.Appearance.ForeColor = System.Drawing.Color.Red;
+            labelControl28.Appearance.Options.UseForeColor = true;
+            labelControl28.Location = new System.Drawing.Point(125, 391);
+            labelControl28.Name = "labelControl28";
+            labelControl28.Size = new System.Drawing.Size(10, 22);
+            labelControl28.TabIndex = 175;
+            labelControl28.Text = "*";
             // 
-            // startDateEdit
+            // labelControl27
             // 
-            startDateEdit.EditValue = null;
-            startDateEdit.Location = new System.Drawing.Point(162, 403);
-            startDateEdit.Name = "startDateEdit";
-            startDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
-            startDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
-            startDateEdit.Properties.MaskSettings.Set("useAdvancingCaret", false);
-            startDateEdit.Properties.MaskSettings.Set("mask", "");
-            startDateEdit.Size = new System.Drawing.Size(138, 28);
-            startDateEdit.TabIndex = 6;
-            startDateEdit.EditValueChanged += startDateEdit_EditValueChanged;
+            labelControl27.Appearance.ForeColor = System.Drawing.Color.Red;
+            labelControl27.Appearance.Options.UseForeColor = true;
+            labelControl27.Location = new System.Drawing.Point(483, 152);
+            labelControl27.Name = "labelControl27";
+            labelControl27.Size = new System.Drawing.Size(10, 22);
+            labelControl27.TabIndex = 174;
+            labelControl27.Text = "*";
             // 
-            // endDateEdit
+            // labelControl25
             // 
-            endDateEdit.EditValue = null;
-            endDateEdit.Location = new System.Drawing.Point(434, 403);
-            endDateEdit.Name = "endDateEdit";
-            endDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
-            endDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
-            endDateEdit.Properties.MaskSettings.Set("mask", "");
-            endDateEdit.Size = new System.Drawing.Size(138, 28);
-            endDateEdit.TabIndex = 7;
-            endDateEdit.EditValueChanged += endDateEdit_EditValueChanged;
+            labelControl25.Appearance.ForeColor = System.Drawing.Color.Red;
+            labelControl25.Appearance.Options.UseForeColor = true;
+            labelControl25.Location = new System.Drawing.Point(89, 95);
+            labelControl25.Name = "labelControl25";
+            labelControl25.Size = new System.Drawing.Size(10, 22);
+            labelControl25.TabIndex = 173;
+            labelControl25.Text = "*";
             // 
-            // startTimeEdit
+            // labelControl12
             // 
-            startTimeEdit.EditValue = new System.DateTime(2025, 12, 21, 0, 0, 0, 0);
-            startTimeEdit.Location = new System.Drawing.Point(162, 460);
-            startTimeEdit.Name = "startTimeEdit";
-            startTimeEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
-            startTimeEdit.Properties.MaskSettings.Set("mask", "HH:mm");
-            startTimeEdit.Properties.MaskSettings.Set("useAdvancingCaret", false);
-            startTimeEdit.Size = new System.Drawing.Size(138, 28);
-            startTimeEdit.TabIndex = 8;
-            startTimeEdit.EditValueChanged += startTimeEdit_EditValueChanged;
+            labelControl12.Appearance.ForeColor = System.Drawing.Color.Red;
+            labelControl12.Appearance.Options.UseForeColor = true;
+            labelControl12.Location = new System.Drawing.Point(125, 152);
+            labelControl12.Name = "labelControl12";
+            labelControl12.Size = new System.Drawing.Size(10, 22);
+            labelControl12.TabIndex = 172;
+            labelControl12.Text = "*";
+            // 
+            // labelControl26
+            // 
+            labelControl26.Location = new System.Drawing.Point(581, 505);
+            labelControl26.Name = "labelControl26";
+            labelControl26.Size = new System.Drawing.Size(18, 22);
+            labelControl26.TabIndex = 171;
+            labelControl26.Text = "時";
+            // 
+            // cmbDinnerMinutes
+            // 
+            cmbDinnerMinutes.Location = new System.Drawing.Point(680, 445);
+            cmbDinnerMinutes.Name = "cmbDinnerMinutes";
+            cmbDinnerMinutes.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
+            cmbDinnerMinutes.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+            cmbDinnerMinutes.Size = new System.Drawing.Size(107, 28);
+            cmbDinnerMinutes.TabIndex = 157;
+            // 
+            // btnCopyRentTime
+            // 
+            btnCopyRentTime.Location = new System.Drawing.Point(669, 20);
+            btnCopyRentTime.Name = "btnCopyRentTime";
+            btnCopyRentTime.Size = new System.Drawing.Size(118, 51);
+            btnCopyRentTime.TabIndex = 170;
+            btnCopyRentTime.Text = "複製單據";
+            // 
+            // txtBookingSeq
+            // 
+            txtBookingSeq.Location = new System.Drawing.Point(562, 35);
+            txtBookingSeq.Name = "txtBookingSeq";
+            txtBookingSeq.Properties.ReadOnly = true;
+            txtBookingSeq.Size = new System.Drawing.Size(80, 28);
+            txtBookingSeq.TabIndex = 169;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(542, 41);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(17, 22);
+            label1.TabIndex = 168;
+            label1.Text = "-";
+            // 
+            // txtContactPhone
+            // 
+            txtContactPhone.Location = new System.Drawing.Point(562, 206);
+            txtContactPhone.Name = "txtContactPhone";
+            txtContactPhone.Size = new System.Drawing.Size(225, 28);
+            txtContactPhone.TabIndex = 144;
+            // 
+            // txtSales
+            // 
+            txtSales.Location = new System.Drawing.Point(562, 149);
+            txtSales.Name = "txtSales";
+            txtSales.Size = new System.Drawing.Size(225, 28);
+            txtSales.TabIndex = 141;
+            // 
+            // txtContactName
+            // 
+            txtContactName.Location = new System.Drawing.Point(162, 206);
+            txtContactName.Name = "txtContactName";
+            txtContactName.Size = new System.Drawing.Size(225, 28);
+            txtContactName.TabIndex = 142;
+            // 
+            // cmbCompany
+            // 
+            cmbCompany.Location = new System.Drawing.Point(162, 149);
+            cmbCompany.Name = "cmbCompany";
+            cmbCompany.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
+            cmbCompany.Size = new System.Drawing.Size(225, 28);
+            cmbCompany.TabIndex = 139;
+            // 
+            // chkHasDinner
+            // 
+            chkHasDinner.Location = new System.Drawing.Point(603, 445);
+            chkHasDinner.Name = "chkHasDinner";
+            chkHasDinner.Properties.Caption = "晚餐";
+            chkHasDinner.Size = new System.Drawing.Size(67, 27);
+            chkHasDinner.TabIndex = 156;
+            // 
+            // chkHasLunch
+            // 
+            chkHasLunch.Location = new System.Drawing.Point(603, 388);
+            chkHasLunch.Name = "chkHasLunch";
+            chkHasLunch.Properties.Caption = "午餐";
+            chkHasLunch.Size = new System.Drawing.Size(67, 27);
+            chkHasLunch.TabIndex = 154;
+            // 
+            // txtCreatedBy
+            // 
+            txtCreatedBy.Location = new System.Drawing.Point(562, 92);
+            txtCreatedBy.Name = "txtCreatedBy";
+            txtCreatedBy.Size = new System.Drawing.Size(225, 28);
+            txtCreatedBy.TabIndex = 167;
+            // 
+            // labelCreatedBy
+            // 
+            labelCreatedBy.Location = new System.Drawing.Point(437, 95);
+            labelCreatedBy.Name = "labelCreatedBy";
+            labelCreatedBy.Size = new System.Drawing.Size(72, 22);
+            labelCreatedBy.TabIndex = 166;
+            labelCreatedBy.Text = "建單人員";
+            // 
+            // memoTestInformation
+            // 
+            memoTestInformation.Location = new System.Drawing.Point(162, 263);
+            memoTestInformation.Name = "memoTestInformation";
+            memoTestInformation.Size = new System.Drawing.Size(625, 100);
+            memoTestInformation.TabIndex = 145;
+            // 
+            // txtEstimatedHours
+            // 
+            txtEstimatedHours.Location = new System.Drawing.Point(434, 502);
+            txtEstimatedHours.Name = "txtEstimatedHours";
+            txtEstimatedHours.Properties.ReadOnly = true;
+            txtEstimatedHours.Size = new System.Drawing.Size(138, 28);
+            txtEstimatedHours.TabIndex = 165;
+            // 
+            // txtLunchMinutes
+            // 
+            txtLunchMinutes.Location = new System.Drawing.Point(680, 388);
+            txtLunchMinutes.Name = "txtLunchMinutes";
+            txtLunchMinutes.Properties.ReadOnly = true;
+            txtLunchMinutes.Size = new System.Drawing.Size(107, 28);
+            txtLunchMinutes.TabIndex = 164;
+            // 
+            // txtBookingNo
+            // 
+            txtBookingNo.Location = new System.Drawing.Point(162, 35);
+            txtBookingNo.Name = "txtBookingNo";
+            txtBookingNo.Properties.ReadOnly = true;
+            txtBookingNo.Size = new System.Drawing.Size(368, 28);
+            txtBookingNo.TabIndex = 163;
             // 
             // endTimeEdit
             // 
             endTimeEdit.EditValue = new System.DateTime(2025, 12, 21, 0, 0, 0, 0);
-            endTimeEdit.Location = new System.Drawing.Point(434, 460);
+            endTimeEdit.Location = new System.Drawing.Point(434, 445);
             endTimeEdit.Name = "endTimeEdit";
             endTimeEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             endTimeEdit.Properties.MaskSettings.Set("mask", "HH:mm");
@@ -370,669 +552,576 @@
             endTimeEdit.Properties.MaskSettings.Set("spinWithCarry", null);
             endTimeEdit.Properties.MaskSettings.Set("useAdvancingCaret", false);
             endTimeEdit.Size = new System.Drawing.Size(138, 28);
-            endTimeEdit.TabIndex = 9;
-            endTimeEdit.EditValueChanged += endTimeEdit_EditValueChanged;
+            endTimeEdit.TabIndex = 153;
             // 
-            // txtBookingNo
+            // startTimeEdit
             // 
-            txtBookingNo.Location = new System.Drawing.Point(162, 50);
-            txtBookingNo.Name = "txtBookingNo";
-            txtBookingNo.Properties.ReadOnly = true;
-            txtBookingNo.Size = new System.Drawing.Size(368, 28);
-            txtBookingNo.TabIndex = 30;
+            startTimeEdit.EditValue = new System.DateTime(2025, 12, 21, 0, 0, 0, 0);
+            startTimeEdit.Location = new System.Drawing.Point(162, 445);
+            startTimeEdit.Name = "startTimeEdit";
+            startTimeEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
+            startTimeEdit.Properties.MaskSettings.Set("mask", "HH:mm");
+            startTimeEdit.Properties.MaskSettings.Set("useAdvancingCaret", false);
+            startTimeEdit.Size = new System.Drawing.Size(138, 28);
+            startTimeEdit.TabIndex = 151;
             // 
-            // txtArea
+            // endDateEdit
             // 
-            txtArea.Location = new System.Drawing.Point(552, 575);
-            txtArea.Name = "txtArea";
-            txtArea.Properties.ReadOnly = true;
-            txtArea.Size = new System.Drawing.Size(225, 28);
-            txtArea.TabIndex = 16;
+            endDateEdit.EditValue = null;
+            endDateEdit.Location = new System.Drawing.Point(434, 388);
+            endDateEdit.Name = "endDateEdit";
+            endDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
+            endDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
+            endDateEdit.Properties.MaskSettings.Set("mask", "");
+            endDateEdit.Size = new System.Drawing.Size(138, 28);
+            endDateEdit.TabIndex = 149;
             // 
-            // txtPE
+            // startDateEdit
             // 
-            txtPE.Location = new System.Drawing.Point(162, 679);
-            txtPE.Name = "txtPE";
-            txtPE.Properties.ReadOnly = true;
-            txtPE.Size = new System.Drawing.Size(225, 28);
-            txtPE.TabIndex = 37;
+            startDateEdit.EditValue = null;
+            startDateEdit.Location = new System.Drawing.Point(162, 388);
+            startDateEdit.Name = "startDateEdit";
+            startDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
+            startDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
+            startDateEdit.Properties.MaskSettings.Set("useAdvancingCaret", false);
+            startDateEdit.Properties.MaskSettings.Set("mask", "");
+            startDateEdit.Size = new System.Drawing.Size(138, 28);
+            startDateEdit.TabIndex = 148;
             // 
-            // txtProjectName
+            // cmbLocation
             // 
-            txtProjectName.Location = new System.Drawing.Point(552, 679);
-            txtProjectName.Name = "txtProjectName";
-            txtProjectName.Properties.ReadOnly = true;
-            txtProjectName.Size = new System.Drawing.Size(225, 28);
-            txtProjectName.TabIndex = 38;
+            cmbLocation.Location = new System.Drawing.Point(162, 92);
+            cmbLocation.Name = "cmbLocation";
+            cmbLocation.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
+            cmbLocation.Properties.Items.AddRange(new object[] { "Conducted 1", "Conducted 2", "Conducted 3", "Conducted 4", "Conducted 5", "Conducted 6", "Setup Room 1", "SAC 1", "SAC 2", "SAC 3", "FAC 1", "Conducted A", "Conducted B", " Conducted C", "Conducted D", "Conducted E", "Conducted F", "Setup Room A", "SAC C", "SAC D", "SAC G", "FAC A" });
+            cmbLocation.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+            cmbLocation.Size = new System.Drawing.Size(225, 28);
+            cmbLocation.TabIndex = 159;
             // 
-            // txtLunchMinutes
+            // labelControl23
             // 
-            txtLunchMinutes.Location = new System.Drawing.Point(680, 403);
-            txtLunchMinutes.Name = "txtLunchMinutes";
-            txtLunchMinutes.Properties.ReadOnly = true;
-            txtLunchMinutes.Size = new System.Drawing.Size(107, 28);
-            txtLunchMinutes.TabIndex = 40;
+            labelControl23.Location = new System.Drawing.Point(437, 209);
+            labelControl23.Name = "labelControl23";
+            labelControl23.Size = new System.Drawing.Size(36, 22);
+            labelControl23.TabIndex = 162;
+            labelControl23.Text = "電話";
             // 
-            // txtEstimatedHours
+            // labelControl22
             // 
-            txtEstimatedHours.Location = new System.Drawing.Point(434, 517);
-            txtEstimatedHours.Name = "txtEstimatedHours";
-            txtEstimatedHours.Properties.ReadOnly = true;
-            txtEstimatedHours.Size = new System.Drawing.Size(138, 28);
-            txtEstimatedHours.TabIndex = 41;
+            labelControl22.Location = new System.Drawing.Point(437, 152);
+            labelControl22.Name = "labelControl22";
+            labelControl22.Size = new System.Drawing.Size(40, 22);
+            labelControl22.TabIndex = 161;
+            labelControl22.Text = "Sales";
             // 
-            // txtSampleModel
+            // labelControl15
             // 
-            txtSampleModel.Location = new System.Drawing.Point(162, 731);
-            txtSampleModel.Name = "txtSampleModel";
-            txtSampleModel.Size = new System.Drawing.Size(225, 28);
-            txtSampleModel.TabIndex = 15;
+            labelControl15.Location = new System.Drawing.Point(47, 95);
+            labelControl15.Name = "labelControl15";
+            labelControl15.Size = new System.Drawing.Size(36, 22);
+            labelControl15.TabIndex = 160;
+            labelControl15.Text = "場地";
             // 
-            // txtSampleNo
+            // labelEstimatedHours
             // 
-            txtSampleNo.Location = new System.Drawing.Point(552, 731);
-            txtSampleNo.Name = "txtSampleNo";
-            txtSampleNo.Size = new System.Drawing.Size(225, 28);
-            txtSampleNo.TabIndex = 16;
+            labelEstimatedHours.Location = new System.Drawing.Point(331, 451);
+            labelEstimatedHours.Name = "labelEstimatedHours";
+            labelEstimatedHours.Size = new System.Drawing.Size(72, 22);
+            labelEstimatedHours.TabIndex = 158;
+            labelEstimatedHours.Text = "預估時間";
             // 
-            // labelControl24
+            // labelControl10
             // 
-            labelControl24.Location = new System.Drawing.Point(434, 679);
-            labelControl24.Name = "labelControl24";
-            labelControl24.Size = new System.Drawing.Size(105, 22);
-            labelControl24.TabIndex = 48;
-            labelControl24.Text = "Project Name";
+            labelControl10.Location = new System.Drawing.Point(331, 391);
+            labelControl10.Name = "labelControl10";
+            labelControl10.Size = new System.Drawing.Size(72, 22);
+            labelControl10.TabIndex = 155;
+            labelControl10.Text = "結束日期";
             // 
-            // memoTestInformation
+            // labelControl9
             // 
-            memoTestInformation.Location = new System.Drawing.Point(162, 278);
-            memoTestInformation.Name = "memoTestInformation";
-            memoTestInformation.Size = new System.Drawing.Size(625, 100);
-            memoTestInformation.TabIndex = 4;
+            labelControl9.Location = new System.Drawing.Point(47, 448);
+            labelControl9.Name = "labelControl9";
+            labelControl9.Size = new System.Drawing.Size(72, 22);
+            labelControl9.TabIndex = 152;
+            labelControl9.Text = "開始時間";
             // 
-            // memoNote
+            // labelControl8
             // 
-            memoNote.Location = new System.Drawing.Point(44, 910);
-            memoNote.Name = "memoNote";
-            memoNote.Size = new System.Drawing.Size(743, 88);
-            memoNote.TabIndex = 19;
+            labelControl8.Location = new System.Drawing.Point(47, 391);
+            labelControl8.Name = "labelControl8";
+            labelControl8.Size = new System.Drawing.Size(72, 22);
+            labelControl8.TabIndex = 150;
+            labelControl8.Text = "開始日期";
             // 
-            // labelCreatedBy
+            // labelControl5
             // 
-            labelCreatedBy.Location = new System.Drawing.Point(434, 107);
-            labelCreatedBy.Name = "labelCreatedBy";
-            labelCreatedBy.Size = new System.Drawing.Size(72, 22);
-            labelCreatedBy.TabIndex = 51;
-            labelCreatedBy.Text = "建單人員";
+            labelControl5.Location = new System.Drawing.Point(47, 266);
+            labelControl5.Name = "labelControl5";
+            labelControl5.Size = new System.Drawing.Size(72, 22);
+            labelControl5.TabIndex = 147;
+            labelControl5.Text = "測試資訊";
             // 
-            // txtCreatedBy
+            // labelControl4
             // 
-            txtCreatedBy.Location = new System.Drawing.Point(562, 107);
-            txtCreatedBy.Name = "txtCreatedBy";
-            txtCreatedBy.Size = new System.Drawing.Size(225, 28);
-            txtCreatedBy.TabIndex = 52;
+            labelControl4.Location = new System.Drawing.Point(47, 209);
+            labelControl4.Name = "labelControl4";
+            labelControl4.Size = new System.Drawing.Size(54, 22);
+            labelControl4.TabIndex = 146;
+            labelControl4.Text = "聯絡人";
             // 
-            // btnCreatedRentTime
+            // labelControl3
             // 
-            btnCreatedRentTime.Location = new System.Drawing.Point(44, 1020);
-            btnCreatedRentTime.Name = "btnCreatedRentTime";
-            btnCreatedRentTime.Size = new System.Drawing.Size(118, 51);
-            btnCreatedRentTime.TabIndex = 20;
-            btnCreatedRentTime.Text = "建立租時單";
-            btnCreatedRentTime.Click += btnCreatedRentTime_Click;
+            labelControl3.Location = new System.Drawing.Point(47, 152);
+            labelControl3.Name = "labelControl3";
+            labelControl3.Size = new System.Drawing.Size(72, 22);
+            labelControl3.TabIndex = 143;
+            labelControl3.Text = "客戶名稱";
             // 
-            // chkHasLunch
+            // labelControl1
             // 
-            chkHasLunch.Location = new System.Drawing.Point(603, 403);
-            chkHasLunch.Name = "chkHasLunch";
-            chkHasLunch.Properties.Caption = "午餐";
-            chkHasLunch.Size = new System.Drawing.Size(67, 27);
-            chkHasLunch.TabIndex = 10;
-            chkHasLunch.CheckedChanged += chkHasLunch_CheckedChanged;
+            labelControl1.Location = new System.Drawing.Point(47, 38);
+            labelControl1.Name = "labelControl1";
+            labelControl1.Size = new System.Drawing.Size(97, 22);
+            labelControl1.TabIndex = 140;
+            labelControl1.Text = "Booking No.";
             // 
-            // chkHasDinner
+            // grpBottom
             // 
-            chkHasDinner.Location = new System.Drawing.Point(603, 460);
-            chkHasDinner.Name = "chkHasDinner";
-            chkHasDinner.Properties.Caption = "晚餐";
-            chkHasDinner.Size = new System.Drawing.Size(67, 27);
-            chkHasDinner.TabIndex = 11;
-            chkHasDinner.CheckedChanged += chkHasDinner_CheckedChanged;
+            grpBottom.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            grpBottom.Controls.Add(splitContainerControl2);
+            grpBottom.Dock = System.Windows.Forms.DockStyle.Fill;
+            grpBottom.Location = new System.Drawing.Point(0, 0);
+            grpBottom.Name = "grpBottom";
+            grpBottom.ShowCaption = false;
+            grpBottom.Size = new System.Drawing.Size(802, 570);
+            grpBottom.TabIndex = 103;
+            grpBottom.Text = "工程填寫";
+            // 
+            // splitContainerControl2
+            // 
+            splitContainerControl2.Dock = System.Windows.Forms.DockStyle.Fill;
+            splitContainerControl2.Horizontal = false;
+            splitContainerControl2.IsSplitterFixed = true;
+            splitContainerControl2.Location = new System.Drawing.Point(0, 0);
+            splitContainerControl2.Name = "splitContainerControl2";
+            // 
+            // splitContainerControl2.Panel1
+            // 
+            splitContainerControl2.Panel1.Controls.Add(labelControl13);
+            splitContainerControl2.Panel1.Controls.Add(cmbJobNo);
+            splitContainerControl2.Panel1.Controls.Add(txtProjectNo);
+            splitContainerControl2.Panel1.Controls.Add(cmbEngineer);
+            splitContainerControl2.Panel1.Controls.Add(cmbTestItem);
+            splitContainerControl2.Panel1.Controls.Add(cmbTestMode);
+            splitContainerControl2.Panel1.Controls.Add(memoNote);
+            splitContainerControl2.Panel1.Controls.Add(labelControl24);
+            splitContainerControl2.Panel1.Controls.Add(txtSampleNo);
+            splitContainerControl2.Panel1.Controls.Add(txtSampleModel);
+            splitContainerControl2.Panel1.Controls.Add(txtProjectName);
+            splitContainerControl2.Panel1.Controls.Add(txtPE);
+            splitContainerControl2.Panel1.Controls.Add(txtArea);
+            splitContainerControl2.Panel1.Controls.Add(labelControl21);
+            splitContainerControl2.Panel1.Controls.Add(labelControl20);
+            splitContainerControl2.Panel1.Controls.Add(labelControl19);
+            splitContainerControl2.Panel1.Controls.Add(labelControl18);
+            splitContainerControl2.Panel1.Controls.Add(labelControl17);
+            splitContainerControl2.Panel1.Controls.Add(labelControl16);
+            splitContainerControl2.Panel1.Controls.Add(labelControl7);
+            splitContainerControl2.Panel1.Controls.Add(labelControl6);
+            splitContainerControl2.Panel1.Controls.Add(labelControl2);
+            splitContainerControl2.Panel1.Text = "Panel1";
+            // 
+            // splitContainerControl2.Panel2
+            // 
+            splitContainerControl2.Panel2.Controls.Add(btnRestoreRentTime);
+            splitContainerControl2.Panel2.Controls.Add(chkHandover);
+            splitContainerControl2.Panel2.Controls.Add(btnRentTimeEnd);
+            splitContainerControl2.Panel2.Controls.Add(btnRentTimeStart);
+            splitContainerControl2.Panel2.Controls.Add(btnDeletedRentTime);
+            splitContainerControl2.Panel2.Controls.Add(btnCreatedRentTime);
+            splitContainerControl2.Panel2.Text = "Panel2";
+            splitContainerControl2.Size = new System.Drawing.Size(802, 570);
+            splitContainerControl2.SplitterPosition = 470;
+            splitContainerControl2.TabIndex = 131;
+            // 
+            // btnRestoreRentTime
+            // 
+            btnRestoreRentTime.Location = new System.Drawing.Point(517, 21);
+            btnRestoreRentTime.Name = "btnRestoreRentTime";
+            btnRestoreRentTime.Size = new System.Drawing.Size(118, 51);
+            btnRestoreRentTime.TabIndex = 136;
+            btnRestoreRentTime.Text = "回復狀態";
+            // 
+            // chkHandover
+            // 
+            chkHandover.Location = new System.Drawing.Point(432, 34);
+            chkHandover.Name = "chkHandover";
+            chkHandover.Properties.Caption = "交接";
+            chkHandover.Size = new System.Drawing.Size(79, 27);
+            chkHandover.TabIndex = 135;
+            // 
+            // btnRentTimeEnd
+            // 
+            btnRentTimeEnd.Location = new System.Drawing.Point(299, 21);
+            btnRentTimeEnd.Name = "btnRentTimeEnd";
+            btnRentTimeEnd.Size = new System.Drawing.Size(118, 51);
+            btnRentTimeEnd.TabIndex = 134;
+            btnRentTimeEnd.Text = "租時完成";
+            // 
+            // btnRentTimeStart
+            // 
+            btnRentTimeStart.Location = new System.Drawing.Point(160, 21);
+            btnRentTimeStart.Name = "btnRentTimeStart";
+            btnRentTimeStart.Size = new System.Drawing.Size(118, 51);
+            btnRentTimeStart.TabIndex = 133;
+            btnRentTimeStart.Text = "租時開始";
             // 
             // btnDeletedRentTime
             // 
-            btnDeletedRentTime.Location = new System.Drawing.Point(663, 1020);
+            btnDeletedRentTime.Location = new System.Drawing.Point(649, 21);
             btnDeletedRentTime.Name = "btnDeletedRentTime";
             btnDeletedRentTime.Size = new System.Drawing.Size(124, 51);
-            btnDeletedRentTime.TabIndex = 56;
+            btnDeletedRentTime.TabIndex = 132;
             btnDeletedRentTime.Text = "刪除租時";
-            btnDeletedRentTime.Click += btnDeletedRentTime_Click;
             // 
-            // cmbTestMode
+            // btnCreatedRentTime
             // 
-            cmbTestMode.Location = new System.Drawing.Point(162, 780);
-            cmbTestMode.Name = "cmbTestMode";
-            cmbTestMode.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
-            cmbTestMode.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            cmbTestMode.Size = new System.Drawing.Size(625, 28);
-            cmbTestMode.TabIndex = 17;
-            cmbTestMode.EditValueChanged += cmbTestMode_EditValueChanged;
+            btnCreatedRentTime.Location = new System.Drawing.Point(24, 21);
+            btnCreatedRentTime.Name = "btnCreatedRentTime";
+            btnCreatedRentTime.Size = new System.Drawing.Size(118, 51);
+            btnCreatedRentTime.TabIndex = 131;
+            btnCreatedRentTime.Text = "建立租時單";
             // 
-            // cmbTestItem
+            // labelControl13
             // 
-            cmbTestItem.Location = new System.Drawing.Point(162, 828);
-            cmbTestItem.Name = "cmbTestItem";
-            cmbTestItem.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
-            cmbTestItem.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            cmbTestItem.Size = new System.Drawing.Size(625, 28);
-            cmbTestItem.TabIndex = 18;
+            labelControl13.Location = new System.Drawing.Point(30, 87);
+            labelControl13.Name = "labelControl13";
+            labelControl13.Size = new System.Drawing.Size(61, 22);
+            labelControl13.TabIndex = 148;
+            labelControl13.Text = "Job No.";
             // 
-            // cmbCompany
+            // cmbJobNo
             // 
-            cmbCompany.Location = new System.Drawing.Point(162, 164);
-            cmbCompany.Name = "cmbCompany";
-            cmbCompany.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
-            cmbCompany.Size = new System.Drawing.Size(225, 28);
-            cmbCompany.TabIndex = 0;
-            cmbCompany.EditValueChanged += cmbCompany_EditValueChanged;
+            cmbJobNo.Location = new System.Drawing.Point(148, 84);
+            cmbJobNo.Name = "cmbJobNo";
+            cmbJobNo.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
+            cmbJobNo.Size = new System.Drawing.Size(225, 28);
+            cmbJobNo.TabIndex = 128;
             // 
-            // txtContactName
+            // txtProjectNo
             // 
-            txtContactName.Location = new System.Drawing.Point(162, 221);
-            txtContactName.Name = "txtContactName";
-            txtContactName.Size = new System.Drawing.Size(225, 28);
-            txtContactName.TabIndex = 2;
-            // 
-            // txtSales
-            // 
-            txtSales.Location = new System.Drawing.Point(562, 164);
-            txtSales.Name = "txtSales";
-            txtSales.Size = new System.Drawing.Size(225, 28);
-            txtSales.TabIndex = 1;
-            // 
-            // txtContactPhone
-            // 
-            txtContactPhone.Location = new System.Drawing.Point(562, 221);
-            txtContactPhone.Name = "txtContactPhone";
-            txtContactPhone.Size = new System.Drawing.Size(225, 28);
-            txtContactPhone.TabIndex = 3;
+            txtProjectNo.Location = new System.Drawing.Point(540, 81);
+            txtProjectNo.Name = "txtProjectNo";
+            txtProjectNo.Properties.ReadOnly = true;
+            txtProjectNo.Size = new System.Drawing.Size(225, 28);
+            txtProjectNo.TabIndex = 147;
             // 
             // cmbEngineer
             // 
-            cmbEngineer.Location = new System.Drawing.Point(162, 575);
+            cmbEngineer.Location = new System.Drawing.Point(148, 29);
             cmbEngineer.Name = "cmbEngineer";
             cmbEngineer.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             cmbEngineer.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             cmbEngineer.Size = new System.Drawing.Size(225, 28);
-            cmbEngineer.TabIndex = 14;
+            cmbEngineer.TabIndex = 131;
             // 
-            // label1
+            // cmbTestItem
             // 
-            label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(539, 53);
-            label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(17, 22);
-            label1.TabIndex = 64;
-            label1.Text = "-";
+            cmbTestItem.Location = new System.Drawing.Point(148, 264);
+            cmbTestItem.Name = "cmbTestItem";
+            cmbTestItem.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
+            cmbTestItem.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+            cmbTestItem.Size = new System.Drawing.Size(625, 28);
+            cmbTestItem.TabIndex = 139;
             // 
-            // txtBookingSeq
+            // cmbTestMode
             // 
-            txtBookingSeq.Location = new System.Drawing.Point(562, 50);
-            txtBookingSeq.Name = "txtBookingSeq";
-            txtBookingSeq.Properties.ReadOnly = true;
-            txtBookingSeq.Size = new System.Drawing.Size(80, 28);
-            txtBookingSeq.TabIndex = 65;
+            cmbTestMode.Location = new System.Drawing.Point(148, 219);
+            cmbTestMode.Name = "cmbTestMode";
+            cmbTestMode.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
+            cmbTestMode.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+            cmbTestMode.Size = new System.Drawing.Size(625, 28);
+            cmbTestMode.TabIndex = 136;
             // 
-            // txtProjectNo
+            // memoNote
             // 
-            txtProjectNo.Location = new System.Drawing.Point(552, 627);
-            txtProjectNo.Name = "txtProjectNo";
-            txtProjectNo.Properties.ReadOnly = true;
-            txtProjectNo.Size = new System.Drawing.Size(225, 28);
-            txtProjectNo.TabIndex = 66;
+            memoNote.Location = new System.Drawing.Point(30, 358);
+            memoNote.Name = "memoNote";
+            memoNote.Size = new System.Drawing.Size(743, 88);
+            memoNote.TabIndex = 140;
             // 
-            // cmbJobNo
+            // labelControl24
             // 
-            cmbJobNo.Location = new System.Drawing.Point(162, 627);
-            cmbJobNo.Name = "cmbJobNo";
-            cmbJobNo.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
-            cmbJobNo.Size = new System.Drawing.Size(225, 28);
-            cmbJobNo.TabIndex = 5;
-            cmbJobNo.EditValueChanged += cmbJobNo_EditValueChanged;
+            labelControl24.Location = new System.Drawing.Point(420, 131);
+            labelControl24.Name = "labelControl24";
+            labelControl24.Size = new System.Drawing.Size(105, 22);
+            labelControl24.TabIndex = 146;
+            labelControl24.Text = "Project Name";
             // 
-            // labelControl13
+            // txtSampleNo
             // 
-            labelControl13.Location = new System.Drawing.Point(44, 627);
-            labelControl13.Name = "labelControl13";
-            labelControl13.Size = new System.Drawing.Size(61, 22);
-            labelControl13.TabIndex = 68;
-            labelControl13.Text = "Job No.";
+            txtSampleNo.Location = new System.Drawing.Point(538, 173);
+            txtSampleNo.Name = "txtSampleNo";
+            txtSampleNo.Size = new System.Drawing.Size(225, 28);
+            txtSampleNo.TabIndex = 134;
             // 
-            // labelControl14
+            // txtSampleModel
             // 
-            labelControl14.Location = new System.Drawing.Point(256, 382);
-            labelControl14.Name = "labelControl14";
-            labelControl14.Size = new System.Drawing.Size(0, 22);
-            labelControl14.TabIndex = 69;
+            txtSampleModel.Location = new System.Drawing.Point(148, 173);
+            txtSampleModel.Name = "txtSampleModel";
+            txtSampleModel.Size = new System.Drawing.Size(225, 28);
+            txtSampleModel.TabIndex = 132;
             // 
-            // btnRentTimeStart
+            // txtProjectName
             // 
-            btnRentTimeStart.Location = new System.Drawing.Point(182, 1020);
-            btnRentTimeStart.Name = "btnRentTimeStart";
-            btnRentTimeStart.Size = new System.Drawing.Size(118, 51);
-            btnRentTimeStart.TabIndex = 70;
-            btnRentTimeStart.Text = "租時開始";
-            btnRentTimeStart.Click += btnRentTimeStart_Click;
+            txtProjectName.Location = new System.Drawing.Point(538, 128);
+            txtProjectName.Name = "txtProjectName";
+            txtProjectName.Properties.ReadOnly = true;
+            txtProjectName.Size = new System.Drawing.Size(225, 28);
+            txtProjectName.TabIndex = 145;
             // 
-            // btnRentTimeEnd
+            // txtPE
             // 
-            btnRentTimeEnd.Location = new System.Drawing.Point(315, 1020);
-            btnRentTimeEnd.Name = "btnRentTimeEnd";
-            btnRentTimeEnd.Size = new System.Drawing.Size(118, 51);
-            btnRentTimeEnd.TabIndex = 71;
-            btnRentTimeEnd.Text = "租時完成";
-            btnRentTimeEnd.Click += btnRentTimeEnd_Click;
+            txtPE.Location = new System.Drawing.Point(148, 125);
+            txtPE.Name = "txtPE";
+            txtPE.Properties.ReadOnly = true;
+            txtPE.Size = new System.Drawing.Size(225, 28);
+            txtPE.TabIndex = 144;
             // 
-            // chkHandover
+            // txtArea
             // 
-            chkHandover.Location = new System.Drawing.Point(451, 1033);
-            chkHandover.Name = "chkHandover";
-            chkHandover.Properties.Caption = "交接";
-            chkHandover.Size = new System.Drawing.Size(79, 27);
-            chkHandover.TabIndex = 72;
+            txtArea.Location = new System.Drawing.Point(538, 32);
+            txtArea.Name = "txtArea";
+            txtArea.Properties.ReadOnly = true;
+            txtArea.Size = new System.Drawing.Size(225, 28);
+            txtArea.TabIndex = 135;
             // 
-            // btnCopyRentTime
+            // labelControl21
             // 
-            btnCopyRentTime.Location = new System.Drawing.Point(669, 35);
-            btnCopyRentTime.Name = "btnCopyRentTime";
-            btnCopyRentTime.Size = new System.Drawing.Size(118, 51);
-            btnCopyRentTime.TabIndex = 73;
-            btnCopyRentTime.Text = "複製單據";
-            btnCopyRentTime.Click += btnCopyRentTime_Click;
+            labelControl21.Location = new System.Drawing.Point(420, 176);
+            labelControl21.Name = "labelControl21";
+            labelControl21.Size = new System.Drawing.Size(72, 22);
+            labelControl21.TabIndex = 143;
+            labelControl21.Text = "產品序號";
             // 
-            // btnRestoreRentTime
+            // labelControl20
             // 
-            btnRestoreRentTime.Location = new System.Drawing.Point(536, 1020);
-            btnRestoreRentTime.Name = "btnRestoreRentTime";
-            btnRestoreRentTime.Size = new System.Drawing.Size(118, 51);
-            btnRestoreRentTime.TabIndex = 74;
-            btnRestoreRentTime.Text = "回復狀態";
-            btnRestoreRentTime.Click += btnRestoreRentTime_Click;
+            labelControl20.Location = new System.Drawing.Point(27, 35);
+            labelControl20.Name = "labelControl20";
+            labelControl20.Size = new System.Drawing.Size(54, 22);
+            labelControl20.TabIndex = 142;
+            labelControl20.Text = "工程師";
             // 
-            // cmbDinnerMinutes
+            // labelControl19
             // 
-            cmbDinnerMinutes.Location = new System.Drawing.Point(680, 460);
-            cmbDinnerMinutes.Name = "cmbDinnerMinutes";
-            cmbDinnerMinutes.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
-            cmbDinnerMinutes.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            cmbDinnerMinutes.Size = new System.Drawing.Size(107, 28);
-            cmbDinnerMinutes.TabIndex = 12;
-            cmbDinnerMinutes.EditValueChanged += cmbDinnerMinutes_EditValueChanged;
+            labelControl19.Location = new System.Drawing.Point(30, 312);
+            labelControl19.Name = "labelControl19";
+            labelControl19.Size = new System.Drawing.Size(54, 22);
+            labelControl19.TabIndex = 141;
+            labelControl19.Text = "備註：";
             // 
-            // labelControl26
+            // labelControl18
             // 
-            labelControl26.Location = new System.Drawing.Point(578, 517);
-            labelControl26.Name = "labelControl26";
-            labelControl26.Size = new System.Drawing.Size(18, 22);
-            labelControl26.TabIndex = 76;
-            labelControl26.Text = "時";
+            labelControl18.Location = new System.Drawing.Point(30, 267);
+            labelControl18.Name = "labelControl18";
+            labelControl18.Size = new System.Drawing.Size(90, 22);
+            labelControl18.TabIndex = 138;
+            labelControl18.Text = "測試項目：";
             // 
-            // labelControl12
+            // labelControl17
             // 
-            labelControl12.Appearance.ForeColor = System.Drawing.Color.Red;
-            labelControl12.Appearance.Options.UseForeColor = true;
-            labelControl12.Location = new System.Drawing.Point(122, 164);
-            labelControl12.Name = "labelControl12";
-            labelControl12.Size = new System.Drawing.Size(10, 22);
-            labelControl12.TabIndex = 77;
-            labelControl12.Text = "*";
+            labelControl17.Location = new System.Drawing.Point(30, 222);
+            labelControl17.Name = "labelControl17";
+            labelControl17.Size = new System.Drawing.Size(90, 22);
+            labelControl17.TabIndex = 137;
+            labelControl17.Text = "測試模式：";
             // 
-            // labelControl25
+            // labelControl16
             // 
-            labelControl25.Appearance.ForeColor = System.Drawing.Color.Red;
-            labelControl25.Appearance.Options.UseForeColor = true;
-            labelControl25.Location = new System.Drawing.Point(86, 107);
-            labelControl25.Name = "labelControl25";
-            labelControl25.Size = new System.Drawing.Size(10, 22);
-            labelControl25.TabIndex = 78;
-            labelControl25.Text = "*";
+            labelControl16.Location = new System.Drawing.Point(30, 176);
+            labelControl16.Name = "labelControl16";
+            labelControl16.Size = new System.Drawing.Size(72, 22);
+            labelControl16.TabIndex = 133;
+            labelControl16.Text = "產品型號";
             // 
-            // labelControl27
+            // labelControl7
             // 
-            labelControl27.Appearance.ForeColor = System.Drawing.Color.Red;
-            labelControl27.Appearance.Options.UseForeColor = true;
-            labelControl27.Location = new System.Drawing.Point(480, 164);
-            labelControl27.Name = "labelControl27";
-            labelControl27.Size = new System.Drawing.Size(10, 22);
-            labelControl27.TabIndex = 79;
-            labelControl27.Text = "*";
+            labelControl7.Location = new System.Drawing.Point(30, 131);
+            labelControl7.Name = "labelControl7";
+            labelControl7.Size = new System.Drawing.Size(20, 22);
+            labelControl7.TabIndex = 130;
+            labelControl7.Text = "PE";
             // 
-            // labelControl28
+            // labelControl6
             // 
-            labelControl28.Appearance.ForeColor = System.Drawing.Color.Red;
-            labelControl28.Appearance.Options.UseForeColor = true;
-            labelControl28.Location = new System.Drawing.Point(122, 403);
-            labelControl28.Name = "labelControl28";
-            labelControl28.Size = new System.Drawing.Size(10, 22);
-            labelControl28.TabIndex = 80;
-            labelControl28.Text = "*";
+            labelControl6.Location = new System.Drawing.Point(420, 90);
+            labelControl6.Name = "labelControl6";
+            labelControl6.Size = new System.Drawing.Size(87, 22);
+            labelControl6.TabIndex = 129;
+            labelControl6.Text = "Project No.";
             // 
-            // labelControl29
+            // labelControl2
             // 
-            labelControl29.Appearance.ForeColor = System.Drawing.Color.Red;
-            labelControl29.Appearance.Options.UseForeColor = true;
-            labelControl29.Location = new System.Drawing.Point(406, 403);
-            labelControl29.Name = "labelControl29";
-            labelControl29.Size = new System.Drawing.Size(10, 22);
-            labelControl29.TabIndex = 81;
-            labelControl29.Text = "*";
-            // 
-            // labelControl30
-            // 
-            labelControl30.Appearance.ForeColor = System.Drawing.Color.Red;
-            labelControl30.Appearance.Options.UseForeColor = true;
-            labelControl30.Location = new System.Drawing.Point(406, 460);
-            labelControl30.Name = "labelControl30";
-            labelControl30.Size = new System.Drawing.Size(10, 22);
-            labelControl30.TabIndex = 82;
-            labelControl30.Text = "*";
-            // 
-            // labelControl31
-            // 
-            labelControl31.Appearance.ForeColor = System.Drawing.Color.Red;
-            labelControl31.Appearance.Options.UseForeColor = true;
-            labelControl31.Location = new System.Drawing.Point(122, 460);
-            labelControl31.Name = "labelControl31";
-            labelControl31.Size = new System.Drawing.Size(10, 22);
-            labelControl31.TabIndex = 83;
-            labelControl31.Text = "*";
-            // 
-            // dxErrorProvider1
-            // 
-            dxErrorProvider1.ContainerControl = this;
-            // 
-            // lblCompanyRequired
-            // 
-            lblCompanyRequired.Appearance.ForeColor = System.Drawing.Color.Red;
-            lblCompanyRequired.Appearance.Options.UseForeColor = true;
-            lblCompanyRequired.Location = new System.Drawing.Point(256, 193);
-            lblCompanyRequired.Name = "lblCompanyRequired";
-            lblCompanyRequired.Size = new System.Drawing.Size(72, 22);
-            lblCompanyRequired.TabIndex = 84;
-            lblCompanyRequired.Text = "必填欄位";
-            lblCompanyRequired.Visible = false;
-            // 
-            // lblLocationRequired
-            // 
-            lblLocationRequired.Appearance.ForeColor = System.Drawing.Color.Red;
-            lblLocationRequired.Appearance.Options.UseForeColor = true;
-            lblLocationRequired.Location = new System.Drawing.Point(256, 136);
-            lblLocationRequired.Name = "lblLocationRequired";
-            lblLocationRequired.Size = new System.Drawing.Size(72, 22);
-            lblLocationRequired.TabIndex = 85;
-            lblLocationRequired.Text = "必填欄位";
-            lblLocationRequired.Visible = false;
-            // 
-            // lblSalesRequired
-            // 
-            lblSalesRequired.Appearance.ForeColor = System.Drawing.Color.Red;
-            lblSalesRequired.Appearance.Options.UseForeColor = true;
-            lblSalesRequired.Location = new System.Drawing.Point(663, 193);
-            lblSalesRequired.Name = "lblSalesRequired";
-            lblSalesRequired.Size = new System.Drawing.Size(72, 22);
-            lblSalesRequired.TabIndex = 86;
-            lblSalesRequired.Text = "必填欄位";
-            lblSalesRequired.Visible = false;
-            // 
-            // lblStartDateRequired
-            // 
-            lblStartDateRequired.Appearance.ForeColor = System.Drawing.Color.Red;
-            lblStartDateRequired.Appearance.Options.UseForeColor = true;
-            lblStartDateRequired.Location = new System.Drawing.Point(203, 432);
-            lblStartDateRequired.Name = "lblStartDateRequired";
-            lblStartDateRequired.Size = new System.Drawing.Size(72, 22);
-            lblStartDateRequired.TabIndex = 87;
-            lblStartDateRequired.Text = "必填欄位";
-            lblStartDateRequired.Visible = false;
-            // 
-            // lblEndDateRequired
-            // 
-            lblEndDateRequired.Appearance.ForeColor = System.Drawing.Color.Red;
-            lblEndDateRequired.Appearance.Options.UseForeColor = true;
-            lblEndDateRequired.Location = new System.Drawing.Point(480, 432);
-            lblEndDateRequired.Name = "lblEndDateRequired";
-            lblEndDateRequired.Size = new System.Drawing.Size(72, 22);
-            lblEndDateRequired.TabIndex = 88;
-            lblEndDateRequired.Text = "必填欄位";
-            lblEndDateRequired.Visible = false;
-            // 
-            // lblStartTimeRequired
-            // 
-            lblStartTimeRequired.Appearance.ForeColor = System.Drawing.Color.Red;
-            lblStartTimeRequired.Appearance.Options.UseForeColor = true;
-            lblStartTimeRequired.Location = new System.Drawing.Point(203, 489);
-            lblStartTimeRequired.Name = "lblStartTimeRequired";
-            lblStartTimeRequired.Size = new System.Drawing.Size(72, 22);
-            lblStartTimeRequired.TabIndex = 89;
-            lblStartTimeRequired.Text = "必填欄位";
-            lblStartTimeRequired.Visible = false;
-            // 
-            // lblEndTimeRequired
-            // 
-            lblEndTimeRequired.Appearance.ForeColor = System.Drawing.Color.Red;
-            lblEndTimeRequired.Appearance.Options.UseForeColor = true;
-            lblEndTimeRequired.Location = new System.Drawing.Point(480, 489);
-            lblEndTimeRequired.Name = "lblEndTimeRequired";
-            lblEndTimeRequired.Size = new System.Drawing.Size(72, 22);
-            lblEndTimeRequired.TabIndex = 90;
-            lblEndTimeRequired.Text = "必填欄位";
-            lblEndTimeRequired.Visible = false;
+            labelControl2.Location = new System.Drawing.Point(420, 35);
+            labelControl2.Name = "labelControl2";
+            labelControl2.Size = new System.Drawing.Size(36, 22);
+            labelControl2.TabIndex = 127;
+            labelControl2.Text = "區域";
             // 
             // Project
             // 
+            Appearance.BackColor = System.Drawing.Color.White;
+            Appearance.ForeColor = System.Drawing.Color.White;
+            Appearance.Options.UseBackColor = true;
+            Appearance.Options.UseForeColor = true;
             AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSize = true;
-            ClientSize = new System.Drawing.Size(830, 1091);
-            Controls.Add(lblEndTimeRequired);
-            Controls.Add(lblStartTimeRequired);
-            Controls.Add(lblEndDateRequired);
-            Controls.Add(lblStartDateRequired);
-            Controls.Add(lblSalesRequired);
-            Controls.Add(lblLocationRequired);
-            Controls.Add(lblCompanyRequired);
-            Controls.Add(labelControl31);
-            Controls.Add(labelControl30);
-            Controls.Add(labelControl29);
-            Controls.Add(labelControl28);
-            Controls.Add(labelControl27);
-            Controls.Add(labelControl25);
-            Controls.Add(labelControl12);
-            Controls.Add(labelControl26);
-            Controls.Add(cmbDinnerMinutes);
-            Controls.Add(btnRestoreRentTime);
-            Controls.Add(btnCopyRentTime);
-            Controls.Add(chkHandover);
-            Controls.Add(btnRentTimeEnd);
-            Controls.Add(btnRentTimeStart);
-            Controls.Add(labelControl14);
-            Controls.Add(labelControl13);
-            Controls.Add(cmbJobNo);
-            Controls.Add(txtProjectNo);
-            Controls.Add(txtBookingSeq);
-            Controls.Add(label1);
-            Controls.Add(cmbEngineer);
-            Controls.Add(txtContactPhone);
-            Controls.Add(txtSales);
-            Controls.Add(txtContactName);
-            Controls.Add(cmbCompany);
-            Controls.Add(cmbTestItem);
-            Controls.Add(cmbTestMode);
-            Controls.Add(btnDeletedRentTime);
-            Controls.Add(chkHasDinner);
-            Controls.Add(chkHasLunch);
-            Controls.Add(btnCreatedRentTime);
-            Controls.Add(txtCreatedBy);
-            Controls.Add(labelCreatedBy);
-            Controls.Add(memoNote);
-            Controls.Add(memoTestInformation);
-            Controls.Add(labelControl24);
-            Controls.Add(txtSampleNo);
-            Controls.Add(txtSampleModel);
-            Controls.Add(txtEstimatedHours);
-            Controls.Add(txtLunchMinutes);
-            Controls.Add(txtProjectName);
-            Controls.Add(txtPE);
-            Controls.Add(txtArea);
-            Controls.Add(txtBookingNo);
-            Controls.Add(endTimeEdit);
-            Controls.Add(startTimeEdit);
-            Controls.Add(endDateEdit);
-            Controls.Add(startDateEdit);
-            Controls.Add(cmbLocation);
-            Controls.Add(labelControl23);
-            Controls.Add(labelControl22);
-            Controls.Add(labelControl21);
-            Controls.Add(labelControl20);
-            Controls.Add(labelControl19);
-            Controls.Add(labelControl18);
-            Controls.Add(labelControl17);
-            Controls.Add(labelControl16);
-            Controls.Add(labelControl15);
-            Controls.Add(labelEstimatedHours);
-            Controls.Add(labelControl11);
-            Controls.Add(labelControl10);
-            Controls.Add(labelControl9);
-            Controls.Add(labelControl8);
-            Controls.Add(labelControl7);
-            Controls.Add(labelControl6);
-            Controls.Add(labelControl5);
-            Controls.Add(labelControl4);
-            Controls.Add(labelControl3);
-            Controls.Add(labelControl2);
-            Controls.Add(labelControl1);
+            ClientSize = new System.Drawing.Size(830, 1163);
+            Controls.Add(splitContainerControl1);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "Project";
             Text = "新增租時單";
+            WindowState = System.Windows.Forms.FormWindowState.Maximized;
             Load += Project_Load;
-            ((System.ComponentModel.ISupportInitialize)cmbLocation.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)startDateEdit.Properties.CalendarTimeProperties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)startDateEdit.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dxErrorProvider1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)splitContainerControl1.Panel1).EndInit();
+            splitContainerControl1.Panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainerControl1.Panel2).EndInit();
+            splitContainerControl1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainerControl1).EndInit();
+            splitContainerControl1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)grpTop).EndInit();
+            grpTop.ResumeLayout(false);
+            grpTop.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)cmbDinnerMinutes.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)txtBookingSeq.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)txtContactPhone.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)txtSales.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)txtContactName.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)cmbCompany.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)chkHasDinner.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)chkHasLunch.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)txtCreatedBy.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)memoTestInformation.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)txtEstimatedHours.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)txtLunchMinutes.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)txtBookingNo.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)endTimeEdit.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)startTimeEdit.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)endDateEdit.Properties.CalendarTimeProperties).EndInit();
             ((System.ComponentModel.ISupportInitialize)endDateEdit.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)startTimeEdit.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)endTimeEdit.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)txtBookingNo.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)txtArea.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)txtPE.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)txtProjectName.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)txtLunchMinutes.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)txtEstimatedHours.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)txtSampleModel.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)txtSampleNo.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)memoTestInformation.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)memoNote.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)txtCreatedBy.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)chkHasLunch.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)chkHasDinner.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)cmbTestMode.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)cmbTestItem.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)cmbCompany.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)txtContactName.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)txtSales.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)txtContactPhone.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)cmbEngineer.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)txtBookingSeq.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)txtProjectNo.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)cmbJobNo.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)startDateEdit.Properties.CalendarTimeProperties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)startDateEdit.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)cmbLocation.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)grpBottom).EndInit();
+            grpBottom.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainerControl2.Panel1).EndInit();
+            splitContainerControl2.Panel1.ResumeLayout(false);
+            splitContainerControl2.Panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainerControl2.Panel2).EndInit();
+            splitContainerControl2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainerControl2).EndInit();
+            splitContainerControl2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)chkHandover.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)cmbDinnerMinutes.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dxErrorProvider1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)cmbJobNo.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)txtProjectNo.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)cmbEngineer.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)cmbTestItem.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)cmbTestMode.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)memoNote.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)txtSampleNo.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)txtSampleModel.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)txtProjectName.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)txtPE.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)txtArea.Properties).EndInit();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
-
-        private DevExpress.XtraEditors.LabelControl labelControl1;
-        private DevExpress.XtraEditors.LabelControl labelControl2;
-        private DevExpress.XtraEditors.LabelControl labelControl3;
-        private DevExpress.XtraEditors.LabelControl labelControl4;
-        private DevExpress.XtraEditors.LabelControl labelControl5;
-        private DevExpress.XtraEditors.LabelControl labelControl6;
-        private DevExpress.XtraEditors.LabelControl labelControl7;
-        private DevExpress.XtraEditors.LabelControl labelControl8;
-        private DevExpress.XtraEditors.LabelControl labelControl9;
-        private DevExpress.XtraEditors.LabelControl labelControl10;
-        private DevExpress.XtraEditors.LabelControl labelControl11;
-        private DevExpress.XtraEditors.LabelControl labelEstimatedHours;
-        private DevExpress.XtraEditors.LabelControl labelControl15;
-        private DevExpress.XtraEditors.LabelControl labelControl16;
-        private DevExpress.XtraEditors.LabelControl labelControl17;
-        private DevExpress.XtraEditors.LabelControl labelControl18;
-        private DevExpress.XtraEditors.LabelControl labelControl19;
-        private DevExpress.XtraEditors.LabelControl labelControl20;
-        private DevExpress.XtraEditors.LabelControl labelControl21;
-        private DevExpress.XtraEditors.LabelControl labelControl22;
-        private DevExpress.XtraEditors.LabelControl labelControl23;
-        private DevExpress.XtraEditors.ComboBoxEdit cmbLocation;
-        private DevExpress.XtraEditors.DateEdit startDateEdit;
-        private DevExpress.XtraEditors.DateEdit endDateEdit;
-        private DevExpress.XtraEditors.TimeEdit startTimeEdit;
-        private DevExpress.XtraEditors.TimeEdit endTimeEdit;
-        private DevExpress.XtraEditors.TextEdit txtBookingNo;
-        private DevExpress.XtraEditors.TextEdit txtArea;
-        private DevExpress.XtraEditors.TextEdit txtPE;
-        private DevExpress.XtraEditors.TextEdit txtProjectName;
-        private DevExpress.XtraEditors.TextEdit txtLunchMinutes;
-        private DevExpress.XtraEditors.TextEdit txtEstimatedHours;
-        private DevExpress.XtraEditors.TextEdit txtSampleModel;
-        private DevExpress.XtraEditors.TextEdit txtSampleNo;
-        private DevExpress.XtraEditors.LabelControl labelControl24;
-        private DevExpress.XtraEditors.MemoEdit memoTestInformation;
-        private DevExpress.XtraEditors.MemoEdit memoNote;
-        private DevExpress.XtraEditors.LabelControl labelCreatedBy;
-        private DevExpress.XtraEditors.TextEdit txtCreatedBy;
-        private DevExpress.XtraEditors.SimpleButton btnCreatedRentTime;
-        private DevExpress.XtraEditors.CheckEdit chkHasLunch;
-        private DevExpress.XtraEditors.CheckEdit chkHasDinner;
-        private DevExpress.XtraEditors.SimpleButton btnDeletedRentTime;
-        private DevExpress.XtraEditors.ComboBoxEdit cmbTestMode;
-        private DevExpress.XtraEditors.ComboBoxEdit cmbTestItem;
-        private DevExpress.XtraEditors.ComboBoxEdit cmbCompany;
-        private DevExpress.XtraEditors.TextEdit txtContactName;
-        private DevExpress.XtraEditors.TextEdit txtSales;
-        private DevExpress.XtraEditors.TextEdit txtContactPhone;
-        private DevExpress.XtraEditors.ComboBoxEdit cmbEngineer;
-        private System.Windows.Forms.Label label1;
-        private DevExpress.XtraEditors.TextEdit txtBookingSeq;
-        private DevExpress.XtraEditors.TextEdit txtProjectNo;
-        private DevExpress.XtraEditors.ComboBoxEdit cmbJobNo;
-        private DevExpress.XtraEditors.LabelControl labelControl13;
-        private DevExpress.XtraEditors.LabelControl labelControl14;
-        private DevExpress.XtraEditors.SimpleButton btnRentTimeStart;
-        private DevExpress.XtraEditors.SimpleButton btnRentTimeEnd;
-        private DevExpress.XtraEditors.CheckEdit chkHandover;
-        private DevExpress.XtraEditors.SimpleButton btnCopyRentTime;
-        private DevExpress.XtraEditors.SimpleButton btnRestoreRentTime;
-        private DevExpress.XtraEditors.ComboBoxEdit cmbDinnerMinutes;
-        private DevExpress.XtraEditors.LabelControl labelControl26;
-        private DevExpress.XtraEditors.LabelControl labelControl12;
-        private DevExpress.XtraEditors.LabelControl labelControl25;
-        private DevExpress.XtraEditors.LabelControl labelControl27;
-        private DevExpress.XtraEditors.LabelControl labelControl28;
-        private DevExpress.XtraEditors.LabelControl labelControl29;
-        private DevExpress.XtraEditors.LabelControl labelControl30;
-        private DevExpress.XtraEditors.LabelControl labelControl31;
         private DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider dxErrorProvider1;
-        private DevExpress.XtraEditors.LabelControl lblCompanyRequired;
-        private DevExpress.XtraEditors.LabelControl lblLocationRequired;
-        private DevExpress.XtraEditors.LabelControl lblSalesRequired;
+        private DevExpress.XtraEditors.SplitContainerControl splitContainerControl1;
+        private DevExpress.XtraEditors.GroupControl grpTop;
+        private DevExpress.XtraEditors.LabelControl labelControl11;
         private DevExpress.XtraEditors.LabelControl lblEndTimeRequired;
         private DevExpress.XtraEditors.LabelControl lblStartTimeRequired;
         private DevExpress.XtraEditors.LabelControl lblEndDateRequired;
         private DevExpress.XtraEditors.LabelControl lblStartDateRequired;
+        private DevExpress.XtraEditors.LabelControl lblSalesRequired;
+        private DevExpress.XtraEditors.LabelControl lblLocationRequired;
+        private DevExpress.XtraEditors.LabelControl lblCompanyRequired;
+        private DevExpress.XtraEditors.LabelControl labelControl31;
+        private DevExpress.XtraEditors.LabelControl labelControl30;
+        private DevExpress.XtraEditors.LabelControl labelControl29;
+        private DevExpress.XtraEditors.LabelControl labelControl28;
+        private DevExpress.XtraEditors.LabelControl labelControl27;
+        private DevExpress.XtraEditors.LabelControl labelControl25;
+        private DevExpress.XtraEditors.LabelControl labelControl12;
+        private DevExpress.XtraEditors.LabelControl labelControl26;
+        private DevExpress.XtraEditors.ComboBoxEdit cmbDinnerMinutes;
+        private DevExpress.XtraEditors.SimpleButton btnCopyRentTime;
+        private DevExpress.XtraEditors.TextEdit txtBookingSeq;
+        private System.Windows.Forms.Label label1;
+        private DevExpress.XtraEditors.TextEdit txtContactPhone;
+        private DevExpress.XtraEditors.TextEdit txtSales;
+        private DevExpress.XtraEditors.TextEdit txtContactName;
+        private DevExpress.XtraEditors.ComboBoxEdit cmbCompany;
+        private DevExpress.XtraEditors.CheckEdit chkHasDinner;
+        private DevExpress.XtraEditors.CheckEdit chkHasLunch;
+        private DevExpress.XtraEditors.TextEdit txtCreatedBy;
+        private DevExpress.XtraEditors.LabelControl labelCreatedBy;
+        private DevExpress.XtraEditors.MemoEdit memoTestInformation;
+        private DevExpress.XtraEditors.TextEdit txtEstimatedHours;
+        private DevExpress.XtraEditors.TextEdit txtLunchMinutes;
+        private DevExpress.XtraEditors.TextEdit txtBookingNo;
+        private DevExpress.XtraEditors.TimeEdit endTimeEdit;
+        private DevExpress.XtraEditors.TimeEdit startTimeEdit;
+        private DevExpress.XtraEditors.DateEdit endDateEdit;
+        private DevExpress.XtraEditors.DateEdit startDateEdit;
+        private DevExpress.XtraEditors.ComboBoxEdit cmbLocation;
+        private DevExpress.XtraEditors.LabelControl labelControl23;
+        private DevExpress.XtraEditors.LabelControl labelControl22;
+        private DevExpress.XtraEditors.LabelControl labelControl15;
+        private DevExpress.XtraEditors.LabelControl labelEstimatedHours;
+        private DevExpress.XtraEditors.LabelControl labelControl10;
+        private DevExpress.XtraEditors.LabelControl labelControl9;
+        private DevExpress.XtraEditors.LabelControl labelControl8;
+        private DevExpress.XtraEditors.LabelControl labelControl5;
+        private DevExpress.XtraEditors.LabelControl labelControl4;
+        private DevExpress.XtraEditors.LabelControl labelControl3;
+        private DevExpress.XtraEditors.LabelControl labelControl1;
+        private DevExpress.XtraEditors.GroupControl grpBottom;
+        private DevExpress.XtraEditors.SplitContainerControl splitContainerControl2;
+        private DevExpress.XtraEditors.LabelControl labelControl13;
+        private DevExpress.XtraEditors.ComboBoxEdit cmbJobNo;
+        private DevExpress.XtraEditors.TextEdit txtProjectNo;
+        private DevExpress.XtraEditors.ComboBoxEdit cmbEngineer;
+        private DevExpress.XtraEditors.ComboBoxEdit cmbTestItem;
+        private DevExpress.XtraEditors.ComboBoxEdit cmbTestMode;
+        private DevExpress.XtraEditors.MemoEdit memoNote;
+        private DevExpress.XtraEditors.LabelControl labelControl24;
+        private DevExpress.XtraEditors.TextEdit txtSampleNo;
+        private DevExpress.XtraEditors.TextEdit txtSampleModel;
+        private DevExpress.XtraEditors.TextEdit txtProjectName;
+        private DevExpress.XtraEditors.TextEdit txtPE;
+        private DevExpress.XtraEditors.TextEdit txtArea;
+        private DevExpress.XtraEditors.LabelControl labelControl21;
+        private DevExpress.XtraEditors.LabelControl labelControl20;
+        private DevExpress.XtraEditors.LabelControl labelControl19;
+        private DevExpress.XtraEditors.LabelControl labelControl18;
+        private DevExpress.XtraEditors.LabelControl labelControl17;
+        private DevExpress.XtraEditors.LabelControl labelControl16;
+        private DevExpress.XtraEditors.LabelControl labelControl7;
+        private DevExpress.XtraEditors.LabelControl labelControl6;
+        private DevExpress.XtraEditors.LabelControl labelControl2;
+        private DevExpress.XtraEditors.SimpleButton btnRestoreRentTime;
+        private DevExpress.XtraEditors.CheckEdit chkHandover;
+        private DevExpress.XtraEditors.SimpleButton btnRentTimeEnd;
+        private DevExpress.XtraEditors.SimpleButton btnRentTimeStart;
+        private DevExpress.XtraEditors.SimpleButton btnDeletedRentTime;
+        private DevExpress.XtraEditors.SimpleButton btnCreatedRentTime;
     }
 }

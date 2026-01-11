@@ -117,6 +117,16 @@ namespace RentProject
             btnRestoreRentTime.Click -= btnRestoreRentTime_Click;
             btnRestoreRentTime.Click += btnRestoreRentTime_Click;
 
+            // 綁定：建立 / 刪除 / 複製
+            btnCreatedRentTime.Click -= btnCreatedRentTime_Click;
+            btnCreatedRentTime.Click += btnCreatedRentTime_Click;
+
+            btnDeletedRentTime.Click -= btnDeletedRentTime_Click;
+            btnDeletedRentTime.Click += btnDeletedRentTime_Click;
+
+            btnCopyRentTime.Click -= btnCopyRentTime_Click;
+            btnCopyRentTime.Click += btnCopyRentTime_Click;
+
             // 手動輸入後，自動保存(Validated 事件)
             cmbJobNo.Validated -= cmbJobNo_Validated;
             cmbJobNo.Validated += cmbJobNo_Validated;
@@ -137,6 +147,9 @@ namespace RentProject
             // JobNo 下拉
             cmbJobNo.Properties.Items.Clear();
             cmbJobNo.Properties.Items.AddRange(_jobNoService.GetActiveJobNos());
+
+            cmbCompany.EditValueChanged -= cmbCompany_EditValueChanged;
+            cmbCompany.EditValueChanged += cmbCompany_EditValueChanged;
 
             // 清空日期時間
             startDateEdit.EditValue = null;
@@ -471,5 +484,7 @@ namespace RentProject
 
         private static int ParseIntOrZero(string? s)
             => int.TryParse(s?.Trim(), out var v) ? v : 0;
+
     }
+
 }
