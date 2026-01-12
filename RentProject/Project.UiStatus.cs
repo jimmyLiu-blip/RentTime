@@ -9,52 +9,76 @@ namespace RentProject
         private void ApplyUiStatus()
         {
             bool isEdit = _editRentTimeId != null;
+            bool isDraft = _uiStatus == UiRentStatus.Draft;
             bool isStarted = _uiStatus == UiRentStatus.Started;
             bool isFinished = _uiStatus == UiRentStatus.Finished;
+            bool isSubmitToAssistant = _uiStatus == UiRentStatus.SubmittedToAssistant;
+            // 只要完成(2) 或 已送出(3) 算「鎖定」
+            bool isLocked = isFinished ||  isSubmitToAssistant;
 
             // 先處理標題/按鈕文字
             ApplyUiTextByStatus();
 
-            if (!isFinished)
+            if (!isLocked)
             {
-                // 原本狀態邏輯
+                // 非鎖定：Draft / Started
+                btnCreatedRentTime.Visible = true;
+
                 btnCreatedRentTime.Enabled = true;                 // 建立/儲存修改
                 btnRentTimeStart.Enabled = isEdit && !isStarted;   // Draft 才能開始
                 btnRentTimeEnd.Enabled = isEdit && isStarted;      // Started 才能完成
+
+                btnDeletedRentTime.Visible = isEdit;
                 btnDeletedRentTime.Enabled = isEdit;               // 未完成可刪
+
+                btnRestoreRentTime.Visible = isEdit;
                 btnRestoreRentTime.Enabled = isEdit;               // 未完成可回復
-                btnCopyRentTime.Enabled = isEdit && isFinished;    // 這行其實永遠 false，但先保留你原本的樣子也行
+
+                chkHandover.Visible = isEdit;
+                chkHandover.Enabled = isEdit;
+
+                btnCopyRentTime.Visible = isEdit;
+                btnCopyRentTime.Enabled = false; // 未鎖定時先不給複製（你原本也是想完成後才複製）
             }
             else
             {
-                // Finished：只能檢視 + 允許三個新動作
-                btnCreatedRentTime.Enabled = true;   // 列印
-                btnRentTimeStart.Enabled = true;     // 上傳掃描影本
-                btnRentTimeEnd.Enabled = true;       // 送出給助理
-
-
-                btnDeletedRentTime.Enabled = false;  // 完成後不能刪
+                //  鎖定：Finished / SubmittedToAssistant
+                btnDeletedRentTime.Enabled = false;
                 btnDeletedRentTime.Visible = false;
-                btnRestoreRentTime.Enabled = false;  // 完成後不能回復（依你需求）
+
+                btnRestoreRentTime.Enabled = false;
                 btnRestoreRentTime.Visible = false;
+
                 chkHandover.Visible = false;
-                btnCopyRentTime.Enabled = isEdit;    // 完成後可複製（你原本也是這個想法）
+
+                btnCopyRentTime.Visible = isEdit;
+                btnCopyRentTime.Enabled = isEdit;
+
+                if (isFinished)
+                {
+                    // Finished(2)：顯示三顆動作鍵
+                    btnCreatedRentTime.Visible = true; // 列印
+                    btnRentTimeStart.Visible = true;   // 上傳掃描影本
+                    btnRentTimeEnd.Visible = true;     // 送出給助理
+
+                    btnCreatedRentTime.Enabled = true;
+                    btnRentTimeStart.Enabled = true;
+                    btnRentTimeEnd.Enabled = true;
+                }
+                else
+                {
+                    // Submitted(3)： 隱藏三顆動作鍵
+                    btnCreatedRentTime.Visible = false;
+                    btnRentTimeStart.Visible = false;
+                    btnRentTimeEnd.Visible = false;
+                }
             }
 
-            // Finished：只能檢視
-            SetFormEditable(!isFinished);
+            //  Finished(2) / Submitted(3) 都要鎖欄位
+            SetFormEditable(!isLocked);
 
-            // 只要不是 Draft（Started / Finished）工程師就鎖住
-            bool lockEngineer = _uiStatus != UiRentStatus.Draft;
-
-            cmbEngineer.Enabled = !lockEngineer;
-
-            // 原本額外鎖的欄位保留（雖然 SetFormEditable 已鎖，這段可留）
-            if (_uiStatus == UiRentStatus.Finished)
-            {
-                startDateEdit.Properties.ReadOnly = true;
-                startTimeEdit.Properties.ReadOnly = true;
-            }
+            // 只要不是 Draft，工程師就鎖住（你原本規則保留）
+            cmbEngineer.Enabled = isDraft;
         }
 
         // 決定欄位能不能編輯
@@ -104,7 +128,7 @@ namespace RentProject
                 // 目標：只留下 RF-0000123 或 TMP-0000123
                 string bookingMain;
 
-                if (string.IsNullOrWhiteSpace(full) && full.Contains("-"))
+                if (!string.IsNullOrWhiteSpace(full) && full.Contains("-"))
                 {
                     var parts = full.Split('-');    // ["RF","0000123","1"]
                     bookingMain = string.Join("-", parts.Take(parts.Length - 1)); // "RF-0000123"

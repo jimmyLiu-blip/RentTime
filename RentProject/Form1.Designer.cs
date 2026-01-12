@@ -124,6 +124,7 @@
             btnSubmitToAssistant.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnSubmitToAssistant.ImageOptions.Image");
             btnSubmitToAssistant.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnSubmitToAssistant.ImageOptions.LargeImage");
             btnSubmitToAssistant.Name = "btnSubmitToAssistant";
+            btnSubmitToAssistant.ItemClick += btnSubmitToAssistant_ItemClick;
             // 
             // ribbonPageGroup3
             // 

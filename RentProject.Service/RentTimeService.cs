@@ -112,6 +112,13 @@ namespace RentProject.Service
         {
             if (rentTimeId <= 0) throw new Exception("RentTimeId 不正確");
 
+            var rt = _repo.GetRentTimeById(rentTimeId);
+
+            if (rt == null) throw new Exception("找不到RentTime");
+
+            if (rt.Status == 2 || rt.Status == 3)
+                throw new InvalidOperationException("已完成/已送出的租時單不可刪除");
+
             var rows = _repo.DeletedRentTime(rentTimeId, createdBy,DateTime.Now);
 
             if (rows != 1) throw new Exception($"刪除失敗，受影響筆數={rows}");
@@ -120,6 +127,18 @@ namespace RentProject.Service
         public long CreateBookingBatch()
         { 
             return _repo.CreateBookingBatch();
+        }
+
+
+        public void SubmitToAssistantById(int rentTimeId, string user)
+        {
+            var rt = GetRentTimeById(rentTimeId);
+            if (rt.Status != 2)
+            {
+                throw new InvalidOperationException("只有完成的租時單可以送給助理");
+            }
+
+            _repo.SubmitToAssistantById(rentTimeId, user, DateTime.Now);
         }
 
         // 小工具

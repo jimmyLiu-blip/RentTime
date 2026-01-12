@@ -177,17 +177,17 @@ namespace RentProject
                 return;
             }
 
-            // 1-2) 擋 Finished 不能刪
-            var finished = selected.Where(x => x.Status == 2).ToList();
-            if (finished.Count > 0)
+            // 1-2) 擋 Finished、Submit 不能刪
+            var blocked = selected.Where(x => x.Status == 2 || x.Status == 3).ToList();
+            if (blocked.Count > 0)
             {
                 var previewFinished = string.Join("\n",
-                    finished.Take(10).Select(x => $"{x.BookingNo}(Id:{x.RentTimeId})"));
+                    blocked.Take(10).Select(x => $"{x.BookingNo}(Id:{x.RentTimeId})"));
 
                 XtraMessageBox.Show(
                     $"你勾選的資料包含「已完成(Finished)」狀態，不能刪除。\n" +
                     $"請取消勾選後再刪除。\n\n" +
-                    $"已完成筆數：{finished.Count}\n" +
+                    $"筆數：{blocked.Count}\n" +
                     $"{previewFinished}",
                     "禁止刪除",
                     MessageBoxButtons.OK,
@@ -224,6 +224,61 @@ namespace RentProject
             {
                 XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", "Error");
             }
+        }
+
+        // 按鈕：送出給助理
+        private void btnSubmitToAssistant_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            var selected = _projectView.GetCheckedRentTime();
+
+            if (selected.Count == 0) 
+            {
+                XtraMessageBox.Show("請先勾選要送出給助理的租時單", "提示");
+                return;
+            };
+
+            var blocked = selected.Where(x => x.Status != 2).ToList();
+            if (blocked.Count > 0)
+            {
+                var preview = string.Join("\n",
+                    blocked.Take(10).Select(x => $"{x.BookingNo}(Id:{x.RentTimeId})"));
+
+                XtraMessageBox.Show(
+                    $"你勾選的資料包含「非已完成(Finished)」狀態，不能送出。\n" +
+                    $"請取消勾選後再刪除。\n\n" +
+                    $"筆數：{blocked.Count}\n" +
+                    $"{preview}",
+                    "禁止送出",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            var confirm = XtraMessageBox.Show($"確認要送出 {selected.Count} 筆租時單給助理嗎",
+                "確認送出",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (confirm != DialogResult.Yes) return;
+
+            try
+            {
+                var user = "Jimmy";
+
+                foreach (var rt in selected)
+                {
+                    _rentTimeservice.SubmitToAssistantById(rt.RentTimeId, user);
+                }
+
+                XtraMessageBox.Show($"送出完成：{selected.Count}筆", "完成");
+
+                RefreshProjectView();
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", "Error");
+            }
+
         }
     }
 }

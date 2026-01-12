@@ -6,6 +6,7 @@ using RentProject.UIModels;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace RentProject
 {
@@ -46,6 +47,15 @@ namespace RentProject
 
         // 快照保存從DB獨到的原始資料
         private RentTime? _loadedRentTime;
+
+        // 通知外面(ProjectView/Form1更新)
+        public event Action? RentTimeChanged;
+
+        // Invoke() 就是「把事件（其實是委派 delegate）叫起來執行」
+        private void NotifyRentTimeChanged()
+        { 
+            RentTimeChanged?.Invoke();
+        }
 
         // =========================================================
         // C) 建構子
@@ -138,6 +148,29 @@ namespace RentProject
             // 手動輸入後，自動保存(Validated 事件)
             cmbJobNo.Validated -= cmbJobNo_Validated;
             cmbJobNo.Validated += cmbJobNo_Validated;
+
+            // 日期/時間改變就刷新午餐晚餐可用性 + 預估時間
+            startDateEdit.EditValueChanged -= AnyTimeOrMealChanged;
+            startDateEdit.EditValueChanged += AnyTimeOrMealChanged;
+
+            endDateEdit.EditValueChanged -= AnyTimeOrMealChanged;
+            endDateEdit.EditValueChanged += AnyTimeOrMealChanged;
+
+            startTimeEdit.EditValueChanged -= AnyTimeOrMealChanged;
+            startTimeEdit.EditValueChanged += AnyTimeOrMealChanged;
+
+            endTimeEdit.EditValueChanged -= AnyTimeOrMealChanged;
+            endTimeEdit.EditValueChanged += AnyTimeOrMealChanged;
+
+            // 勾午餐/晚餐、選晚餐分鐘也要刷新預估時間
+            chkHasLunch.CheckedChanged -= AnyTimeOrMealChanged;
+            chkHasLunch.CheckedChanged += AnyTimeOrMealChanged;
+
+            chkHasDinner.CheckedChanged -= AnyTimeOrMealChanged;
+            chkHasDinner.CheckedChanged += AnyTimeOrMealChanged;
+
+            cmbDinnerMinutes.EditValueChanged -= AnyTimeOrMealChanged;
+            cmbDinnerMinutes.EditValueChanged += AnyTimeOrMealChanged;
 
             // Init 下拉選單
             InitContactCompany();
@@ -303,6 +336,8 @@ namespace RentProject
 
                 // (3) 重新讀 DB 刷新 UI
                 ReloadRentTimeFromDb();
+
+                NotifyRentTimeChanged(); // 通知外面刷新 ProjectView
             }
             catch (Exception ex)
             {
@@ -353,6 +388,8 @@ namespace RentProject
 
                 // (C) 立刻刷新 UI
                 ReloadRentTimeFromDb(); // 完成後 UI 應該立刻鎖住 + Copy 亮起
+
+                NotifyRentTimeChanged(); // 通知外面刷新 ProjectView
             }
             catch (Exception ex)
             {
@@ -379,6 +416,8 @@ namespace RentProject
                 _rentTimeService.RestoreToDraftById(_editRentTimeId.Value, user);
 
                 ReloadRentTimeFromDb(); // 回復後 UI 應該解鎖
+
+                NotifyRentTimeChanged(); // 通知外面刷新 ProjectView
             }
             catch (Exception ex)
             {
@@ -422,34 +461,43 @@ namespace RentProject
                 var createdBy = txtCreatedBy.Text.Trim();
 
                 // 真正決定「要走哪一套複製規則」的變數
-                bool continueSeq = chkHandover.Checked;
+                bool continueSeq = false; // 預設：沒交接就開新單
 
                 // 新規則：交接有勾 -> 讓使用者選「延續流水」或「開新單」
                 if (chkHandover.Checked)
                 {
-                    var r = XtraMessageBox.Show(
-                        "此租時單前一筆紀錄有選取交接，要開新一筆租時單嗎？\n\n" +
-                        "確定：開新的一筆\n" +
-                        "取消：延續前一筆流水號續開",
-                        "租時單管理 - 提示訊息",
-                        MessageBoxButtons.OKCancel,
-                        MessageBoxIcon.Warning);
+                    var args = new XtraMessageBoxArgs
+                    {
+                        Caption = "複製租時單 - 選擇方式",
+                        Text =
+                            "此租時單有勾選交接，請選擇複製方式：\n\n" +
+                            "【開新一筆】新的 BookingNo\n" +
+                            "【延續流水】同 BookingNo，流水號 + 1",
+                        Buttons = new[]
+                        { 
+                            DialogResult.OK, DialogResult.Cancel },
 
-                    if (r == DialogResult.OK)
+                        DefaultButtonIndex = 1, // 預設選「延續流水」（比較不容易誤按造成開新）
+                        Icon = SystemIcons.Warning 
+                    };
+
+                    args.Showing += (s, e) =>
                     {
-                        // 確定 = 開新
-                        continueSeq = false;
-                    }
-                    else
-                    {
-                        // 取消 = 延續
-                        continueSeq = true;
-                    }
+                        e.Buttons[DialogResult.OK].Text = "開新一筆";  // DialogResult.OK
+                        e.Buttons[DialogResult.Cancel].Text = "延續流水";  // DialogResult.Cancel
+                    };
+
+                    var r = XtraMessageBox.Show(args);
+
+                    // OK = 開新一筆 => 不延續
+                    // Cancel = 延續流水 => 延續
+                    continueSeq = (r != DialogResult.OK);
                 }
 
                 // 1. 先複製 -> DB 產生新 RentTime
                 var result = _rentTimeService.CopyRentTime(_editRentTimeId.Value, continueSeq, createdBy);
 
+                NotifyRentTimeChanged();
                 // 2. 直接打開新單（新 RentTimeId）
                 this.Hide(); // 先把舊表單藏起來，避免畫面跳來跳去 
 
@@ -487,11 +535,42 @@ namespace RentProject
         // 送出給助理空方法
         private void SubmitToAssistant()
         {
-            XtraMessageBox.Show("送出給助理尚未實作", "送出給助理");
+            if (_editRentTimeId == null) return;
+
+            if (_uiStatus != UiRentStatus.Finished)
+            {
+                XtraMessageBox.Show("只有「已完成」的租時單才能送出給助理", "提示");
+                return;
+            }
+
+            var confirm = XtraMessageBox.Show(
+                "確認要送出給助理嗎？\n送出後將進入「已送出」狀態","送出給助理",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
+
+            if (confirm != DialogResult.Yes) return;
+
+            var user = txtCreatedBy.Text?.Trim() ?? "";
+
+            if (string.IsNullOrWhiteSpace(user))
+            {
+                XtraMessageBox.Show("找不到操作人（CreatedBy），請先確認表單建單人員欄位", "提示");
+                return;
+            }
+
+            _rentTimeService.SubmitToAssistantById(_editRentTimeId.Value, user);
+
+            // 重新讀 DB，讓 _uiStatus 變成 送出給助理
+            ReloadRentTimeFromDb();
         }
 
         private static int ParseIntOrZero(string? s)
             => int.TryParse(s?.Trim(), out var v) ? v : 0;
+
+        // 午餐/晚餐事件綁定
+        private void AnyTimeOrMealChanged(object? sender, EventArgs e)
+        { 
+            if (_isLoading) return; // 你有 _isLoading 就先保護，避免程式塞值時一直連鎖觸發
+            RefreshMealAndEstimateUI();
+        }
     }
 
 }

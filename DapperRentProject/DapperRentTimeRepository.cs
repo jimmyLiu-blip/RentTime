@@ -525,7 +525,9 @@ namespace RentProject.Repository
                         SET IsDeleted = 1,
                             ModifiedBy = @ModifiedBy,
                             ModifiedDate = @ModifiedDate
-                        WHERE RentTimeId = @RentTimeId;";
+                        WHERE RentTimeId = @RentTimeId
+                          AND IsDeleted = 0
+                          AND Status NOT IN (2,3);";
 
             return connection.Execute(sql, new { 
                 RentTimeId = rentTimeId ,
@@ -545,6 +547,29 @@ namespace RentProject.Repository
                 SELECT CAST(SCOPE_IDENTITY() AS BIGINT);";
 
             return connection.ExecuteScalar<long>(sql);
+        }
+
+        public void SubmitToAssistantById(int rentTimeId, string modifiedBy, DateTime modifiedAt)
+        {
+            using var connection = new SqlConnection(_connectionString);
+
+            connection.Open();
+
+            var sql = @"
+                Update dbo.RentTimes
+                SET Status = 3, 
+                    ModifiedBy = @ModifiedBy, 
+                    ModifiedDate = @ModifiedDate
+                WHERE RentTimeId = @RentTimeId
+                  AND IsDeleted = 0
+                  AND Status = 2;";
+
+            connection.Execute(sql, new
+            {
+                RentTimeId = rentTimeId,
+                ModifiedBy = modifiedBy,
+                ModifiedDate = modifiedAt,
+            });
         }
 
 

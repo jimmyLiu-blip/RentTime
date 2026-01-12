@@ -34,4 +34,5 @@
 		<!-- 先把 Project.*.resx 全部排除（例如 Project.DataSources.resx、Project.DropdownInit.resx） -->
 		<EmbeddedResource Remove="Project.*.resx" />
 	</ItemGroup>
+
 </Project>
