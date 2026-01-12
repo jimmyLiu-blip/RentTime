@@ -331,7 +331,7 @@ namespace RentProject.Repository
                 SELECT
                     RentTimeId, BookingNo, Area, Location, CustomerName, ContactName,
                     Phone, PE, Sales, StartDate, EndDate, StartTime, EndTime,
-                    ProjectNo, ProjectName
+                    ProjectNo, ProjectName, Status
                 FROM dbo.RentTimes
                 WHERE IsDeleted = 0
                 ORDER BY

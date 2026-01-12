@@ -107,6 +107,14 @@ namespace RentProject
             txtSales.EditValueChanged -= ContactFields_EditValueChanged;
             txtSales.EditValueChanged += ContactFields_EditValueChanged;
 
+            // 場地改變 -> 自動帶入區域
+            cmbLocation.EditValueChanged -= cmbLocation_EditValueChanged;
+            cmbLocation.EditValueChanged += cmbLocation_EditValueChanged;
+
+            // 測試模式改變 -> 自動帶出測試項目
+            cmbTestMode.EditValueChanged -= cmbTestMode_EditValueChanged;
+            cmbTestMode.EditValueChanged += cmbTestMode_EditValueChanged;
+
             // 綁定租時開始、租時完成、回復狀態
             btnRentTimeStart.Click -= btnRentTimeStart_Click;
             btnRentTimeStart.Click += btnRentTimeStart_Click;
@@ -484,7 +492,6 @@ namespace RentProject
 
         private static int ParseIntOrZero(string? s)
             => int.TryParse(s?.Trim(), out var v) ? v : 0;
-
     }
 
 }

@@ -51,6 +51,7 @@ namespace RentProject
 
             var show = new[]
             {
+                "BookingGroupNo",
                 "BookingNo", "Area", "Location", "CustomerName", "PE",
                 "StartDate", "EndDate", "ProjectNo", "ProjectName","Action"
             };
@@ -84,7 +85,41 @@ namespace RentProject
 
             ApplyProjectViewColumnSetting();
 
-            gridView1.Columns["Action"].VisibleIndex = 9;
+            // 依 BookingGroupNo分組
+            gridView1.BeginUpdate();
+            try
+            {
+                // 1. 開啟群組面板（想要上方可拖拉欄位就 true，不想要就 false)
+                gridView1.OptionsView.ShowGroupPanel = false;
+
+                // 2. 清掉舊的群組（避免重複呼叫 LoadData 時疊加）
+                gridView1.ClearGrouping();
+
+                // 3. 設定 BookingGroupNo 當分組欄位
+                var groupCol = gridView1.Columns["BookingGroupNo"];
+                groupCol.Caption = "Booking No."; // 群組列顯示用文字（你也可以改成 "Booking Group"）
+                groupCol.GroupIndex = 0;          // 0 = 第一層群組
+
+                // 勾選框選取列
+                gridView1.OptionsSelection.MultiSelect = true;
+                gridView1.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CheckBoxRowSelect;
+
+                // 群組烈也顯示勾選框
+                gridView1.OptionsSelection.ShowCheckBoxSelectorInGroupRow = DevExpress.Utils.DefaultBoolean.True;
+
+                // 欄位標題列顯示全選勾選框
+                gridView1.OptionsSelection.ShowCheckBoxSelectorInColumnHeader = DevExpress.Utils.DefaultBoolean.True;
+
+                // 4. 預設展開所有群組（先讓你看效果）
+                gridView1.ExpandAllGroups();
+
+                // 5. 群組後通常不想再把這欄當一般欄位顯示（可選）
+                groupCol.Visible = false;
+            }
+            finally
+            {
+                gridView1.EndUpdate();
+            }
 
             gridView1.BestFitColumns(); //自動調整每個欄位寬度，讓內容比較不會被截掉
         }
@@ -114,15 +149,16 @@ namespace RentProject
             gridView1.Columns["ProjectNo"].Caption = "Project No.";
             gridView1.Columns["ProjectName"].Caption = "Project Name";
 
-            gridView1.Columns["BookingNo"].VisibleIndex = 0;
-            gridView1.Columns["Area"].VisibleIndex = 1;
-            gridView1.Columns["Location"].VisibleIndex = 2;
-            gridView1.Columns["CustomerName"].VisibleIndex = 3;
-            gridView1.Columns["PE"].VisibleIndex = 4;
-            gridView1.Columns["StartDate"].VisibleIndex = 5;
-            gridView1.Columns["EndDate"].VisibleIndex = 6;
-            gridView1.Columns["ProjectNo"].VisibleIndex = 7;
-            gridView1.Columns["ProjectName"].VisibleIndex = 8;
+            gridView1.Columns["BookingNo"].VisibleIndex = 1;
+            gridView1.Columns["Area"].VisibleIndex = 2;
+            gridView1.Columns["Location"].VisibleIndex = 3;
+            gridView1.Columns["CustomerName"].VisibleIndex = 4;
+            gridView1.Columns["PE"].VisibleIndex = 5;
+            gridView1.Columns["StartDate"].VisibleIndex = 6;
+            gridView1.Columns["EndDate"].VisibleIndex = 7;
+            gridView1.Columns["ProjectNo"].VisibleIndex = 8;
+            gridView1.Columns["ProjectName"].VisibleIndex = 9;
+            gridView1.Columns["Action"].VisibleIndex = 10;
         }
 
         public event Action? RentTimeSaved;
@@ -142,9 +178,24 @@ namespace RentProject
             }
         }
 
-        private void gridControl1_Click(object sender, EventArgs e)
-        {
+        public List<RentTime> GetCheckedRentTime()
+        { 
+            var result = new List<RentTime>();
 
+            // 會回傳「被勾選的資料列」(group row 通常是負數 handle)
+            foreach (var handle in gridView1.GetSelectedRows())
+            {
+                if (handle < 0) continue;
+
+                if (gridView1.GetRow(handle) is RentTime rt)
+                { 
+                    result.Add(rt);
+                }
+            }
+
+            return result;
         }
+
+
     }
 }

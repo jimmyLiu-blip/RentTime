@@ -8,6 +8,20 @@
 
         public string? BookingSeq { get; set; }
 
+        public string BookingGroupNo
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(BookingNo)) return "";
+
+                // 以最後一個 '-' 當作「流水段」切點：RF-0000112-1 → RF-0000112
+                var idx = BookingNo.LastIndexOf("-");
+                if (idx <= 0) return BookingNo;
+
+                return BookingNo.Substring(0, idx);
+            }
+        }
+
         public string CreatedBy { get; set; } = null!;
 
         public DateTime CreatedDate { get; set; }

@@ -33,8 +33,14 @@
             ribbonPage1 = new DevExpress.XtraBars.Ribbon.RibbonPage();
             ribbonPageGroup1 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             btnAddRentTime = new DevExpress.XtraBars.BarButtonItem();
-            btnTestConnection = new DevExpress.XtraBars.BarButtonItem();
+            btnDelete = new DevExpress.XtraBars.BarButtonItem();
             btnView = new DevExpress.XtraBars.BarButtonItem();
+            ribbonPageGroup2 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+            btnExport = new DevExpress.XtraBars.BarButtonItem();
+            btnSubmitToAssistant = new DevExpress.XtraBars.BarButtonItem();
+            ribbonPageGroup3 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+            btnTestConnection = new DevExpress.XtraBars.BarButtonItem();
+            btnLogout = new DevExpress.XtraBars.BarButtonItem();
             ribbonControl1 = new DevExpress.XtraBars.Ribbon.RibbonControl();
             barManager1 = new DevExpress.XtraBars.BarManager(components);
             barDockControlTop = new DevExpress.XtraBars.BarDockControl();
@@ -56,7 +62,7 @@
             // 
             // ribbonPage1
             // 
-            ribbonPage1.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] { ribbonPageGroup1 });
+            ribbonPage1.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] { ribbonPageGroup1, ribbonPageGroup2, ribbonPageGroup3 });
             ribbonPage1.Name = "ribbonPage1";
             ribbonPage1.Text = "ribbonPage1";
             // 
@@ -64,10 +70,10 @@
             // 
             ribbonPageGroup1.AllowTextClipping = false;
             ribbonPageGroup1.ItemLinks.Add(btnAddRentTime);
-            ribbonPageGroup1.ItemLinks.Add(btnTestConnection);
+            ribbonPageGroup1.ItemLinks.Add(btnDelete);
             ribbonPageGroup1.ItemLinks.Add(btnView);
             ribbonPageGroup1.Name = "ribbonPageGroup1";
-            ribbonPageGroup1.Text = "管理租時單";
+            ribbonPageGroup1.Text = "Common";
             // 
             // btnAddRentTime
             // 
@@ -78,14 +84,14 @@
             btnAddRentTime.Name = "btnAddRentTime";
             btnAddRentTime.ItemClick += btnAddRentTime_ItemClick;
             // 
-            // btnTestConnection
+            // btnDelete
             // 
-            btnTestConnection.Caption = "連線測試";
-            btnTestConnection.Id = 2;
-            btnTestConnection.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnTestConnection.ImageOptions.Image");
-            btnTestConnection.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnTestConnection.ImageOptions.LargeImage");
-            btnTestConnection.Name = "btnTestConnection";
-            btnTestConnection.ItemClick += btnTestConnection_ItemClick;
+            btnDelete.Caption = "刪除租時單";
+            btnDelete.Id = 4;
+            btnDelete.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnDelete.ImageOptions.Image");
+            btnDelete.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnDelete.ImageOptions.LargeImage");
+            btnDelete.Name = "btnDelete";
+            btnDelete.ItemClick += btnDelete_ItemClick;
             // 
             // btnView
             // 
@@ -96,15 +102,62 @@
             btnView.Name = "btnView";
             btnView.ItemClick += btnView_ItemClick;
             // 
+            // ribbonPageGroup2
+            // 
+            ribbonPageGroup2.ItemLinks.Add(btnExport);
+            ribbonPageGroup2.ItemLinks.Add(btnSubmitToAssistant);
+            ribbonPageGroup2.Name = "ribbonPageGroup2";
+            ribbonPageGroup2.Text = "Print and Export";
+            // 
+            // btnExport
+            // 
+            btnExport.Caption = "匯出清單";
+            btnExport.Id = 5;
+            btnExport.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnExport.ImageOptions.Image");
+            btnExport.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnExport.ImageOptions.LargeImage");
+            btnExport.Name = "btnExport";
+            // 
+            // btnSubmitToAssistant
+            // 
+            btnSubmitToAssistant.Caption = "送出給助理";
+            btnSubmitToAssistant.Id = 6;
+            btnSubmitToAssistant.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnSubmitToAssistant.ImageOptions.Image");
+            btnSubmitToAssistant.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnSubmitToAssistant.ImageOptions.LargeImage");
+            btnSubmitToAssistant.Name = "btnSubmitToAssistant";
+            // 
+            // ribbonPageGroup3
+            // 
+            ribbonPageGroup3.ItemLinks.Add(btnTestConnection);
+            ribbonPageGroup3.ItemLinks.Add(btnLogout);
+            ribbonPageGroup3.Name = "ribbonPageGroup3";
+            ribbonPageGroup3.Text = "Help";
+            // 
+            // btnTestConnection
+            // 
+            btnTestConnection.Caption = "連線測試";
+            btnTestConnection.Id = 2;
+            btnTestConnection.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnTestConnection.ImageOptions.Image");
+            btnTestConnection.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnTestConnection.ImageOptions.LargeImage");
+            btnTestConnection.Name = "btnTestConnection";
+            btnTestConnection.ItemClick += btnTestConnection_ItemClick;
+            // 
+            // btnLogout
+            // 
+            btnLogout.Caption = "登出";
+            btnLogout.Id = 7;
+            btnLogout.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnLogout.ImageOptions.Image");
+            btnLogout.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnLogout.ImageOptions.LargeImage");
+            btnLogout.Name = "btnLogout";
+            // 
             // ribbonControl1
             // 
             ribbonControl1.AllowMinimizeRibbon = false;
             ribbonControl1.EmptyAreaImageOptions.ImagePadding = new System.Windows.Forms.Padding(50, 51, 50, 51);
             ribbonControl1.ExpandCollapseItem.Id = 0;
-            ribbonControl1.Items.AddRange(new DevExpress.XtraBars.BarItem[] { ribbonControl1.ExpandCollapseItem, btnAddRentTime, btnTestConnection, btnView });
+            ribbonControl1.Items.AddRange(new DevExpress.XtraBars.BarItem[] { ribbonControl1.ExpandCollapseItem, btnAddRentTime, btnTestConnection, btnView, btnDelete, btnExport, btnSubmitToAssistant, btnLogout });
             ribbonControl1.Location = new System.Drawing.Point(0, 0);
             ribbonControl1.Margin = new System.Windows.Forms.Padding(5);
-            ribbonControl1.MaxItemId = 4;
+            ribbonControl1.MaxItemId = 8;
             ribbonControl1.Name = "ribbonControl1";
             ribbonControl1.OptionsMenuMinWidth = 550;
             ribbonControl1.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] { ribbonPage1 });
@@ -243,6 +296,12 @@
         private DevExpress.XtraEditors.PanelControl filterPanel;
         private DevExpress.XtraEditors.ComboBoxEdit cmbLocationFilter;
         private DevExpress.XtraEditors.LabelControl labelControl1;
+        private DevExpress.XtraBars.BarButtonItem btnDelete;
+        private DevExpress.XtraBars.BarButtonItem btnExport;
+        private DevExpress.XtraBars.BarButtonItem btnSubmitToAssistant;
+        private DevExpress.XtraBars.BarButtonItem btnLogout;
+        private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup2;
+        private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup3;
     }
 }
 

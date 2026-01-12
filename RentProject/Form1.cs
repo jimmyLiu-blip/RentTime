@@ -3,6 +3,7 @@ using DevExpress.XtraEditors;
 using RentProject.Domain;
 using RentProject.Repository;
 using RentProject.Service;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -163,5 +164,66 @@ namespace RentProject
                 cmbLocationFilter.EditValue = "全部";
         }
 
+        // 刪除租時單(可多選)
+        private void btnDelete_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            // 假設目前顯示的是ProjectView
+            // 1) 取出勾選
+            var selected = _projectView.GetCheckedRentTime();
+
+            if (selected.Count == 0)
+            {
+                XtraMessageBox.Show("請先勾選要刪除的租時單", "提示");
+                return;
+            }
+
+            // 1-2) 擋 Finished 不能刪
+            var finished = selected.Where(x => x.Status == 2).ToList();
+            if (finished.Count > 0)
+            {
+                var previewFinished = string.Join("\n",
+                    finished.Take(10).Select(x => $"{x.BookingNo}(Id:{x.RentTimeId})"));
+
+                XtraMessageBox.Show(
+                    $"你勾選的資料包含「已完成(Finished)」狀態，不能刪除。\n" +
+                    $"請取消勾選後再刪除。\n\n" +
+                    $"已完成筆數：{finished.Count}\n" +
+                    $"{previewFinished}",
+                    "禁止刪除",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            // 2) 確認視窗
+
+            var confirm = XtraMessageBox.Show(
+                $"確認要刪除 {selected.Count} 筆租時單嗎?\n（刪除後會從清單移除）", "確認刪除", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+            if (confirm != DialogResult.Yes) return;
+
+            // 3) 批次刪除（沿用你原本單張刪除的 service）
+            try
+            {
+                // 這裡先用同一個 createdBy（你目前專案是用 CreatedBy 當操作人）
+                // 之後做登入系統，再改成 currentUserName
+
+                var createdBy = "Jimmy";
+
+                foreach (var rt in selected)
+                {
+                    _rentTimeservice.DeletedRentTime(rt.RentTimeId, createdBy, DateTime.Now);
+                }
+
+                XtraMessageBox.Show($"刪除完成:{selected.Count} 筆", " 完成");
+
+                // 4) 刷新列表
+                RefreshProjectView();
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", "Error");
+            }
+        }
     }
 }

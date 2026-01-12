@@ -212,7 +212,6 @@ namespace RentProject
             return date.Value.Date + time.Value;
         }
 
-        //
         private DateTime? GetUiStartDateTime()
         {
             var d = startDateEdit.EditValue as DateTime?;
