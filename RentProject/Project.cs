@@ -41,7 +41,7 @@ namespace RentProject
         private long? _bookingBatchId;
 
         // 目前這張單在 UI 上該用哪個狀態顯示
-        private enum UiRentStatus { Draft = 0, Started = 1, Finished = 2 };
+        private enum UiRentStatus { Draft = 0, Started = 1, Finished = 2, SubmittedToAssistant = 3 };
         private UiRentStatus _uiStatus = UiRentStatus.Draft;
 
         // 快照保存從DB獨到的原始資料

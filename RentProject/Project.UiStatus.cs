@@ -32,8 +32,12 @@ namespace RentProject
                 btnRentTimeStart.Enabled = true;     // 上傳掃描影本
                 btnRentTimeEnd.Enabled = true;       // 送出給助理
 
+
                 btnDeletedRentTime.Enabled = false;  // 完成後不能刪
+                btnDeletedRentTime.Visible = false;
                 btnRestoreRentTime.Enabled = false;  // 完成後不能回復（依你需求）
+                btnRestoreRentTime.Visible = false;
+                chkHandover.Visible = false;
                 btnCopyRentTime.Enabled = isEdit;    // 完成後可複製（你原本也是這個想法）
             }
 

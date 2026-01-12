@@ -85,7 +85,7 @@
 
         public decimal EstimatedHours { get; set; }
 
-        public int Status { get; set; } = 0; // Draft = 0, Started = 1, Finished = 2
+        public int Status { get; set; } = (int)RentTimeStatus.Draft; // Draft = 0, Started = 1, Finished = 2
 
         public bool IsDeleted { get; set; }
 
