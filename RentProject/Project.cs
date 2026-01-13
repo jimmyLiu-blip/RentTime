@@ -53,7 +53,7 @@ namespace RentProject
 
         // Invoke() 就是「把事件（其實是委派 delegate）叫起來執行」
         private void NotifyRentTimeChanged()
-        { 
+        {
             RentTimeChanged?.Invoke();
         }
 
@@ -474,11 +474,11 @@ namespace RentProject
                             "【開新一筆】新的 BookingNo\n" +
                             "【延續流水】同 BookingNo，流水號 + 1",
                         Buttons = new[]
-                        { 
+                        {
                             DialogResult.OK, DialogResult.Cancel },
 
                         DefaultButtonIndex = 1, // 預設選「延續流水」（比較不容易誤按造成開新）
-                        Icon = SystemIcons.Warning 
+                        Icon = SystemIcons.Warning
                     };
 
                     args.Showing += (s, e) =>
@@ -544,7 +544,7 @@ namespace RentProject
             }
 
             var confirm = XtraMessageBox.Show(
-                "確認要送出給助理嗎？\n送出後將進入「已送出」狀態","送出給助理",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
+                "確認要送出給助理嗎？\n送出後將進入「已送出」狀態", "送出給助理", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (confirm != DialogResult.Yes) return;
 
@@ -567,9 +567,24 @@ namespace RentProject
 
         // 午餐/晚餐事件綁定
         private void AnyTimeOrMealChanged(object? sender, EventArgs e)
-        { 
+        {
             if (_isLoading) return; // 你有 _isLoading 就先保護，避免程式塞值時一直連鎖觸發
             RefreshMealAndEstimateUI();
+        }
+
+        private void labelControl17_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void labelControl26_Click(object sender, EventArgs e)
+        {
+
         }
     }
 
