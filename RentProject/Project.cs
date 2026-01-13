@@ -582,10 +582,6 @@ namespace RentProject
 
         }
 
-        private void labelControl26_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 
 }
