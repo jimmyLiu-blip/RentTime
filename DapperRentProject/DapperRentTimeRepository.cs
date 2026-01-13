@@ -329,29 +329,30 @@ namespace RentProject.Repository
 
             var sql = @"
                 SELECT
-                    RentTimeId, BookingNo, Area, Location, CustomerName, ContactName,
-                    Phone, PE, Sales, StartDate, EndDate, StartTime, EndTime,
-                    ProjectNo, ProjectName, Status
-                FROM dbo.RentTimes
-                WHERE IsDeleted = 0
+                    rt.RentTimeId, rt.BookingNo, rt.Area, rt.Location, rt.CustomerName, rt.ContactName,
+                    rt.Phone, rt.PE, rt.Sales, rt.StartDate, rt.EndDate, rt.StartTime, rt.EndTime, jm.JobNo AS jobNo,
+                    rt.ProjectNo, rt.ProjectName, rt.Status
+                FROM dbo.RentTimes rt
+                LEFT JOIN dbo.JobNoMaster jm ON rt.JobId = jm.JobId
+                WHERE rt.IsDeleted = 0
                 ORDER BY
                     -- 主號：RF-0000009-4 / TMP-0000009-4  -> 取出 0000009
-                    CASE WHEN BookingNo LIKE '%-%-%'
+                    CASE WHEN rt.BookingNo LIKE '%-%-%'
                          THEN TRY_CONVERT(BIGINT,
                               SUBSTRING(
-                                  BookingNo,
-                                  CHARINDEX('-', BookingNo) + 1,
-                                  CHARINDEX('-', BookingNo, CHARINDEX('-', BookingNo) + 1) - CHARINDEX('-', BookingNo) - 1
+                                  rt.BookingNo,
+                                  CHARINDEX('-', rt.BookingNo) + 1,
+                                  CHARINDEX('-', rt.BookingNo, CHARINDEX('-', rt.BookingNo) + 1) - CHARINDEX('-', rt.BookingNo) - 1
                               )
                          )
                          ELSE 0 END DESC,
 
                     -- 流水號：RF-0000009-4 / TMP-0000009-4  -> 取出 4
-                    CASE WHEN BookingNo LIKE '%-%-%'
+                    CASE WHEN rt.BookingNo LIKE '%-%-%'
                          THEN TRY_CONVERT(INT,
                               SUBSTRING(
-                                  BookingNo,
-                                  CHARINDEX('-', BookingNo, CHARINDEX('-', BookingNo) + 1) + 1,
+                                  rt.BookingNo,
+                                  CHARINDEX('-', rt.BookingNo, CHARINDEX('-', rt.BookingNo) + 1) + 1,
                                   20
                               )
                          )

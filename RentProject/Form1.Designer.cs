@@ -141,6 +141,7 @@
             btnExportExcel.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnExportExcel.ImageOptions.Image");
             btnExportExcel.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnExportExcel.ImageOptions.LargeImage");
             btnExportExcel.Name = "btnExportExcel";
+            btnExportExcel.ItemClick += btnExportExcel_ItemClick;
             // 
             // btnSubmitToAssistant
             // 

@@ -1,14 +1,17 @@
-﻿using DevExpress.XtraBars.Ribbon;
+﻿using ClosedXML.Excel;
+using DevExpress.XtraBars.Ribbon;
 using DevExpress.XtraEditors;
 using RentProject.Domain;
 using RentProject.Repository;
 using RentProject.Service;
+using RentProject.Shared.UIModels;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Windows.Forms;
-using RentProject.Shared.UIModels;
 
 
 namespace RentProject
@@ -440,7 +443,7 @@ namespace RentProject
             if (loc != "全部")
                 baseList = baseList.Where(x => x.Location == loc);
 
-            var statusText = cmbLocationFilter.EditValue?.ToString()?.Trim() ?? "全部";
+            var statusText = cmbStatusFilter.EditValue?.ToString()?.Trim() ?? "全部";
 
             int? status = statusText switch
             {
@@ -461,9 +464,7 @@ namespace RentProject
             {
                 f.StartPosition = FormStartPosition.CenterParent;
 
-                f.TopMost = true;
-
-                var dr = f.ShowDialog(this);
+                var dr = f.ShowDialog();
 
                 if (dr != DialogResult.OK) return;
 
@@ -490,5 +491,93 @@ namespace RentProject
             if (_isCalendarView) ShowCalendarView();
             else ShowProjectView();
         }
+
+        // SaveFileDialog：Windows 內建的「另存新檔」視窗物件
+        // 如果使用者只打 RentTimes_123 沒打 .xlsx，系統會自動補上副檔名。
+        // XLWorkbook 是 ClosedXML 的「整本 Excel」物件（等於一個 .xlsx 檔）
+        private void TestExportExcel()
+        {
+            var rows = _projectView.GetCheckedRentTime();
+
+            if (rows.Count == 0)
+            {
+                XtraMessageBox.Show("請先勾選要匯出的租時單", "提示");
+                return;
+            }
+
+            using var sfd = new SaveFileDialog
+            {
+                Title = "匯出 Excel",
+                Filter = "Excel 檔案 (*.xlsx)|*.xlsx",
+                FileName = $"RentTimes_{DateTime.Now:yyyyMMdd_HHmm}.xlsx",
+                AddExtension = true,
+                DefaultExt = "xlsx"
+            };
+
+            if (sfd.ShowDialog() != DialogResult.OK) return;
+
+            var path = sfd.FileName;
+
+            using (var wb = new XLWorkbook())
+            {
+                var ws = wb.Worksheets.Add("RentTimes");
+                ws.Cell(1, 1).Value = "RentTimeId";
+                ws.Cell(1, 2).Value = "BookingNo";
+                ws.Cell(1, 3).Value = "區域";
+                ws.Cell(1, 4).Value = "場地";
+                ws.Cell(1, 5).Value = "客戶名稱";
+                ws.Cell(1, 6).Value = "PE";
+                ws.Cell(1, 7).Value = "開始日期";
+                ws.Cell(1, 8).Value = "結束日期";
+                ws.Cell(1, 9).Value = "Job No.";
+                ws.Cell(1, 10).Value = "ProjectNo";
+                ws.Cell(1, 11).Value = "ProjectName";
+                ws.Cell(1, 12).Value = "狀態";
+
+                int r = 2;
+                foreach (var x in rows)
+                { 
+                    ws.Cell(r, 1).Value = x.RentTimeId;
+                    ws.Cell(r, 2).Value = x.BookingNo;
+                    ws.Cell(r, 3).Value = x.Area;
+                    ws.Cell(r, 4).Value = x.Location;
+                    ws.Cell(r, 5).Value = x.CustomerName;
+                    ws.Cell(r, 6).Value = x.PE;
+                    ws.Cell(r, 7).Value = x.StartDate;
+                    ws.Cell(r, 8).Value = x.EndDate;
+                    ws.Cell(r, 9).Value = x.JobNo;
+                    ws.Cell(r, 10).Value = x.ProjectNo;
+                    ws.Cell(r, 11).Value = x.ProjectName;
+                    ws.Cell(r, 12).Value = StatusToText(x.Status);
+                    r++;
+                }
+
+                ws.Column(7).Style.DateFormat.Format = "yyyy-mm-dd";
+                ws.Column(8).Style.DateFormat.Format = "yyyy-mm-dd";
+
+                // 3) 讓欄寬自動貼合內容（看起來像報表）
+                ws.Columns().AdjustToContents();
+                ws.Column(5).Width = 18; // E欄(客戶名稱) 手動加寬，數字可自行調大/調小
+
+
+                wb.SaveAs(path);
+            };
+
+            XtraMessageBox.Show($"已輸出:{path}", "OK");
+        }
+
+        private void btnExportExcel_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            TestExportExcel();
+        }
+
+        private static string StatusToText(int status) => status switch
+        {
+            0 => "草稿",
+            1 => "租時中",
+            2 => "已完成",
+            3 => "已送出給助理",
+            _ => "未知"
+        };
     }
 }

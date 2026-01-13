@@ -54,7 +54,7 @@ namespace RentProject
             var show = new[]
             {
                 "BookingGroupNo",
-                "BookingNo", "Area", "Location", "CustomerName", "PE",
+                "BookingNo", "Area", "Location", "CustomerName", "PE", "JobNo",
                 "StartDate", "EndDate", "ProjectNo", "ProjectName","Status","Action"
             };
 
@@ -179,6 +179,7 @@ namespace RentProject
             gridView1.Columns["PE"].Caption = "PE";
             gridView1.Columns["StartDate"].Caption = "開始日期";
             gridView1.Columns["EndDate"].Caption = "結束日期";
+            gridView1.Columns["JobNo"].Caption = "Job No.";
             gridView1.Columns["ProjectNo"].Caption = "Project No.";
             gridView1.Columns["ProjectName"].Caption = "Project Name";
             gridView1.Columns["Status"].Caption = "狀態";
@@ -190,10 +191,11 @@ namespace RentProject
             gridView1.Columns["PE"].VisibleIndex = 5;
             gridView1.Columns["StartDate"].VisibleIndex = 6;
             gridView1.Columns["EndDate"].VisibleIndex = 7;
-            gridView1.Columns["ProjectNo"].VisibleIndex = 8;
-            gridView1.Columns["ProjectName"].VisibleIndex = 9;
-            gridView1.Columns["Status"].VisibleIndex = 10;
-            gridView1.Columns["Action"].VisibleIndex = 11;
+            gridView1.Columns["JobNo"].VisibleIndex = 8;
+            gridView1.Columns["ProjectNo"].VisibleIndex = 9;
+            gridView1.Columns["ProjectName"].VisibleIndex = 10;
+            gridView1.Columns["Status"].VisibleIndex = 11;
+            gridView1.Columns["Action"].VisibleIndex = 12;
 
             gridView1.Columns["Status"].AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
             gridView1.Columns["Status"].AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
