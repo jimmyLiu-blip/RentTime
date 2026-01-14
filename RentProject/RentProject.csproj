@@ -36,4 +36,5 @@
 		<EmbeddedResource Remove="Project.*.resx" />
 	</ItemGroup>
 
+
 </Project>

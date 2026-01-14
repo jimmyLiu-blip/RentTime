@@ -70,8 +70,9 @@ namespace RentProject
             {
                 ApplyTabSequence(
                 cmbLocation,
-                cmbCompany,
+                cmbJobNo,
                 txtSales,
+                cmbCompany,
                 txtContactName,
                 txtContactPhone,
                 memoTestInformation,
@@ -84,7 +85,6 @@ namespace RentProject
                 chkHasDinner,
                 cmbDinnerMinutes,
 
-                cmbJobNo,
                 txtSampleModel,
                 txtSampleNo,
 
@@ -106,8 +106,9 @@ namespace RentProject
                 // 新增 Draft
                 ApplyTabSequence(
                     cmbLocation,
-                    cmbCompany,
+                    cmbJobNo,
                     txtSales,
+                    cmbCompany,
 
                     startDateEdit,
                     endDateEdit,
@@ -122,8 +123,9 @@ namespace RentProject
                 // 編輯 Draft
                 ApplyTabSequence(
                     cmbLocation,
-                    cmbCompany,
+                    cmbJobNo,
                     txtSales,
+                    cmbCompany,
                     txtContactName,
                     txtContactPhone,
                     memoTestInformation,

@@ -35,7 +35,7 @@
             btnAddRentTime = new DevExpress.XtraBars.BarButtonItem();
             btnDelete = new DevExpress.XtraBars.BarButtonItem();
             btnView = new DevExpress.XtraBars.BarButtonItem();
-            btnImportRentTime = new DevExpress.XtraBars.BarButtonItem();
+            btnImportExcel = new DevExpress.XtraBars.BarButtonItem();
             ribbonPageGroup2 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             btnExportPDF = new DevExpress.XtraBars.BarButtonItem();
             btnExportExcel = new DevExpress.XtraBars.BarButtonItem();
@@ -79,7 +79,7 @@
             ribbonPageGroup1.ItemLinks.Add(btnAddRentTime);
             ribbonPageGroup1.ItemLinks.Add(btnDelete);
             ribbonPageGroup1.ItemLinks.Add(btnView);
-            ribbonPageGroup1.ItemLinks.Add(btnImportRentTime);
+            ribbonPageGroup1.ItemLinks.Add(btnImportExcel);
             ribbonPageGroup1.Name = "ribbonPageGroup1";
             ribbonPageGroup1.Text = "Common";
             // 
@@ -110,13 +110,14 @@
             btnView.Name = "btnView";
             btnView.ItemClick += btnView_ItemClick;
             // 
-            // btnImportRentTime
+            // btnImportExcel
             // 
-            btnImportRentTime.Caption = "Excel匯入新增";
-            btnImportRentTime.Id = 9;
-            btnImportRentTime.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnImportRentTime.ImageOptions.Image");
-            btnImportRentTime.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnImportRentTime.ImageOptions.LargeImage");
-            btnImportRentTime.Name = "btnImportRentTime";
+            btnImportExcel.Caption = "Excel匯入新增";
+            btnImportExcel.Id = 9;
+            btnImportExcel.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnImportRentTime.ImageOptions.Image");
+            btnImportExcel.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnImportRentTime.ImageOptions.LargeImage");
+            btnImportExcel.Name = "btnImportExcel";
+            btnImportExcel.ItemClick += btnImportExcel_ItemClick;
             // 
             // ribbonPageGroup2
             // 
@@ -191,7 +192,7 @@
             ribbonControl1.AllowMinimizeRibbon = false;
             ribbonControl1.EmptyAreaImageOptions.ImagePadding = new System.Windows.Forms.Padding(50, 51, 50, 51);
             ribbonControl1.ExpandCollapseItem.Id = 0;
-            ribbonControl1.Items.AddRange(new DevExpress.XtraBars.BarItem[] { ribbonControl1.ExpandCollapseItem, btnAddRentTime, btnTestConnection, btnView, btnDelete, btnExportPDF, btnSubmitToAssistant, btnLogout, btnExportExcel, btnImportRentTime, btnRefresh });
+            ribbonControl1.Items.AddRange(new DevExpress.XtraBars.BarItem[] { ribbonControl1.ExpandCollapseItem, btnAddRentTime, btnTestConnection, btnView, btnDelete, btnExportPDF, btnSubmitToAssistant, btnLogout, btnExportExcel, btnImportExcel, btnRefresh });
             ribbonControl1.Location = new System.Drawing.Point(0, 0);
             ribbonControl1.Margin = new System.Windows.Forms.Padding(5);
             ribbonControl1.MaxItemId = 11;
@@ -373,7 +374,7 @@
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup2;
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup3;
         private DevExpress.XtraBars.BarButtonItem btnExportExcel;
-        private DevExpress.XtraBars.BarButtonItem btnImportRentTime;
+        private DevExpress.XtraBars.BarButtonItem btnImportExcel;
         private DevExpress.XtraEditors.ComboBoxEdit cmbStatusFilter;
         private DevExpress.XtraEditors.LabelControl labelControl2;
         private DevExpress.XtraEditors.SimpleButton btnAdvancedFilter;

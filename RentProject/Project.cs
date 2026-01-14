@@ -1,12 +1,13 @@
 ﻿using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Mask;
+using DocumentFormat.OpenXml.Wordprocessing;
 using RentProject.Domain;
 using RentProject.Service;
 using RentProject.UIModels;
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace RentProject
 {
@@ -31,6 +32,18 @@ namespace RentProject
 
         // 控制「程式在塞值」時，不要被事件誤判為手動修改
         private bool _isLoading = false;
+
+        // JobNo 查詢的流水號 (用來丟棄舊的API回應)
+        private int _jobLockupSeq = 0;
+
+        // JobNo 是否正在查詢中 (查詢中要鎖 Save)
+        private bool _isJobLockupLoading = false;
+
+        // 紀錄目前 UI 選到的 JobNo (方便除錯)
+        private string? _currentJobNo = null;
+
+        // 是否處於 JobNo 自動帶入模式 (API 有查到資料時 = true) 
+        private bool _jobNoAutoMode = false;
 
         // 使用者是否手動改過聯絡資訊（同公司就不再覆蓋）
         private bool _contactManuallyEdited = false;
@@ -57,8 +70,43 @@ namespace RentProject
             RentTimeChanged?.Invoke();
         }
 
+        // 資料讀取時鎖定新增租時單和JobNo控制
+        private void SetLoading(bool loading)
+        { 
+            _isLoading = loading;
+
+            // 最小規則：Loading時不讓存檔，避免API還沒回來就存
+            btnCreatedRentTime.Enabled = !loading;
+
+            // 避免 Loading時一直換JobNo
+            cmbJobNo.Enabled = !loading;
+
+            // 視覺回饋
+            this.Cursor = loading ? Cursors.WaitCursor : Cursors.Default;
+        }
+
+        private void SetAutoFillMode(bool enabled)
+        {
+            _jobNoAutoMode = enabled;
+
+            // 這些欄位是「JobNo 查到才自動帶入」的，查到就鎖住避免規則打架
+            txtProjectNo.Properties.ReadOnly = enabled;
+            txtProjectName.Properties.ReadOnly = enabled;
+            txtPE.Properties.ReadOnly = enabled;
+
+            cmbCompany.Properties.ReadOnly = enabled;
+            txtSales.Properties.ReadOnly = enabled;
+
+            txtSampleNo.Properties.ReadOnly = enabled;
+            txtSampleModel.Properties.ReadOnly = enabled;
+
+            // 若進入自動模式，視為由系統控制，先清掉手動修改的記號
+            if (enabled)
+                _contactManuallyEdited = false;
+        }
+
         // =========================================================
-        // C) 建構子
+        // B) 建構子
         // =========================================================
         public Project(RentTimeService rentTimeService, ProjectService projectService, JobNoService jobNoService)
         {
@@ -75,7 +123,7 @@ namespace RentProject
         }
 
         // =========================================================
-        // D) Form Load：初始化 UI
+        // C) Form Load：初始化 UI
         // =========================================================
         private void Project_Load(object sender, EventArgs e)
         {
@@ -206,7 +254,7 @@ namespace RentProject
             btnRentTimeEnd.Visible = _editRentTimeId != null;
             btnRentTimeStart.Visible = _editRentTimeId != null;
             chkHandover.Visible = _editRentTimeId != null;
-            labelCreatedBy.Visible = _editRentTimeId != null;
+            lblCreatedBy.Visibility = _editRentTimeId != null ? DevExpress.XtraLayout.Utils.LayoutVisibility.Always : DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
             txtCreatedBy.Visible = _editRentTimeId != null;
             btnCopyRentTime.Visible = _editRentTimeId != null;
 
@@ -242,7 +290,7 @@ namespace RentProject
         }
 
         // =========================================================
-        // E) 按鈕流程：存檔 / 刪除
+        // D) 按鈕流程：存檔 / 刪除
         // =========================================================
         private void btnCreatedRentTime_Click(object sender, EventArgs e)
         {
@@ -517,7 +565,7 @@ namespace RentProject
         }
 
         // =========================================================
-        // G) 事件：各種 UI 連動 / 刷新
+        // E) 事件：各種 UI 連動 / 刷新
         // =========================================================
 
         // 列印空方法
@@ -562,26 +610,11 @@ namespace RentProject
             ReloadRentTimeFromDb();
         }
 
-        private static int ParseIntOrZero(string? s)
-            => int.TryParse(s?.Trim(), out var v) ? v : 0;
-
         // 午餐/晚餐事件綁定
         private void AnyTimeOrMealChanged(object? sender, EventArgs e)
         {
             if (_isLoading) return; // 你有 _isLoading 就先保護，避免程式塞值時一直連鎖觸發
             RefreshMealAndEstimateUI();
         }
-
-        private void labelControl17_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
     }
-
 }

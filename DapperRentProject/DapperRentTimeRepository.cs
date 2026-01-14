@@ -617,5 +617,7 @@ namespace RentProject.Repository
 
             return conn.ExecuteScalar<int>(sql, new { Batch = batchText }, tx);
         }
+
+
     }
 }

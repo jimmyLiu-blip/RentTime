@@ -1,6 +1,7 @@
 ﻿using DevExpress.XtraEditors;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RentProject
@@ -16,6 +17,7 @@ namespace RentProject
         {
             // 程式塞值不算「手動改」
             if (_isLoading) return;
+            if (_jobNoAutoMode) return;
             _contactManuallyEdited = true;
         }
 
@@ -47,25 +49,51 @@ namespace RentProject
             txtArea.Text = item?.Area ?? "";
         }
 
-        //  JobNo-> ProjectNo / ProjectName / PE
-        private void cmbJobNo_EditValueChanged(object sender, EventArgs e)
+        // JobNo 改變 -> 啟動「查詢流程骨架」（會在這裡補：先查DB、再打API）
+        private async void cmbJobNo_EditValueChanged(object sender, EventArgs e)
         {
             if (_isLoading) return;
-
+            
             var jobNo = cmbJobNo.Text?.Trim() ?? "";
-            var j = _projects.FirstOrDefault(x =>
-                string.Equals(x.JobNo, jobNo, StringComparison.Ordinal));
+            _currentJobNo = string.IsNullOrWhiteSpace(jobNo) ? null : jobNo;
 
-            _isLoading = true;
+            // JobNo清空：回到手動模式
+            if (string.IsNullOrWhiteSpace(jobNo))
+            { 
+                SetAutoFillMode(false);
+                return;
+            }
+
+            // 產生這次查詢的流水號（用來丟棄舊回應）
+            int seq = ++_jobLockupSeq;
+
+            _isJobLockupLoading = true;
+            SetLoading(true);
+
+            SetAutoFillMode(true);
+
             try
             {
-                txtProjectName.Text = j?.ProjectName ?? "";
-                txtProjectNo.Text = j?.ProjectNo ?? "";
-                txtPE.Text = j?.PE ?? "";
+                // 先讓出一次控制權給 UI 執行緒，讓畫面有機會先「刷新」到 Loading 狀態，再繼續往下做查詢。
+                await System.Threading.Tasks.Task.Yield();
+
+                // 如果使用者又選了別的 JobNo，這次就丟掉
+                if (seq != _jobLockupSeq) return;
+
+                // 這一步先不做填值（下一步才開始：先查DB、再打API）
             }
             finally
             {
-                _isLoading = false;
+                // 只有「最新那一次」才可以解鎖
+                if (seq == _jobLockupSeq)
+                { 
+                    _isJobLockupLoading = false;
+                    SetLoading(false);
+
+                    // Step 5-3 暫時先解鎖回手動模式
+                    // Step 5-4/5-5 會改成：依「有沒有查到資料」決定要不要鎖
+                    SetAutoFillMode(false);
+                }
             }
         }
 
@@ -104,6 +132,7 @@ namespace RentProject
         private void cmbCompany_EditValueChanged(object sender, EventArgs e)
         {
             if (_isLoading) return;
+            if (_jobNoAutoMode) return;
 
             var company = cmbCompany.Text?.Trim() ?? "";
 

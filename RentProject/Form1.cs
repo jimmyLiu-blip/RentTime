@@ -8,9 +8,7 @@ using RentProject.Shared.UIModels;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.IO;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Windows.Forms;
 
 
@@ -536,7 +534,7 @@ namespace RentProject
 
                 int r = 2;
                 foreach (var x in rows)
-                { 
+                {
                     ws.Cell(r, 1).Value = x.RentTimeId;
                     ws.Cell(r, 2).Value = x.BookingNo;
                     ws.Cell(r, 3).Value = x.Area;
@@ -561,7 +559,8 @@ namespace RentProject
 
 
                 wb.SaveAs(path);
-            };
+            }
+            ;
 
             XtraMessageBox.Show($"已輸出:{path}", "OK");
         }
@@ -579,5 +578,136 @@ namespace RentProject
             3 => "已送出給助理",
             _ => "未知"
         };
+
+        private void btnImportExcel_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+       
+            var job = _jobNoRepo.GetJobNoMasterByJobNo("JOB0001");
+
+            XtraMessageBox.Show(job == null ? "查不到" : $"查到：{job.JobId} / {job.JobNo}");
+            /*
+            using var ofd = new OpenFileDialog
+            {
+                Title = "匯入 Excel",
+                Filter = "Excel 檔案 (*.xlsx)|*.xlsx",
+                Multiselect = false
+            };
+
+            if (ofd.ShowDialog() != DialogResult.OK) return;
+
+            var path = ofd.FileName;
+
+            List<ImportRentTimeRow> rows;
+            try
+            {
+                rows = ReadImportRow(path);
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show($"{ex.GetType().Name}-{ex.Message}", "匯入失敗");
+                return;
+            }
+
+            XtraMessageBox.Show($"讀取完成：{rows.Count} 筆", "OK");
+            */
+        }
+
+        /*
+        private static List<ImportRentTimeRow> ReadImportRow(string path)
+        { 
+            using var wb = new XLWorkbook(path);
+            var ws = wb.Worksheet(1); //讀第一張工作表
+
+            var headerRow = ws.Row(1);
+            var lastCol = headerRow.LastCellUsed().Address.ColumnNumber; //在這一列中，找「最後一格有內容的儲存格」
+
+            // 建立表頭文字 =>　欄位索引
+            var map = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase); //StringComparer.OrdinalIgnoreCase：不分大小寫比較
+
+            for (int c = 1; c <= lastCol; c++)
+            {
+                var name = headerRow.Cell(c).GetString().Trim();
+                if(!string.IsNullOrWhiteSpace(name) && !map.ContainsKey(name)) //表頭如果是空的，不放進 map & 如果表頭重複，也不要覆蓋（避免壞掉）
+                    map[name] = c; //把「表頭文字」對應到「欄位數字」
+            }
+
+            // 小工具：依表頭拿字串/日期
+            string? GetStr(IXLRow row, string header) 
+                => map.TryGetValue(header, out var col) ? row.Cell(col).GetString().Trim() : null;  
+
+            DateTime? GetDate(IXLRow row, string header)
+            { 
+                if(!map.TryGetValue(header, out var col)) return null;
+                var cell = row.Cell(col); // row.Cell(col) = 取得「這一列」的「第 col 欄」那一格儲存格（Cell）
+                if (cell.IsEmpty()) return null;
+
+                // Excel 日期可能是DateTime，也可能是字串
+                if (cell.DataType == XLDataType.DateTime) return cell.GetDateTime();
+
+                var s = cell.GetString().Trim();
+                return DateTime.TryParse(s, out var dt) ? dt : (DateTime?)null;
+            }
+
+            TimeSpan? GetTime(IXLRow row, string header)
+            {
+                if (!map.TryGetValue(header, out var col)) return null;
+                var cell = row.Cell(col);
+                if (cell.IsEmpty()) return null;
+
+                // 情況1：Excel 儲存格是 DateTime（可能是 1899/12/30 09:00 這種）
+                if (cell.DataType == XLDataType.DateTime) 
+                    return cell.GetDateTime().TimeOfDay;
+
+                // 情況2：使用者輸入文字：09:00、9:00、0900
+                var s = cell.GetString().Trim();
+
+                if (TimeSpan.TryParse(s, out var ts)) return ts;
+
+                // 0900 這種（四碼）
+                if (s.Length == 4 && int.TryParse(s, out var hhmm))
+                {
+                    var hh = hhmm / 100;
+                    var mm = hhmm % 100;
+                    if (hh is >= 0 and <= 23 && mm is >= 0 and <= 59)
+                        return new TimeSpan(hh, mm, 0);
+                }
+                return null;
+            }
+
+            var result = new List<ImportRentTimeRow>();
+
+            var lastRow = ws.LastRowUsed()?.RowNumber() ?? 1;
+
+            for (int r = 2; r <= lastRow; r++)
+            { 
+                var row = ws.Row(r);
+
+                //用 IsEmpty 判斷整列是否真的沒內容；row.Cells(1, lastCol) = 這一列從 第 1 欄(A) 到 第 lastCol 欄 的所有儲存格。
+                if (row.Cells(1, lastCol).All(c => c.IsEmpty())) continue; 
+
+                var item = new ImportRentTimeRow
+                {
+                    ExcelRowNo = r,
+                    Location = GetStr(row, "場地"),
+                    JobNo = GetStr(row, "JobNo"),
+
+                    // 這些可能會被 JobNo 覆蓋
+                    Sales = GetStr(row, "Sales"),
+                    CustomerName = GetStr(row, "客戶名稱"),
+                    PE = GetStr(row, "PE"),
+                    ProjectNo = GetStr(row, "ProjectNo"),
+                    ProjectName = GetStr(row, "ProjectName"),
+
+                    StartDate = GetDate(row, "開始日期"),
+                    EndDate = GetDate(row, "結束日期"),
+                    StartTime = GetTime(row, "開始時間"),
+                    EndTime = GetTime(row, "結束時間")
+                };
+
+                result.Add(item);
+            }
+
+            return result;
+        }*/
     }
 }
