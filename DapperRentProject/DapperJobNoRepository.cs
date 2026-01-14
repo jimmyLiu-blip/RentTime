@@ -88,7 +88,7 @@ namespace RentProject.Repository
         }
 
         // 測試、單純查資料用
-        public JobNoMaster GetJobNoMasterByJobNo(string jobNo)
+        public JobNoMaster? GetJobNoMasterByJobNo(string jobNo)
         {
             if (string.IsNullOrWhiteSpace(jobNo)) return null;
 

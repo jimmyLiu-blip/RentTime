@@ -78,9 +78,6 @@ namespace RentProject
             // 最小規則：Loading時不讓存檔，避免API還沒回來就存
             btnCreatedRentTime.Enabled = !loading;
 
-            // 避免 Loading時一直換JobNo
-            cmbJobNo.Enabled = !loading;
-
             // 視覺回饋
             this.Cursor = loading ? Cursors.WaitCursor : Cursors.Default;
         }

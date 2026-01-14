@@ -1,4 +1,5 @@
 ﻿using DevExpress.XtraEditors;
+using RentProject.Domain;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -50,55 +51,55 @@ namespace RentProject
         }
 
         // JobNo 改變 -> 啟動「查詢流程骨架」（會在這裡補：先查DB、再打API）
-        private async void cmbJobNo_EditValueChanged(object sender, EventArgs e)
+        private void cmbJobNo_EditValueChanged(object sender, EventArgs e)
         {
             if (_isLoading) return;
             
             var jobNo = cmbJobNo.Text?.Trim() ?? "";
             _currentJobNo = string.IsNullOrWhiteSpace(jobNo) ? null : jobNo;
 
-            // JobNo清空：回到手動模式
-            if (string.IsNullOrWhiteSpace(jobNo))
-            { 
-                SetAutoFillMode(false);
-                return;
-            }
-
-            // 產生這次查詢的流水號（用來丟棄舊回應）
-            int seq = ++_jobLockupSeq;
-
-            _isJobLockupLoading = true;
-            SetLoading(true);
-
-            SetAutoFillMode(true);
-
-            try
-            {
-                // 先讓出一次控制權給 UI 執行緒，讓畫面有機會先「刷新」到 Loading 狀態，再繼續往下做查詢。
-                await System.Threading.Tasks.Task.Yield();
-
-                // 如果使用者又選了別的 JobNo，這次就丟掉
-                if (seq != _jobLockupSeq) return;
-
-                // 這一步先不做填值（下一步才開始：先查DB、再打API）
-            }
-            finally
-            {
-                // 只有「最新那一次」才可以解鎖
-                if (seq == _jobLockupSeq)
-                { 
-                    _isJobLockupLoading = false;
-                    SetLoading(false);
-
-                    // Step 5-3 暫時先解鎖回手動模式
-                    // Step 5-4/5-5 會改成：依「有沒有查到資料」決定要不要鎖
-                    SetAutoFillMode(false);
-                }
-            }
+            // 規則1：使用者正在輸入中，不查 DB、不清欄位
+            // 先回手動模式，避免規則打架
+            SetAutoFillMode(false);
         }
 
+        // 全部都不是空白才回傳 true，只要有任何一個是空白就回傳 false
+        // string.IsNullOrWhiteSpace(x) 回傳 true：代表 x 是空的/沒內容
+        private bool IsJobNoMasterComplete(JobNoMaster m)
+        {
+            //  這裡的「必填」就是 JobNo 查詢要用來判斷「算查到嗎」的欄位
+            return
+                !string.IsNullOrWhiteSpace(m.CustomerName) &&
+                !string.IsNullOrWhiteSpace(m.Sales) &&
+                !string.IsNullOrWhiteSpace(m.ProjectNo) &&
+                !string.IsNullOrWhiteSpace(m.ProjectName) &&
+                !string.IsNullOrWhiteSpace(m.PE) &&
+                !string.IsNullOrWhiteSpace(m.SampleModel) &&
+                !string.IsNullOrWhiteSpace(m.SampleNo);
+        }
+
+        private void ApplyJobNoMasterToUI(JobNoMaster? m)
+        {
+            _isLoading = true;
+            try
+            {
+                txtProjectNo.Text = m?.ProjectNo ?? "";
+                txtProjectName.Text = m?.ProjectName ?? "";
+                txtPE.Text = m?.PE ?? "";
+
+                cmbCompany.Text = m?.CustomerName ?? "";
+                txtSales.Text = m?.Sales ?? "";
+
+                txtSampleModel.Text = m?.SampleModel ?? "";
+                txtSampleNo.Text = m?.SampleNo ?? "";
+            }
+            finally { _isLoading = false; }
+        }
+
+        // 事件處理器（Event Handler） 只能長這樣：void XXX(object sender, EventArgs e)
+        // 所以如果要在事件裡用 await，只能寫成 async void（因為簽名固定）
         // JobNo 離開欄位時才存入
-        private void cmbJobNo_Validated(object sender, EventArgs e)
+        private async void cmbJobNo_Validated(object sender, EventArgs e)
         {
             if (_isLoading) return;
 
@@ -106,18 +107,72 @@ namespace RentProject
 
             if (string.IsNullOrWhiteSpace(jobNo)) return;
 
-            try
+            // 先判斷「這次輸入」是不是本來就存在下拉裡
+            bool existedInList = cmbJobNo.Properties.Items.Contains(jobNo);
+
+            if (!existedInList)
             {
-                // 確保 DB 裡有這筆 JobNo（沒有就插入）
+                // 新 JobNo:只存 JobNo，其他欄位讓使用者手填
                 _jobNoService.GetOrCreateJobId(jobNo);
 
-                // 讓下拉立刻也看得到（不用重開表單）
+                // 讓下拉立刻也可以看到 (不用重開表單)
                 if (!cmbJobNo.Properties.Items.Contains(jobNo))
+                { 
                     cmbJobNo.Properties.Items.Add(jobNo);
+                }
+
+                SetAutoFillMode(false);
+                return;
             }
-            catch (Exception ex)
+
+            // 舊 JobNo:才做 DB Lockup (完整才 AutoFill；不完整不覆蓋 UI）
+            await LookupJobNoFromDbAsync(jobNo);
+        }
+
+        // 等待 DB 查詢流程做完，再回到事件後續流程。
+        private async Task LookupJobNoFromDbAsync(string jobNo)
+        {
+            // 產生這次查詢的流水號（用來丟棄舊回應）
+            int seq = ++_jobLockupSeq;
+
+            _isJobLockupLoading = true;
+            SetLoading(true);
+
+            try
             {
-                XtraMessageBox.Show($"{ex.GetType().Name}-{ex.Message}", "JobNo Save Error");
+                // 讓 UI 有機會先刷新到 Loading 狀態
+                await Task.Yield();
+
+                // 使用者又選了別的 JobNo，就丟掉
+                if (seq != _jobLockupSeq) return;
+
+                // 1. 查本機 DB
+                var m = _jobNoService.GetJobNoMasterByJobNo(jobNo);
+
+                // 使用者又切 JobNo，就丟掉
+                if (seq != _jobLockupSeq) return;
+
+                // 2. DB 查不到：回手動模式
+                if (m == null)
+                {
+                    ApplyJobNoMasterToUI(null);
+                    SetAutoFillMode(false);
+                    return;
+                }
+
+                // 3) DB 查到：先「部分回填 + 缺的清空」
+                ApplyJobNoMasterToUI(m);
+
+                // 4) 完整才鎖；不完整維持手動
+                SetAutoFillMode(IsJobNoMasterComplete(m));
+            }
+            finally //不管 try 中途 return、或發生例外，finally 一定會跑
+            {
+                if (seq == _jobLockupSeq)
+                { 
+                    _isJobLockupLoading = false;
+                    SetLoading(false);
+                }
             }
         }
 
