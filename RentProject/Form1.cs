@@ -22,6 +22,7 @@ namespace RentProject
         private readonly ProjectService _projectService;
         private readonly DapperJobNoRepository _jobNoRepo;
         private readonly JobNoService _jobNoService;
+        private readonly IJobNoApiClient _api;
 
         private ProjectViewControl _projectView;
         private CalendarViewControl _calendarView;
@@ -42,12 +43,34 @@ namespace RentProject
                 .ConnectionStrings["DefaultConnection"]
                 .ConnectionString;
 
+            var baseUrl = ConfigurationManager.AppSettings["JobNoApi:BaseUrl"];
+            var path = ConfigurationManager.AppSettings["JobNoApi:Path"];
+            var apiKey = ConfigurationManager.AppSettings["JobNoApi:ApiKey"];
+            var apiKeyHeader = ConfigurationManager.AppSettings["JobNoApi:ApiKeyHeader"];
+
+            var timeoutText = ConfigurationManager.AppSettings["JobNoApi:TimeoutSeconds"];
+            int timeoutSeconds = 10;
+            if (!string.IsNullOrWhiteSpace(timeoutText) && int.TryParse(timeoutText, out var t) && t > 0)
+                timeoutSeconds = t;
+
+            // apiKey 允許空字串 -> 轉成 null
+            apiKey = string.IsNullOrWhiteSpace(apiKey) ? null : apiKey;
+
+            _api = new RealJobNoApiClient(
+                baseUrl: baseUrl,
+                path: path,
+                apiKey: apiKey,
+                apiKeyHeader: apiKeyHeader,
+                timeoutSeconds: timeoutSeconds
+            );
+
+
             _rentTimeRepo = new DapperRentTimeRepository(connectionString);
             _rentTimeservice = new RentTimeService(_rentTimeRepo);
             _projectRepo = new DapperProjectRepository(connectionString);
             _projectService = new ProjectService(_projectRepo);
-            _jobNoRepo = new DapperJobNoRepository(connectionString);
-            _jobNoService = new JobNoService(_jobNoRepo);
+            _jobNoRepo = new DapperJobNoRepository(connectionString);     
+            _jobNoService = new JobNoService(_jobNoRepo, _api); 
 
             _projectView = new ProjectViewControl(_rentTimeservice, _projectService, _jobNoService) { Dock = DockStyle.Fill };
 
@@ -703,10 +726,8 @@ namespace RentProject
                     StartTime = GetTime(row, "開始時間"),
                     EndTime = GetTime(row, "結束時間")
                 };
-
                 result.Add(item);
             }
-
             return result;
         }*/
     }

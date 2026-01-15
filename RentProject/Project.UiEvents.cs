@@ -2,6 +2,7 @@
 using RentProject.Domain;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -54,7 +55,10 @@ namespace RentProject
         private void cmbJobNo_EditValueChanged(object sender, EventArgs e)
         {
             if (_isLoading) return;
-            
+
+            // 只要 JobNo 有變動，就取消上一個查詢，避免舊回來亂改 UI
+            _jobNoCts?.Cancel();
+
             var jobNo = cmbJobNo.Text?.Trim() ?? "";
             _currentJobNo = string.IsNullOrWhiteSpace(jobNo) ? null : jobNo;
 
@@ -110,28 +114,30 @@ namespace RentProject
             // 先判斷「這次輸入」是不是本來就存在下拉裡
             bool existedInList = cmbJobNo.Properties.Items.Contains(jobNo);
 
-            if (!existedInList)
+            // 不管新舊：先確保 DB 有這個 JobNo
+            _jobNoService.GetOrCreateJobId(jobNo);
+
+            // 新的：加進下拉（但不要 return）
+            if (!existedInList && !cmbJobNo.Properties.Items.Contains(jobNo))
             {
-                // 新 JobNo:只存 JobNo，其他欄位讓使用者手填
-                _jobNoService.GetOrCreateJobId(jobNo);
-
-                // 讓下拉立刻也可以看到 (不用重開表單)
-                if (!cmbJobNo.Properties.Items.Contains(jobNo))
-                { 
-                    cmbJobNo.Properties.Items.Add(jobNo);
-                }
-
-                SetAutoFillMode(false);
-                return;
+               AddJobNoToRecentList(jobNo, max:8);
             }
 
-            // 舊 JobNo:才做 DB Lockup (完整才 AutoFill；不完整不覆蓋 UI）
-            await LookupJobNoFromDbAsync(jobNo);
+            // 不管新舊：都打 API
+            await LookupJobNoFromAPIAsync(jobNo);
         }
 
-        // 等待 DB 查詢流程做完，再回到事件後續流程。
-        private async Task LookupJobNoFromDbAsync(string jobNo)
+        // 最核心：取消、丟舊、呼叫 API、回填 UI、鎖欄位。
+        private async Task LookupJobNoFromAPIAsync(string jobNo)
         {
+            // 取消並放上一個 CTS
+            _jobNoCts?.Cancel();
+            _jobNoCts?.Dispose();
+
+            // 這次查詢新的 CTS
+            _jobNoCts = new CancellationTokenSource();
+            var ct = _jobNoCts.Token;
+
             // 產生這次查詢的流水號（用來丟棄舊回應）
             int seq = ++_jobLockupSeq;
 
@@ -143,16 +149,21 @@ namespace RentProject
                 // 讓 UI 有機會先刷新到 Loading 狀態
                 await Task.Yield();
 
+                // 若取消，直接停止
+                ct.ThrowIfCancellationRequested();
+
                 // 使用者又選了別的 JobNo，就丟掉
                 if (seq != _jobLockupSeq) return;
 
-                // 1. 查本機 DB
-                var m = _jobNoService.GetJobNoMasterByJobNo(jobNo);
+                // 把 ct 往下傳，API/Delay/HTTP 才能真的被取消
+                var m = await _jobNoService.GetJobNoMasterFromApiAndSaveAsync(jobNo, ct);
+
+                ct.ThrowIfCancellationRequested();
 
                 // 使用者又切 JobNo，就丟掉
                 if (seq != _jobLockupSeq) return;
 
-                // 2. DB 查不到：回手動模式
+                // 2. 查不到：回手動模式
                 if (m == null)
                 {
                     ApplyJobNoMasterToUI(null);
@@ -160,16 +171,25 @@ namespace RentProject
                     return;
                 }
 
-                // 3) DB 查到：先「部分回填 + 缺的清空」
+                // 3. 查到：先「部分回填 + 缺的清空」
                 ApplyJobNoMasterToUI(m);
 
-                // 4) 完整才鎖；不完整維持手動
-                SetAutoFillMode(IsJobNoMasterComplete(m));
+                // 4. 完整才進 AutoMode；不完整維持手動模式
+                bool complete = IsJobNoMasterComplete(m);
+                SetAutoFillMode(complete);
+
+                // 不管完整不完整，只要有回填到的欄位就鎖住
+                ApplyJobNoFilledLocks(true);
+            }
+            catch (OperationCanceledException)
+            {
+                // 使用者改了 JobNo，這次查詢被取消是正常狀況，直接結束
+                return;
             }
             finally //不管 try 中途 return、或發生例外，finally 一定會跑
             {
-                if (seq == _jobLockupSeq)
-                { 
+                if (seq == _jobLockupSeq && !ct.IsCancellationRequested)
+                {
                     _isJobLockupLoading = false;
                     SetLoading(false);
                 }
@@ -218,6 +238,26 @@ namespace RentProject
             }
 
             _lastCompany = company;
+        }
+
+        // 限制jobNo下拉呈現數量
+        private void AddJobNoToRecentList(string jobNo, int max = 8)
+        { 
+            jobNo = (jobNo ?? "").Trim();
+            if (string.IsNullOrWhiteSpace(jobNo)) return;
+
+            var items = cmbJobNo.Properties.Items;
+
+            // 先移除舊的同值（避免重複）
+            int idx = items.IndexOf(jobNo);
+            if (idx >= 0) items.RemoveAt(idx);
+
+            // 插到最前面
+            items.Insert(0, jobNo);
+
+            // 超過上限就砍
+            while (items.Count > max)
+                items.RemoveAt(items.Count-1);
         }
     }
 }

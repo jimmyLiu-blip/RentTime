@@ -7,6 +7,7 @@ using RentProject.UIModels;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace RentProject
@@ -38,6 +39,9 @@ namespace RentProject
 
         // JobNo 是否正在查詢中 (查詢中要鎖 Save)
         private bool _isJobLockupLoading = false;
+
+        // 舊JobNo停止查詢，避免浪費資源
+        private CancellationTokenSource? _jobNoCts;
 
         // 紀錄目前 UI 選到的 JobNo (方便除錯)
         private string? _currentJobNo = null;
@@ -84,22 +88,41 @@ namespace RentProject
 
         private void SetAutoFillMode(bool enabled)
         {
+            // 先記錄現在的模式
             _jobNoAutoMode = enabled;
 
+            // 只要欄位「有值」就鎖；沒有值就開放
+            bool HasText(string? s) => !string.IsNullOrWhiteSpace(s);
+
             // 這些欄位是「JobNo 查到才自動帶入」的，查到就鎖住避免規則打架
-            txtProjectNo.Properties.ReadOnly = enabled;
-            txtProjectName.Properties.ReadOnly = enabled;
-            txtPE.Properties.ReadOnly = enabled;
+            txtProjectNo.Properties.ReadOnly = !enabled;
+            txtProjectName.Properties.ReadOnly = !enabled;
+            txtPE.Properties.ReadOnly = !enabled;
 
-            cmbCompany.Properties.ReadOnly = enabled;
-            txtSales.Properties.ReadOnly = enabled;
+            cmbCompany.Properties.ReadOnly = enabled && HasText(cmbCompany.Text);
+            txtSales.Properties.ReadOnly = enabled && HasText(txtSales.Text);
 
-            txtSampleNo.Properties.ReadOnly = enabled;
-            txtSampleModel.Properties.ReadOnly = enabled;
+            txtSampleNo.Properties.ReadOnly = enabled && HasText(txtSampleNo.Text);
+            txtSampleModel.Properties.ReadOnly = enabled && HasText(txtSampleModel.Text);
 
             // 若進入自動模式，視為由系統控制，先清掉手動修改的記號
             if (enabled)
                 _contactManuallyEdited = false;
+        }
+
+        private void ApplyJobNoFilledLocks(bool lockFilled)
+        {
+            bool HasText(string? s) => !string.IsNullOrWhiteSpace(s);
+
+            txtProjectNo.Properties.ReadOnly = lockFilled && HasText(txtProjectNo.Text);
+            txtProjectName.Properties.ReadOnly = lockFilled && HasText(txtProjectName.Text);
+            txtPE.Properties.ReadOnly = lockFilled && HasText(txtPE.Text);
+
+            cmbCompany.Properties.ReadOnly = lockFilled && HasText(cmbCompany.Text);
+            txtSales.Properties.ReadOnly = lockFilled && HasText(txtSales.Text);
+
+            txtSampleNo.Properties.ReadOnly = lockFilled && HasText(txtSampleNo.Text);
+            txtSampleModel.Properties.ReadOnly = lockFilled && HasText(txtSampleModel.Text);
         }
 
         // =========================================================
@@ -153,6 +176,10 @@ namespace RentProject
             cmbJobNo.EditValueChanged -= cmbJobNo_EditValueChanged;
             cmbJobNo.EditValueChanged += cmbJobNo_EditValueChanged;
 
+            // 手動輸入後，自動保存(Validated 事件)
+            cmbJobNo.Validated -= cmbJobNo_Validated;
+            cmbJobNo.Validated += cmbJobNo_Validated;
+
             txtContactName.EditValueChanged -= ContactFields_EditValueChanged;
             txtContactName.EditValueChanged += ContactFields_EditValueChanged;
 
@@ -189,10 +216,6 @@ namespace RentProject
 
             btnCopyRentTime.Click -= btnCopyRentTime_Click;
             btnCopyRentTime.Click += btnCopyRentTime_Click;
-
-            // 手動輸入後，自動保存(Validated 事件)
-            cmbJobNo.Validated -= cmbJobNo_Validated;
-            cmbJobNo.Validated += cmbJobNo_Validated;
 
             // 日期/時間改變就刷新午餐晚餐可用性 + 預估時間
             startDateEdit.EditValueChanged -= AnyTimeOrMealChanged;
@@ -233,6 +256,10 @@ namespace RentProject
             // JobNo 下拉
             cmbJobNo.Properties.Items.Clear();
             cmbJobNo.Properties.Items.AddRange(_jobNoService.GetActiveJobNos());
+
+            // 開表單就只保留前 8 筆
+            while (cmbJobNo.Properties.Items.Count > 8)
+                cmbJobNo.Properties.Items.RemoveAt(cmbJobNo.Properties.Items.Count - 1);
 
             cmbCompany.EditValueChanged -= cmbCompany_EditValueChanged;
             cmbCompany.EditValueChanged += cmbCompany_EditValueChanged;

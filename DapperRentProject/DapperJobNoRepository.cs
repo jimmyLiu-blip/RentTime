@@ -41,15 +41,19 @@ namespace RentProject.Repository
                 SELECT JobNo
                 FROM dbo.JobNoMaster 
                 WHERE IsActive = 1
-                ORDER BY JobNo;";
+                ORDER BY JobNo DESC;";
 
             return connection.Query<string>(sql).ToList();
         }
 
         // 「同一次存檔」要把 JobNoMaster Upsert + RentTimes Insert 放在同一個 tx
         // 最後回傳 JobId
-        private int UpsertJobNoMaster(JobNoMaster model, SqlConnection conn, SqlTransaction tx)
+        public int UpsertJobNoMasterOverwrite(JobNoMaster m)
         {
+            using var connection = new SqlConnection(_connectionString);
+
+            connection.Open();
+
             var sql = @"
                 IF EXISTS (SELECT 1 FROM dbo.JobNoMaster WHERE JobNo = @JobNo)
                 BEGIN
@@ -62,7 +66,7 @@ namespace RentProject.Repository
                         Sales = @Sales,
                         SampleNo = @SampleNo,
                         SampleModel = @SampleModel,
-                        ModifiedAt = @ModifiedAt,
+                        ModifiedAt = SYSDATETIME(),
                         IsActive = 1
                     WHERE JobNo = @JobNo;
                     
@@ -78,13 +82,23 @@ namespace RentProject.Repository
                     VALUES
                     (
                         @JobNo, @ProjectNo, @ProjectName, @PE, @CustomerName, @Sales, @SampleNo, @SampleModel,
-                        SYSDATETIME(), @ModifiedAt, 1
+                        SYSDATETIME(), SYSDATETIME(), 1
                     );
                 
                     SELECT CAST(SCOPE_IDENTITY() AS INT);
                 END";
 
-            return conn.ExecuteScalar<int>(sql, model, tx);
+            return connection.ExecuteScalar<int>(sql, new
+            {
+                m.JobNo,
+                m.ProjectNo,
+                m.ProjectName,
+                m.PE,
+                m.CustomerName,
+                m.Sales,
+                m.SampleNo,
+                m.SampleModel
+            });
         }
 
         // 測試、單純查資料用
@@ -100,7 +114,7 @@ namespace RentProject.Repository
         }
 
         // 這個版本：給「外部交易」用（之後會在同一個 tx 裡一起做 Upsert + Insert RentTimes）
-        public JobNoMaster? GetJobNoMasterByJobNo(string jobNo, SqlConnection connection, SqlTransaction tx)
+        public JobNoMaster? GetJobNoMasterByJobNo(string jobNo, SqlConnection connection, SqlTransaction? tx)
         { 
             var sql = @"
                 SELECT TOP 1
