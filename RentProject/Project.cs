@@ -49,12 +49,6 @@ namespace RentProject
         // 是否處於 JobNo 自動帶入模式 (API 有查到資料時 = true) 
         private bool _jobNoAutoMode = false;
 
-        // 使用者是否手動改過聯絡資訊（同公司就不再覆蓋）
-        private bool _contactManuallyEdited = false;
-
-        // 記錄上一次選的公司（用來判斷是否換公司）
-        private string _lastCompany = "";
-
         // 紀錄BookingBatchId
         private long? _bookingBatchId;
 
@@ -104,10 +98,6 @@ namespace RentProject
 
             txtSampleNo.Properties.ReadOnly = enabled && HasText(txtSampleNo.Text);
             txtSampleModel.Properties.ReadOnly = enabled && HasText(txtSampleModel.Text);
-
-            // 若進入自動模式，視為由系統控制，先清掉手動修改的記號
-            if (enabled)
-                _contactManuallyEdited = false;
         }
 
         private void ApplyJobNoFilledLocks(bool lockFilled)
@@ -172,22 +162,12 @@ namespace RentProject
             endTimeEdit.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Custom;       // ← 改成 Custom
             ConfigureTimeEdit(endTimeEdit);
 
-            // 綁定「聯絡資訊」手動修改偵測
             cmbJobNo.EditValueChanged -= cmbJobNo_EditValueChanged;
             cmbJobNo.EditValueChanged += cmbJobNo_EditValueChanged;
 
             // 手動輸入後，自動保存(Validated 事件)
             cmbJobNo.Validated -= cmbJobNo_Validated;
             cmbJobNo.Validated += cmbJobNo_Validated;
-
-            txtContactName.EditValueChanged -= ContactFields_EditValueChanged;
-            txtContactName.EditValueChanged += ContactFields_EditValueChanged;
-
-            txtContactPhone.EditValueChanged -= ContactFields_EditValueChanged;
-            txtContactPhone.EditValueChanged += ContactFields_EditValueChanged;
-
-            txtSales.EditValueChanged -= ContactFields_EditValueChanged;
-            txtSales.EditValueChanged += ContactFields_EditValueChanged;
 
             // 場地改變 -> 自動帶入區域
             cmbLocation.EditValueChanged -= cmbLocation_EditValueChanged;
@@ -260,9 +240,6 @@ namespace RentProject
             // 開表單就只保留前 8 筆
             while (cmbJobNo.Properties.Items.Count > 8)
                 cmbJobNo.Properties.Items.RemoveAt(cmbJobNo.Properties.Items.Count - 1);
-
-            cmbCompany.EditValueChanged -= cmbCompany_EditValueChanged;
-            cmbCompany.EditValueChanged += cmbCompany_EditValueChanged;
 
             // 清空日期時間
             startDateEdit.EditValue = null;

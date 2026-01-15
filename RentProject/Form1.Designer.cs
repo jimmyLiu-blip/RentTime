@@ -114,8 +114,8 @@
             // 
             btnImportExcel.Caption = "Excel匯入新增";
             btnImportExcel.Id = 9;
-            btnImportExcel.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnImportRentTime.ImageOptions.Image");
-            btnImportExcel.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnImportRentTime.ImageOptions.LargeImage");
+            btnImportExcel.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnImportExcel.ImageOptions.Image");
+            btnImportExcel.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnImportExcel.ImageOptions.LargeImage");
             btnImportExcel.Name = "btnImportExcel";
             btnImportExcel.ItemClick += btnImportExcel_ItemClick;
             // 
@@ -267,7 +267,7 @@
             filterPanel.Dock = System.Windows.Forms.DockStyle.Top;
             filterPanel.Location = new System.Drawing.Point(2, 2);
             filterPanel.Name = "filterPanel";
-            filterPanel.Size = new System.Drawing.Size(1855, 79);
+            filterPanel.Size = new System.Drawing.Size(1855, 83);
             filterPanel.TabIndex = 11;
             // 
             // btnAdvancedFilter

@@ -14,15 +14,6 @@ namespace RentProject
         // UI 事件：欄位連動 / 手動修改偵測
         // =========================================================
 
-        // 偵測使用者手動修改聯絡資訊
-        private void ContactFields_EditValueChanged(object sender, EventArgs e)
-        {
-            // 程式塞值不算「手動改」
-            if (_isLoading) return;
-            if (_jobNoAutoMode) return;
-            _contactManuallyEdited = true;
-        }
-
         // 午/晚餐
         private void chkHasLunch_CheckedChanged(object sender, EventArgs e)
         {
@@ -201,43 +192,6 @@ namespace RentProject
         {
             var mode = cmbTestMode.Text?.Trim() ?? "";
             UpdateTestItem(mode);
-        }
-
-        // Company -> Sales / ContactName / ContactPhone（手動改）
-        private void cmbCompany_EditValueChanged(object sender, EventArgs e)
-        {
-            if (_isLoading) return;
-            if (_jobNoAutoMode) return;
-
-            var company = cmbCompany.Text?.Trim() ?? "";
-
-            // 1) 是否換公司？
-            bool companychanged = !string.Equals(company, _lastCompany, StringComparison.Ordinal);
-
-            // 2) 同公司 + 已手動改 => 不要覆蓋
-            if (!companychanged && _contactManuallyEdited)
-                return;
-
-            // 3) 換公司 => 解除鎖定（允許自動帶入）
-            if (companychanged)
-                _contactManuallyEdited = false;
-
-            var c = _contactCompany.FirstOrDefault(x => x.Company == company);
-
-            // 4) 自動帶入（用 _isLoading 壓住手動改事件）
-            _isLoading = true;
-            try
-            {
-                txtContactName.Text = c?.ContactName ?? "";
-                txtContactPhone.Text = c?.ContactPhone ?? "";
-                txtSales.Text = c?.Sales ?? "";
-            }
-            finally
-            {
-                _isLoading = false;
-            }
-
-            _lastCompany = company;
         }
 
         // 限制jobNo下拉呈現數量

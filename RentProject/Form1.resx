@@ -297,7 +297,7 @@
         Bt5VSAAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="btnImportRentTime.ImageOptions.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="btnImportExcel.ImageOptions.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAABF0RVh0VGl0
         bGUARXhwb3J0O1NhdmVG1J4xAAADC0lEQVQ4T3WTa0iTURjH3zmnuc2aEpbQ1wgjgrSabU0T1+ZtU5Y2
@@ -316,7 +316,7 @@
         F9CLxCXQyyFYhsc/oOs8AvunAMwPcYvz+2ylqrsAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="btnImportRentTime.ImageOptions.LargeImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="btnImportExcel.ImageOptions.LargeImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABF0RVh0VGl0
         bGUARXhwb3J0O1NhdmVG1J4xAAAJf0lEQVRYR7WWB1CVZxaGrxuTNUqKrjGayRqjZldndmxgoYmIAqL0

@@ -42,19 +42,20 @@
             DevExpress.XtraLayout.ColumnDefinition columnDefinition5 = new DevExpress.XtraLayout.ColumnDefinition();
             DevExpress.XtraLayout.ColumnDefinition columnDefinition6 = new DevExpress.XtraLayout.ColumnDefinition();
             DevExpress.XtraLayout.ColumnDefinition columnDefinition7 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition8 = new DevExpress.XtraLayout.ColumnDefinition();
             DevExpress.XtraLayout.RowDefinition rowDefinition7 = new DevExpress.XtraLayout.RowDefinition();
             DevExpress.XtraLayout.RowDefinition rowDefinition8 = new DevExpress.XtraLayout.RowDefinition();
             DevExpress.XtraLayout.RowDefinition rowDefinition9 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition8 = new DevExpress.XtraLayout.ColumnDefinition();
             DevExpress.XtraLayout.ColumnDefinition columnDefinition9 = new DevExpress.XtraLayout.ColumnDefinition();
             DevExpress.XtraLayout.ColumnDefinition columnDefinition10 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition11 = new DevExpress.XtraLayout.ColumnDefinition();
             DevExpress.XtraLayout.RowDefinition rowDefinition10 = new DevExpress.XtraLayout.RowDefinition();
             DevExpress.XtraLayout.RowDefinition rowDefinition11 = new DevExpress.XtraLayout.RowDefinition();
             DevExpress.XtraLayout.RowDefinition rowDefinition12 = new DevExpress.XtraLayout.RowDefinition();
             DevExpress.XtraLayout.RowDefinition rowDefinition13 = new DevExpress.XtraLayout.RowDefinition();
             DevExpress.XtraLayout.RowDefinition rowDefinition14 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition11 = new DevExpress.XtraLayout.ColumnDefinition();
             DevExpress.XtraLayout.ColumnDefinition columnDefinition12 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition13 = new DevExpress.XtraLayout.ColumnDefinition();
             DevExpress.XtraLayout.RowDefinition rowDefinition15 = new DevExpress.XtraLayout.RowDefinition();
             DevExpress.XtraLayout.RowDefinition rowDefinition16 = new DevExpress.XtraLayout.RowDefinition();
             DevExpress.XtraLayout.RowDefinition rowDefinition17 = new DevExpress.XtraLayout.RowDefinition();
@@ -70,10 +71,10 @@
             btnDeletedRentTime = new DevExpress.XtraEditors.SimpleButton();
             btnCreatedRentTime = new DevExpress.XtraEditors.SimpleButton();
             layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+            txtPE = new DevExpress.XtraEditors.TextEdit();
             memoNote = new DevExpress.XtraEditors.MemoEdit();
             txtEstimatedHours = new DevExpress.XtraEditors.TextEdit();
             cmbTestItem = new DevExpress.XtraEditors.ComboBoxEdit();
-            labelControl26 = new DevExpress.XtraEditors.LabelControl();
             cmbTestMode = new DevExpress.XtraEditors.ComboBoxEdit();
             panelControl3 = new DevExpress.XtraEditors.PanelControl();
             cmbDinnerMinutes = new DevExpress.XtraEditors.ComboBoxEdit();
@@ -91,7 +92,6 @@
             startDateEdit = new DevExpress.XtraEditors.DateEdit();
             memoTestInformation = new DevExpress.XtraEditors.MemoEdit();
             txtProjectNo = new DevExpress.XtraEditors.TextEdit();
-            txtPE = new DevExpress.XtraEditors.TextEdit();
             txtProjectName = new DevExpress.XtraEditors.TextEdit();
             cmbCompany = new DevExpress.XtraEditors.ComboBoxEdit();
             txtContactName = new DevExpress.XtraEditors.TextEdit();
@@ -111,10 +111,10 @@
             lblContactName = new DevExpress.XtraLayout.LayoutControlItem();
             lblCompany = new DevExpress.XtraLayout.LayoutControlItem();
             lblProjectName = new DevExpress.XtraLayout.LayoutControlItem();
-            lblPE = new DevExpress.XtraLayout.LayoutControlItem();
-            lblProjectNo = new DevExpress.XtraLayout.LayoutControlItem();
             lblTestInformation = new DevExpress.XtraLayout.LayoutControlItem();
             lblLocation = new DevExpress.XtraLayout.LayoutControlItem();
+            lblPE = new DevExpress.XtraLayout.LayoutControlItem();
+            lblProjectNo = new DevExpress.XtraLayout.LayoutControlItem();
             layoutControlGroup4 = new DevExpress.XtraLayout.LayoutControlGroup();
             lblstartDateEdit = new DevExpress.XtraLayout.LayoutControlItem();
             lblendDateEdit = new DevExpress.XtraLayout.LayoutControlItem();
@@ -122,7 +122,6 @@
             lblstartTimeEdit = new DevExpress.XtraLayout.LayoutControlItem();
             lblendTimeEdit = new DevExpress.XtraLayout.LayoutControlItem();
             layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-            layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
             lblEstimatedHours = new DevExpress.XtraLayout.LayoutControlItem();
             layoutControlGroup6 = new DevExpress.XtraLayout.LayoutControlGroup();
             layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
@@ -148,6 +147,9 @@
             lblEngineer = new DevExpress.XtraLayout.LayoutControlItem();
             layoutControlGroup5 = new DevExpress.XtraLayout.LayoutControlGroup();
             splitterItem1 = new DevExpress.XtraLayout.SplitterItem();
+            simpleLabelItem1 = new DevExpress.XtraLayout.SimpleLabelItem();
+            labelControl26 = new DevExpress.XtraEditors.LabelControl();
+            layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)dxErrorProvider1).BeginInit();
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)panelControl2).BeginInit();
@@ -155,6 +157,7 @@
             ((System.ComponentModel.ISupportInitialize)chkHandover.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)layoutControl1).BeginInit();
             layoutControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)txtPE.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)memoNote.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)txtEstimatedHours.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)cmbTestItem.Properties).BeginInit();
@@ -179,7 +182,6 @@
             ((System.ComponentModel.ISupportInitialize)startDateEdit.Properties.CalendarTimeProperties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)memoTestInformation.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)txtProjectNo.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)txtPE.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)txtProjectName.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)cmbCompany.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)txtContactName.Properties).BeginInit();
@@ -199,10 +201,10 @@
             ((System.ComponentModel.ISupportInitialize)lblContactName).BeginInit();
             ((System.ComponentModel.ISupportInitialize)lblCompany).BeginInit();
             ((System.ComponentModel.ISupportInitialize)lblProjectName).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)lblPE).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)lblProjectNo).BeginInit();
             ((System.ComponentModel.ISupportInitialize)lblTestInformation).BeginInit();
             ((System.ComponentModel.ISupportInitialize)lblLocation).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)lblPE).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)lblProjectNo).BeginInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlGroup4).BeginInit();
             ((System.ComponentModel.ISupportInitialize)lblstartDateEdit).BeginInit();
             ((System.ComponentModel.ISupportInitialize)lblendDateEdit).BeginInit();
@@ -210,7 +212,6 @@
             ((System.ComponentModel.ISupportInitialize)lblstartTimeEdit).BeginInit();
             ((System.ComponentModel.ISupportInitialize)lblendTimeEdit).BeginInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlItem1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)layoutControlItem4).BeginInit();
             ((System.ComponentModel.ISupportInitialize)lblEstimatedHours).BeginInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlGroup6).BeginInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlItem3).BeginInit();
@@ -234,6 +235,8 @@
             ((System.ComponentModel.ISupportInitialize)lblEngineer).BeginInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlGroup5).BeginInit();
             ((System.ComponentModel.ISupportInitialize)splitterItem1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)simpleLabelItem1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)layoutControlItem4).BeginInit();
             SuspendLayout();
             // 
             // dxErrorProvider1
@@ -325,6 +328,7 @@
             // 
             // layoutControl1
             // 
+            layoutControl1.Controls.Add(txtPE);
             layoutControl1.Controls.Add(memoNote);
             layoutControl1.Controls.Add(txtEstimatedHours);
             layoutControl1.Controls.Add(cmbTestItem);
@@ -342,7 +346,6 @@
             layoutControl1.Controls.Add(startDateEdit);
             layoutControl1.Controls.Add(memoTestInformation);
             layoutControl1.Controls.Add(txtProjectNo);
-            layoutControl1.Controls.Add(txtPE);
             layoutControl1.Controls.Add(txtProjectName);
             layoutControl1.Controls.Add(cmbCompany);
             layoutControl1.Controls.Add(txtContactName);
@@ -361,6 +364,15 @@
             layoutControl1.TabIndex = 0;
             layoutControl1.Text = "layoutBasic";
             // 
+            // txtPE
+            // 
+            txtPE.Location = new System.Drawing.Point(593, 175);
+            txtPE.Name = "txtPE";
+            txtPE.Properties.ReadOnly = true;
+            txtPE.Size = new System.Drawing.Size(219, 28);
+            txtPE.StyleController = layoutControl1;
+            txtPE.TabIndex = 299;
+            // 
             // memoNote
             // 
             memoNote.Location = new System.Drawing.Point(182, 710);
@@ -371,10 +383,10 @@
             // 
             // txtEstimatedHours
             // 
-            txtEstimatedHours.Location = new System.Drawing.Point(495, 462);
+            txtEstimatedHours.Location = new System.Drawing.Point(484, 462);
             txtEstimatedHours.Name = "txtEstimatedHours";
             txtEstimatedHours.Properties.ReadOnly = true;
-            txtEstimatedHours.Size = new System.Drawing.Size(137, 28);
+            txtEstimatedHours.Size = new System.Drawing.Size(134, 28);
             txtEstimatedHours.StyleController = layoutControl1;
             txtEstimatedHours.TabIndex = 293;
             // 
@@ -387,15 +399,6 @@
             cmbTestItem.Size = new System.Drawing.Size(630, 28);
             cmbTestItem.StyleController = layoutControl1;
             cmbTestItem.TabIndex = 293;
-            // 
-            // labelControl26
-            // 
-            labelControl26.Location = new System.Drawing.Point(638, 462);
-            labelControl26.Name = "labelControl26";
-            labelControl26.Size = new System.Drawing.Size(18, 22);
-            labelControl26.StyleController = layoutControl1;
-            labelControl26.TabIndex = 295;
-            labelControl26.Text = "時";
             // 
             // cmbTestMode
             // 
@@ -412,14 +415,14 @@
             panelControl3.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             panelControl3.Controls.Add(cmbDinnerMinutes);
             panelControl3.Controls.Add(chkHasDinner);
-            panelControl3.Location = new System.Drawing.Point(638, 426);
+            panelControl3.Location = new System.Drawing.Point(639, 426);
             panelControl3.Name = "panelControl3";
-            panelControl3.Size = new System.Drawing.Size(174, 30);
+            panelControl3.Size = new System.Drawing.Size(173, 30);
             panelControl3.TabIndex = 298;
             // 
             // cmbDinnerMinutes
             // 
-            cmbDinnerMinutes.Location = new System.Drawing.Point(72, 0);
+            cmbDinnerMinutes.Location = new System.Drawing.Point(72, 1);
             cmbDinnerMinutes.Name = "cmbDinnerMinutes";
             cmbDinnerMinutes.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             cmbDinnerMinutes.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
@@ -453,7 +456,7 @@
             // endTimeEdit
             // 
             endTimeEdit.EditValue = new System.DateTime(2025, 12, 21, 0, 0, 0, 0);
-            endTimeEdit.Location = new System.Drawing.Point(495, 426);
+            endTimeEdit.Location = new System.Drawing.Point(484, 426);
             endTimeEdit.Name = "endTimeEdit";
             endTimeEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             endTimeEdit.Properties.MaskSettings.Set("mask", "HH:mm");
@@ -461,7 +464,7 @@
             endTimeEdit.Properties.MaskSettings.Set("MaskManagerSignature", "allowNull=False");
             endTimeEdit.Properties.MaskSettings.Set("spinWithCarry", null);
             endTimeEdit.Properties.MaskSettings.Set("useAdvancingCaret", false);
-            endTimeEdit.Size = new System.Drawing.Size(137, 28);
+            endTimeEdit.Size = new System.Drawing.Size(134, 28);
             endTimeEdit.StyleController = layoutControl1;
             endTimeEdit.TabIndex = 291;
             // 
@@ -473,7 +476,7 @@
             startTimeEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             startTimeEdit.Properties.MaskSettings.Set("mask", "HH:mm");
             startTimeEdit.Properties.MaskSettings.Set("useAdvancingCaret", false);
-            startTimeEdit.Size = new System.Drawing.Size(137, 28);
+            startTimeEdit.Size = new System.Drawing.Size(134, 28);
             startTimeEdit.StyleController = layoutControl1;
             startTimeEdit.TabIndex = 297;
             // 
@@ -491,9 +494,9 @@
             panelControl1.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             panelControl1.Controls.Add(chkHasLunch);
             panelControl1.Controls.Add(txtLunchMinutes);
-            panelControl1.Location = new System.Drawing.Point(638, 390);
+            panelControl1.Location = new System.Drawing.Point(639, 390);
             panelControl1.Name = "panelControl1";
-            panelControl1.Size = new System.Drawing.Size(174, 30);
+            panelControl1.Size = new System.Drawing.Size(173, 30);
             panelControl1.TabIndex = 295;
             // 
             // chkHasLunch
@@ -501,15 +504,15 @@
             chkHasLunch.Location = new System.Drawing.Point(4, 1);
             chkHasLunch.Name = "chkHasLunch";
             chkHasLunch.Properties.Caption = "午餐";
-            chkHasLunch.Size = new System.Drawing.Size(76, 27);
+            chkHasLunch.Size = new System.Drawing.Size(67, 27);
             chkHasLunch.TabIndex = 292;
             // 
             // txtLunchMinutes
             // 
-            txtLunchMinutes.Location = new System.Drawing.Point(75, 3);
+            txtLunchMinutes.Location = new System.Drawing.Point(73, 2);
             txtLunchMinutes.Name = "txtLunchMinutes";
             txtLunchMinutes.Properties.ReadOnly = true;
-            txtLunchMinutes.Size = new System.Drawing.Size(91, 28);
+            txtLunchMinutes.Size = new System.Drawing.Size(93, 28);
             txtLunchMinutes.TabIndex = 292;
             // 
             // cmbEngineer
@@ -525,12 +528,12 @@
             // endDateEdit
             // 
             endDateEdit.EditValue = null;
-            endDateEdit.Location = new System.Drawing.Point(495, 390);
+            endDateEdit.Location = new System.Drawing.Point(484, 390);
             endDateEdit.Name = "endDateEdit";
             endDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             endDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             endDateEdit.Properties.MaskSettings.Set("mask", "");
-            endDateEdit.Size = new System.Drawing.Size(137, 28);
+            endDateEdit.Size = new System.Drawing.Size(134, 28);
             endDateEdit.StyleController = layoutControl1;
             endDateEdit.TabIndex = 292;
             // 
@@ -543,7 +546,7 @@
             startDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             startDateEdit.Properties.MaskSettings.Set("useAdvancingCaret", false);
             startDateEdit.Properties.MaskSettings.Set("mask", "");
-            startDateEdit.Size = new System.Drawing.Size(137, 28);
+            startDateEdit.Size = new System.Drawing.Size(134, 28);
             startDateEdit.StyleController = layoutControl1;
             startDateEdit.TabIndex = 294;
             // 
@@ -557,21 +560,12 @@
             // 
             // txtProjectNo
             // 
-            txtProjectNo.Location = new System.Drawing.Point(593, 175);
+            txtProjectNo.Location = new System.Drawing.Point(182, 211);
             txtProjectNo.Name = "txtProjectNo";
             txtProjectNo.Properties.ReadOnly = true;
             txtProjectNo.Size = new System.Drawing.Size(219, 28);
             txtProjectNo.StyleController = layoutControl1;
             txtProjectNo.TabIndex = 8;
-            // 
-            // txtPE
-            // 
-            txtPE.Location = new System.Drawing.Point(182, 211);
-            txtPE.Name = "txtPE";
-            txtPE.Properties.ReadOnly = true;
-            txtPE.Size = new System.Drawing.Size(219, 28);
-            txtPE.StyleController = layoutControl1;
-            txtPE.TabIndex = 9;
             // 
             // txtProjectName
             // 
@@ -675,7 +669,7 @@
             // layoutControlGroup3
             // 
             layoutControlGroup3.GroupStyle = DevExpress.Utils.GroupStyle.Card;
-            layoutControlGroup3.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] { lblCreatedBy, lblJobNo, lblSales, lblContactPhone, lblContactName, lblCompany, lblProjectName, lblPE, lblProjectNo, lblTestInformation, lblLocation });
+            layoutControlGroup3.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] { lblCreatedBy, lblJobNo, lblSales, lblContactPhone, lblContactName, lblCompany, lblProjectName, lblTestInformation, lblLocation, lblPE, lblProjectNo });
             layoutControlGroup3.LayoutMode = DevExpress.XtraLayout.Utils.LayoutMode.Table;
             layoutControlGroup3.Location = new System.Drawing.Point(0, 0);
             layoutControlGroup3.Name = "layoutControlGroup3";
@@ -738,6 +732,7 @@
             // lblContactPhone
             // 
             lblContactPhone.Control = txtContactPhone;
+            lblContactPhone.CustomizationFormText = "電話 (選填)";
             lblContactPhone.Location = new System.Drawing.Point(0, 108);
             lblContactPhone.Name = "lblContactPhone";
             lblContactPhone.OptionsTableLayoutItem.RowIndex = 3;
@@ -753,7 +748,7 @@
             lblContactName.OptionsTableLayoutItem.ColumnIndex = 2;
             lblContactName.OptionsTableLayoutItem.RowIndex = 2;
             lblContactName.Size = new System.Drawing.Size(372, 36);
-            lblContactName.Text = "連絡人 (選填)";
+            lblContactName.Text = "聯絡人 (選填)";
             lblContactName.TextSize = new System.Drawing.Size(129, 22);
             // 
             // lblCompany
@@ -779,27 +774,6 @@
             lblProjectName.Text = "ProjectName";
             lblProjectName.TextSize = new System.Drawing.Size(129, 22);
             // 
-            // lblPE
-            // 
-            lblPE.Control = txtPE;
-            lblPE.Location = new System.Drawing.Point(0, 144);
-            lblPE.Name = "lblPE";
-            lblPE.OptionsTableLayoutItem.RowIndex = 4;
-            lblPE.Size = new System.Drawing.Size(372, 36);
-            lblPE.Text = "PE";
-            lblPE.TextSize = new System.Drawing.Size(129, 22);
-            // 
-            // lblProjectNo
-            // 
-            lblProjectNo.Control = txtProjectNo;
-            lblProjectNo.Location = new System.Drawing.Point(411, 108);
-            lblProjectNo.Name = "lblProjectNo";
-            lblProjectNo.OptionsTableLayoutItem.ColumnIndex = 2;
-            lblProjectNo.OptionsTableLayoutItem.RowIndex = 3;
-            lblProjectNo.Size = new System.Drawing.Size(372, 36);
-            lblProjectNo.Text = "ProjectNo";
-            lblProjectNo.TextSize = new System.Drawing.Size(129, 22);
-            // 
             // lblTestInformation
             // 
             lblTestInformation.Control = memoTestInformation;
@@ -820,21 +794,44 @@
             lblLocation.Text = "場地";
             lblLocation.TextSize = new System.Drawing.Size(129, 22);
             // 
+            // lblPE
+            // 
+            lblPE.Control = txtPE;
+            lblPE.Location = new System.Drawing.Point(411, 108);
+            lblPE.Name = "lblPE";
+            lblPE.OptionsTableLayoutItem.ColumnIndex = 2;
+            lblPE.OptionsTableLayoutItem.RowIndex = 3;
+            lblPE.Size = new System.Drawing.Size(372, 36);
+            lblPE.Text = "PE";
+            lblPE.TextSize = new System.Drawing.Size(129, 22);
+            // 
+            // lblProjectNo
+            // 
+            lblProjectNo.Control = txtProjectNo;
+            lblProjectNo.Location = new System.Drawing.Point(0, 144);
+            lblProjectNo.Name = "lblProjectNo";
+            lblProjectNo.OptionsTableLayoutItem.RowIndex = 4;
+            lblProjectNo.Size = new System.Drawing.Size(372, 36);
+            lblProjectNo.Text = "ProjectNo";
+            lblProjectNo.TextSize = new System.Drawing.Size(129, 22);
+            // 
             // layoutControlGroup4
             // 
-            layoutControlGroup4.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] { lblstartDateEdit, lblendDateEdit, layoutControlItem2, lblstartTimeEdit, lblendTimeEdit, layoutControlItem1, layoutControlItem4, lblEstimatedHours });
+            layoutControlGroup4.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] { lblstartDateEdit, lblendDateEdit, layoutControlItem2, lblstartTimeEdit, lblendTimeEdit, layoutControlItem1, lblEstimatedHours });
             layoutControlGroup4.LayoutMode = DevExpress.XtraLayout.Utils.LayoutMode.Table;
             layoutControlGroup4.Location = new System.Drawing.Point(0, 323);
             layoutControlGroup4.Name = "layoutControlGroup4";
             columnDefinition4.SizeType = System.Windows.Forms.SizeType.Percent;
             columnDefinition4.Width = 37D;
             columnDefinition5.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition5.Width = 3D;
+            columnDefinition5.Width = 2D;
             columnDefinition6.SizeType = System.Windows.Forms.SizeType.Percent;
             columnDefinition6.Width = 37D;
             columnDefinition7.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition7.Width = 23D;
-            layoutControlGroup4.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] { columnDefinition4, columnDefinition5, columnDefinition6, columnDefinition7 });
+            columnDefinition7.Width = 2D;
+            columnDefinition8.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition8.Width = 23D;
+            layoutControlGroup4.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] { columnDefinition4, columnDefinition5, columnDefinition6, columnDefinition7, columnDefinition8 });
             rowDefinition7.Height = 33D;
             rowDefinition7.SizeType = System.Windows.Forms.SizeType.Percent;
             rowDefinition8.Height = 33D;
@@ -850,27 +847,27 @@
             lblstartDateEdit.Control = startDateEdit;
             lblstartDateEdit.Location = new System.Drawing.Point(0, 0);
             lblstartDateEdit.Name = "lblstartDateEdit";
-            lblstartDateEdit.Size = new System.Drawing.Size(290, 36);
+            lblstartDateEdit.Size = new System.Drawing.Size(287, 36);
             lblstartDateEdit.Text = "開始日期";
             lblstartDateEdit.TextSize = new System.Drawing.Size(129, 22);
             // 
             // lblendDateEdit
             // 
             lblendDateEdit.Control = endDateEdit;
-            lblendDateEdit.Location = new System.Drawing.Point(313, 0);
+            lblendDateEdit.Location = new System.Drawing.Point(302, 0);
             lblendDateEdit.Name = "lblendDateEdit";
             lblendDateEdit.OptionsTableLayoutItem.ColumnIndex = 2;
-            lblendDateEdit.Size = new System.Drawing.Size(290, 36);
+            lblendDateEdit.Size = new System.Drawing.Size(287, 36);
             lblendDateEdit.Text = "結束日期";
             lblendDateEdit.TextSize = new System.Drawing.Size(129, 22);
             // 
             // layoutControlItem2
             // 
             layoutControlItem2.Control = panelControl1;
-            layoutControlItem2.Location = new System.Drawing.Point(603, 0);
+            layoutControlItem2.Location = new System.Drawing.Point(604, 0);
             layoutControlItem2.Name = "layoutControlItem2";
-            layoutControlItem2.OptionsTableLayoutItem.ColumnIndex = 3;
-            layoutControlItem2.Size = new System.Drawing.Size(180, 36);
+            layoutControlItem2.OptionsTableLayoutItem.ColumnIndex = 4;
+            layoutControlItem2.Size = new System.Drawing.Size(179, 36);
             layoutControlItem2.TextVisible = false;
             // 
             // lblstartTimeEdit
@@ -879,49 +876,39 @@
             lblstartTimeEdit.Location = new System.Drawing.Point(0, 36);
             lblstartTimeEdit.Name = "lblstartTimeEdit";
             lblstartTimeEdit.OptionsTableLayoutItem.RowIndex = 1;
-            lblstartTimeEdit.Size = new System.Drawing.Size(290, 36);
+            lblstartTimeEdit.Size = new System.Drawing.Size(287, 36);
             lblstartTimeEdit.Text = "開始時間";
             lblstartTimeEdit.TextSize = new System.Drawing.Size(129, 22);
             // 
             // lblendTimeEdit
             // 
             lblendTimeEdit.Control = endTimeEdit;
-            lblendTimeEdit.Location = new System.Drawing.Point(313, 36);
+            lblendTimeEdit.Location = new System.Drawing.Point(302, 36);
             lblendTimeEdit.Name = "lblendTimeEdit";
             lblendTimeEdit.OptionsTableLayoutItem.ColumnIndex = 2;
             lblendTimeEdit.OptionsTableLayoutItem.RowIndex = 1;
-            lblendTimeEdit.Size = new System.Drawing.Size(290, 36);
+            lblendTimeEdit.Size = new System.Drawing.Size(287, 36);
             lblendTimeEdit.Text = "結束時間";
             lblendTimeEdit.TextSize = new System.Drawing.Size(129, 22);
             // 
             // layoutControlItem1
             // 
             layoutControlItem1.Control = panelControl3;
-            layoutControlItem1.Location = new System.Drawing.Point(603, 36);
+            layoutControlItem1.Location = new System.Drawing.Point(604, 36);
             layoutControlItem1.Name = "layoutControlItem1";
-            layoutControlItem1.OptionsTableLayoutItem.ColumnIndex = 3;
+            layoutControlItem1.OptionsTableLayoutItem.ColumnIndex = 4;
             layoutControlItem1.OptionsTableLayoutItem.RowIndex = 1;
-            layoutControlItem1.Size = new System.Drawing.Size(180, 36);
+            layoutControlItem1.Size = new System.Drawing.Size(179, 36);
             layoutControlItem1.TextVisible = false;
-            // 
-            // layoutControlItem4
-            // 
-            layoutControlItem4.Control = labelControl26;
-            layoutControlItem4.Location = new System.Drawing.Point(603, 72);
-            layoutControlItem4.Name = "layoutControlItem4";
-            layoutControlItem4.OptionsTableLayoutItem.ColumnIndex = 3;
-            layoutControlItem4.OptionsTableLayoutItem.RowIndex = 2;
-            layoutControlItem4.Size = new System.Drawing.Size(180, 38);
-            layoutControlItem4.TextVisible = false;
             // 
             // lblEstimatedHours
             // 
             lblEstimatedHours.Control = txtEstimatedHours;
-            lblEstimatedHours.Location = new System.Drawing.Point(313, 72);
+            lblEstimatedHours.Location = new System.Drawing.Point(302, 72);
             lblEstimatedHours.Name = "lblEstimatedHours";
             lblEstimatedHours.OptionsTableLayoutItem.ColumnIndex = 2;
             lblEstimatedHours.OptionsTableLayoutItem.RowIndex = 2;
-            lblEstimatedHours.Size = new System.Drawing.Size(290, 38);
+            lblEstimatedHours.Size = new System.Drawing.Size(287, 38);
             lblEstimatedHours.Text = "預估時間";
             lblEstimatedHours.TextSize = new System.Drawing.Size(129, 22);
             // 
@@ -931,13 +918,13 @@
             layoutControlGroup6.LayoutMode = DevExpress.XtraLayout.Utils.LayoutMode.Table;
             layoutControlGroup6.Location = new System.Drawing.Point(0, 499);
             layoutControlGroup6.Name = "layoutControlGroup6";
-            columnDefinition8.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition8.Width = 47.5D;
             columnDefinition9.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition9.Width = 5D;
+            columnDefinition9.Width = 47.5D;
             columnDefinition10.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition10.Width = 47.5D;
-            layoutControlGroup6.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] { columnDefinition8, columnDefinition9, columnDefinition10 });
+            columnDefinition10.Width = 5D;
+            columnDefinition11.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition11.Width = 47.5D;
+            layoutControlGroup6.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] { columnDefinition9, columnDefinition10, columnDefinition11 });
             rowDefinition10.Height = 17.5D;
             rowDefinition10.SizeType = System.Windows.Forms.SizeType.Percent;
             rowDefinition11.Height = 17.5D;
@@ -1166,11 +1153,11 @@
             layoutControlGroup5.LayoutMode = DevExpress.XtraLayout.Utils.LayoutMode.Table;
             layoutControlGroup5.Location = new System.Drawing.Point(0, 0);
             layoutControlGroup5.Name = "layoutControlGroup5";
-            columnDefinition11.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition11.Width = 100D;
             columnDefinition12.SizeType = System.Windows.Forms.SizeType.Percent;
             columnDefinition12.Width = 100D;
-            layoutControlGroup5.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] { columnDefinition11, columnDefinition12 });
+            columnDefinition13.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition13.Width = 100D;
+            layoutControlGroup5.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] { columnDefinition12, columnDefinition13 });
             rowDefinition15.Height = 20D;
             rowDefinition15.SizeType = System.Windows.Forms.SizeType.Percent;
             rowDefinition16.Height = 20D;
@@ -1190,6 +1177,34 @@
             splitterItem1.Location = new System.Drawing.Point(0, 0);
             splitterItem1.Name = "splitterItem1";
             splitterItem1.Size = new System.Drawing.Size(380, 43);
+            // 
+            // simpleLabelItem1
+            // 
+            simpleLabelItem1.Location = new System.Drawing.Point(7029, 68);
+            simpleLabelItem1.Name = "simpleLabelItem1";
+            simpleLabelItem1.OptionsTableLayoutItem.ColumnIndex = 3;
+            simpleLabelItem1.OptionsTableLayoutItem.RowIndex = 2;
+            simpleLabelItem1.Size = new System.Drawing.Size(185, 36);
+            simpleLabelItem1.TextSize = new System.Drawing.Size(129, 22);
+            // 
+            // labelControl26
+            // 
+            labelControl26.Location = new System.Drawing.Point(624, 465);
+            labelControl26.Name = "labelControl26";
+            labelControl26.Size = new System.Drawing.Size(18, 22);
+            labelControl26.StyleController = layoutControl1;
+            labelControl26.TabIndex = 295;
+            labelControl26.Text = "時";
+            // 
+            // layoutControlItem4
+            // 
+            layoutControlItem4.Control = labelControl26;
+            layoutControlItem4.Location = new System.Drawing.Point(604, 72);
+            layoutControlItem4.Name = "layoutControlItem4";
+            layoutControlItem4.OptionsTableLayoutItem.ColumnIndex = 4;
+            layoutControlItem4.OptionsTableLayoutItem.RowIndex = 2;
+            layoutControlItem4.Size = new System.Drawing.Size(179, 38);
+            layoutControlItem4.TextVisible = false;
             // 
             // Project
             // 
@@ -1212,6 +1227,8 @@
             ((System.ComponentModel.ISupportInitialize)chkHandover.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)layoutControl1).EndInit();
             layoutControl1.ResumeLayout(false);
+            layoutControl1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)txtPE.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)memoNote.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)txtEstimatedHours.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)cmbTestItem.Properties).EndInit();
@@ -1236,7 +1253,6 @@
             ((System.ComponentModel.ISupportInitialize)startDateEdit.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)memoTestInformation.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)txtProjectNo.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)txtPE.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)txtProjectName.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)cmbCompany.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)txtContactName.Properties).EndInit();
@@ -1256,10 +1272,10 @@
             ((System.ComponentModel.ISupportInitialize)lblContactName).EndInit();
             ((System.ComponentModel.ISupportInitialize)lblCompany).EndInit();
             ((System.ComponentModel.ISupportInitialize)lblProjectName).EndInit();
-            ((System.ComponentModel.ISupportInitialize)lblPE).EndInit();
-            ((System.ComponentModel.ISupportInitialize)lblProjectNo).EndInit();
             ((System.ComponentModel.ISupportInitialize)lblTestInformation).EndInit();
             ((System.ComponentModel.ISupportInitialize)lblLocation).EndInit();
+            ((System.ComponentModel.ISupportInitialize)lblPE).EndInit();
+            ((System.ComponentModel.ISupportInitialize)lblProjectNo).EndInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlGroup4).EndInit();
             ((System.ComponentModel.ISupportInitialize)lblstartDateEdit).EndInit();
             ((System.ComponentModel.ISupportInitialize)lblendDateEdit).EndInit();
@@ -1267,7 +1283,6 @@
             ((System.ComponentModel.ISupportInitialize)lblstartTimeEdit).EndInit();
             ((System.ComponentModel.ISupportInitialize)lblendTimeEdit).EndInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlItem1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)layoutControlItem4).EndInit();
             ((System.ComponentModel.ISupportInitialize)lblEstimatedHours).EndInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlGroup6).EndInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlItem3).EndInit();
@@ -1292,6 +1307,8 @@
             ((System.ComponentModel.ISupportInitialize)lblEngineer).EndInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlGroup5).EndInit();
             ((System.ComponentModel.ISupportInitialize)splitterItem1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)simpleLabelItem1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)layoutControlItem4).EndInit();
             ResumeLayout(false);
         }
 
@@ -1325,7 +1342,6 @@
         private DevExpress.XtraEditors.ComboBoxEdit cmbJobNo;
         private DevExpress.XtraLayout.LayoutControlItem lblJobNo;
         private DevExpress.XtraLayout.LayoutControlItem lblSales;
-        private DevExpress.XtraEditors.TextEdit txtPE;
         private DevExpress.XtraEditors.TextEdit txtProjectName;
         private DevExpress.XtraEditors.ComboBoxEdit cmbCompany;
         private DevExpress.XtraEditors.TextEdit txtContactName;
@@ -1334,7 +1350,6 @@
         private DevExpress.XtraLayout.LayoutControlItem lblContactName;
         private DevExpress.XtraLayout.LayoutControlItem lblCompany;
         private DevExpress.XtraLayout.LayoutControlItem lblProjectName;
-        private DevExpress.XtraLayout.LayoutControlItem lblPE;
         private DevExpress.XtraEditors.TextEdit txtProjectNo;
         private DevExpress.XtraLayout.LayoutControlItem lblProjectNo;
         private DevExpress.XtraEditors.MemoEdit memoTestInformation;
@@ -1356,8 +1371,6 @@
         private DevExpress.XtraLayout.LayoutControlItem lblendTimeEdit;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraEditors.ComboBoxEdit cmbDinnerMinutes;
-        private DevExpress.XtraEditors.LabelControl labelControl26;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
         private DevExpress.XtraEditors.TextEdit txtEstimatedHours;
         private DevExpress.XtraLayout.LayoutControlItem lblEstimatedHours;
         private DevExpress.XtraEditors.MemoEdit memoNote;
@@ -1384,5 +1397,10 @@
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem9;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem10;
         private DevExpress.XtraLayout.SplitterItem splitterItem1;
+        private DevExpress.XtraEditors.TextEdit txtPE;
+        private DevExpress.XtraLayout.LayoutControlItem lblPE;
+        private DevExpress.XtraEditors.LabelControl labelControl26;
+        private DevExpress.XtraLayout.SimpleLabelItem simpleLabelItem1;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
     }
 }
