@@ -13,5 +13,11 @@
 
         // 如果你要用場地做顏色/分組/過濾，也可放
         public string Location { get; set; } = "";
+
+        // 新增：是否為「摘要筆數」那種假 appointment
+        public bool IsSummary { get; set; }
+
+        // 新增：若是摘要，這裡放該日期所有 RentTimeId（用逗號串）
+        public string RentTimeIds { get; set; } = "";
     }
 }

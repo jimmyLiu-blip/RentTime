@@ -50,13 +50,6 @@ namespace RentProject
             new TestModeTestItem { TestMode = "Setup", TestItem = "Debug"},
         };
 
-        private readonly List<ContactCompany> _contactCompany = new()
-        {
-            new ContactCompany { Company = "好厲害科技公司", Sales = "Thomas", ContactName = "Tom", ContactPhone = "0912378999"},
-            new ContactCompany { Company = "台灣科技公司", Sales = "Brian", ContactName = "Bob", ContactPhone = "0955577768"},
-            new ContactCompany { Company = "台灣傳統公司", Sales = "Chovy", ContactName = "Faker", ContactPhone = "0998765432"},
-        };
-
         private readonly List<string> _engineers = new()
         {
             "Jimmy",

@@ -221,7 +221,6 @@ namespace RentProject
             cmbDinnerMinutes.EditValueChanged += AnyTimeOrMealChanged;
 
             // Init 下拉選單
-            InitContactCompany();
             InitTestModeCombo();
             InitEngineerCombo();
             InitDinnerMinutesCombo();

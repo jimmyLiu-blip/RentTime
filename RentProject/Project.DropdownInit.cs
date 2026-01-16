@@ -8,21 +8,6 @@ namespace RentProject
         // =========================================================
         // H) Init：填下拉選單
         // =========================================================
-        private void InitContactCompany()
-        {
-            var companies = _contactCompany
-                .Select(x => x.Company)
-                .Distinct()
-                .OrderBy(x => x)
-                .ToList();
-
-            cmbCompany.Properties.Items.Clear();
-            cmbCompany.Properties.Items.AddRange(companies);
-
-            cmbCompany.EditValue = null;
-            cmbCompany.SelectedIndex = -1;
-        }
-
         private void InitTestModeCombo()
         {
             var modes = _tests
