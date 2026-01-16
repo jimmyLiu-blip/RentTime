@@ -52,19 +52,23 @@
             barDockControlRight = new DevExpress.XtraBars.BarDockControl();
             mainPanel = new DevExpress.XtraEditors.PanelControl();
             filterPanel = new DevExpress.XtraEditors.PanelControl();
+            cmbLocationFilter = new DevExpress.XtraEditors.ComboBoxEdit();
             btnAdvancedFilter = new DevExpress.XtraEditors.SimpleButton();
             labelControl2 = new DevExpress.XtraEditors.LabelControl();
             cmbStatusFilter = new DevExpress.XtraEditors.ComboBoxEdit();
-            cmbLocationFilter = new DevExpress.XtraEditors.ComboBoxEdit();
             labelControl1 = new DevExpress.XtraEditors.LabelControl();
+            lblStatusFilter = new DevExpress.XtraLayout.LayoutControlItem();
+            lblLocationFilter = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)ribbonControl1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)barManager1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)mainPanel).BeginInit();
             mainPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)filterPanel).BeginInit();
             filterPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)cmbStatusFilter.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)cmbLocationFilter.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)cmbStatusFilter.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)lblStatusFilter).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)lblLocationFilter).BeginInit();
             SuspendLayout();
             // 
             // ribbonPage1
@@ -259,64 +263,79 @@
             // 
             // filterPanel
             // 
+            filterPanel.Controls.Add(cmbLocationFilter);
             filterPanel.Controls.Add(btnAdvancedFilter);
             filterPanel.Controls.Add(labelControl2);
             filterPanel.Controls.Add(cmbStatusFilter);
-            filterPanel.Controls.Add(cmbLocationFilter);
             filterPanel.Controls.Add(labelControl1);
             filterPanel.Dock = System.Windows.Forms.DockStyle.Top;
             filterPanel.Location = new System.Drawing.Point(2, 2);
             filterPanel.Name = "filterPanel";
-            filterPanel.Size = new System.Drawing.Size(1855, 83);
+            filterPanel.Size = new System.Drawing.Size(1855, 47);
             filterPanel.TabIndex = 11;
-            // 
-            // btnAdvancedFilter
-            // 
-            btnAdvancedFilter.Location = new System.Drawing.Point(865, 24);
-            btnAdvancedFilter.Name = "btnAdvancedFilter";
-            btnAdvancedFilter.Size = new System.Drawing.Size(92, 40);
-            btnAdvancedFilter.TabIndex = 13;
-            btnAdvancedFilter.Text = "進階";
-            btnAdvancedFilter.Click += btnAdvancedFilter_Click;
-            // 
-            // labelControl2
-            // 
-            labelControl2.Appearance.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
-            labelControl2.Appearance.Options.UseFont = true;
-            labelControl2.Location = new System.Drawing.Point(506, 24);
-            labelControl2.Name = "labelControl2";
-            labelControl2.Size = new System.Drawing.Size(58, 34);
-            labelControl2.TabIndex = 12;
-            labelControl2.Text = "狀態";
-            // 
-            // cmbStatusFilter
-            // 
-            cmbStatusFilter.Location = new System.Drawing.Point(587, 30);
-            cmbStatusFilter.MenuManager = ribbonControl1;
-            cmbStatusFilter.Name = "cmbStatusFilter";
-            cmbStatusFilter.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
-            cmbStatusFilter.Size = new System.Drawing.Size(225, 28);
-            cmbStatusFilter.TabIndex = 11;
             // 
             // cmbLocationFilter
             // 
-            cmbLocationFilter.Location = new System.Drawing.Point(168, 30);
+            cmbLocationFilter.Location = new System.Drawing.Point(116, 11);
             cmbLocationFilter.MenuManager = ribbonControl1;
             cmbLocationFilter.Name = "cmbLocationFilter";
             cmbLocationFilter.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
-            cmbLocationFilter.Size = new System.Drawing.Size(225, 28);
-            cmbLocationFilter.TabIndex = 1;
-            cmbLocationFilter.EditValueChanged += cmbLocationFilter_EditValueChanged;
+            cmbLocationFilter.Size = new System.Drawing.Size(176, 28);
+            cmbLocationFilter.TabIndex = 0;
+            // 
+            // btnAdvancedFilter
+            // 
+            btnAdvancedFilter.Location = new System.Drawing.Point(616, 8);
+            btnAdvancedFilter.Name = "btnAdvancedFilter";
+            btnAdvancedFilter.Size = new System.Drawing.Size(78, 32);
+            btnAdvancedFilter.TabIndex = 2;
+            btnAdvancedFilter.Text = "進階";
+            // 
+            // labelControl2
+            // 
+            labelControl2.Appearance.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            labelControl2.Appearance.Options.UseFont = true;
+            labelControl2.Location = new System.Drawing.Point(321, 8);
+            labelControl2.Name = "labelControl2";
+            labelControl2.Size = new System.Drawing.Size(75, 29);
+            labelControl2.TabIndex = 1;
+            labelControl2.Text = "狀態：";
+            // 
+            // cmbStatusFilter
+            // 
+            cmbStatusFilter.Location = new System.Drawing.Point(402, 11);
+            cmbStatusFilter.MenuManager = ribbonControl1;
+            cmbStatusFilter.Name = "cmbStatusFilter";
+            cmbStatusFilter.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
+            cmbStatusFilter.Size = new System.Drawing.Size(176, 28);
+            cmbStatusFilter.TabIndex = 0;
             // 
             // labelControl1
             // 
-            labelControl1.Appearance.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            labelControl1.Appearance.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
             labelControl1.Appearance.Options.UseFont = true;
-            labelControl1.Location = new System.Drawing.Point(76, 23);
+            labelControl1.Location = new System.Drawing.Point(35, 8);
             labelControl1.Name = "labelControl1";
-            labelControl1.Size = new System.Drawing.Size(58, 34);
-            labelControl1.TabIndex = 0;
-            labelControl1.Text = "場地";
+            labelControl1.Size = new System.Drawing.Size(75, 29);
+            labelControl1.TabIndex = 4;
+            labelControl1.Text = "場地：";
+            // 
+            // lblStatusFilter
+            // 
+            lblStatusFilter.Control = cmbStatusFilter;
+            lblStatusFilter.Location = new System.Drawing.Point(704, 0);
+            lblStatusFilter.Name = "layoutControlItem4";
+            lblStatusFilter.OptionsTableLayoutItem.ColumnIndex = 2;
+            lblStatusFilter.Size = new System.Drawing.Size(352, 38);
+            lblStatusFilter.TextSize = new System.Drawing.Size(50, 20);
+            // 
+            // lblLocationFilter
+            // 
+            lblLocationFilter.Control = cmbLocationFilter;
+            lblLocationFilter.Location = new System.Drawing.Point(0, 0);
+            lblLocationFilter.Name = "layoutControlItem5";
+            lblLocationFilter.Size = new System.Drawing.Size(352, 38);
+            lblLocationFilter.TextSize = new System.Drawing.Size(50, 20);
             // 
             // Form1
             // 
@@ -343,8 +362,10 @@
             ((System.ComponentModel.ISupportInitialize)filterPanel).EndInit();
             filterPanel.ResumeLayout(false);
             filterPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)cmbStatusFilter.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)cmbLocationFilter.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)cmbStatusFilter.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)lblStatusFilter).EndInit();
+            ((System.ComponentModel.ISupportInitialize)lblLocationFilter).EndInit();
             ResumeLayout(false);
             PerformLayout();
 
@@ -365,8 +386,6 @@
         private DevExpress.XtraEditors.PanelControl mainPanel;
         private DevExpress.XtraBars.BarButtonItem btnView;
         private DevExpress.XtraEditors.PanelControl filterPanel;
-        private DevExpress.XtraEditors.ComboBoxEdit cmbLocationFilter;
-        private DevExpress.XtraEditors.LabelControl labelControl1;
         private DevExpress.XtraBars.BarButtonItem btnDelete;
         private DevExpress.XtraBars.BarButtonItem btnExportPDF;
         private DevExpress.XtraBars.BarButtonItem btnSubmitToAssistant;
@@ -375,10 +394,16 @@
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup3;
         private DevExpress.XtraBars.BarButtonItem btnExportExcel;
         private DevExpress.XtraBars.BarButtonItem btnImportExcel;
-        private DevExpress.XtraEditors.ComboBoxEdit cmbStatusFilter;
-        private DevExpress.XtraEditors.LabelControl labelControl2;
-        private DevExpress.XtraEditors.SimpleButton btnAdvancedFilter;
         private DevExpress.XtraBars.BarButtonItem btnRefresh;
+        private DevExpress.XtraEditors.ComboBoxEdit cmbLocationFilter;
+        private DevExpress.XtraEditors.ComboBoxEdit cmbStatusFilter;
+        private DevExpress.XtraEditors.SimpleButton btnAdvancedFilter;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
+        private DevExpress.XtraLayout.LayoutControlItem lblStatusFilter;
+        private DevExpress.XtraLayout.LayoutControlItem lblLocationFilter;
+        private DevExpress.XtraEditors.LabelControl labelControl2;
+        private DevExpress.XtraEditors.LabelControl labelControl1;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
     }
 }
 

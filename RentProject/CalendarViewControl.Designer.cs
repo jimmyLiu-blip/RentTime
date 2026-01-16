@@ -29,16 +29,15 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            DevExpress.XtraScheduler.TimeRuler timeRuler1 = new DevExpress.XtraScheduler.TimeRuler();
-            DevExpress.XtraScheduler.TimeRuler timeRuler2 = new DevExpress.XtraScheduler.TimeRuler();
-            DevExpress.XtraScheduler.TimeRuler timeRuler3 = new DevExpress.XtraScheduler.TimeRuler();
+            DevExpress.XtraScheduler.TimeRuler timeRuler4 = new DevExpress.XtraScheduler.TimeRuler();
+            DevExpress.XtraScheduler.TimeRuler timeRuler5 = new DevExpress.XtraScheduler.TimeRuler();
+            DevExpress.XtraScheduler.TimeRuler timeRuler6 = new DevExpress.XtraScheduler.TimeRuler();
             lblTitle = new DevExpress.XtraEditors.LabelControl();
             splitContainerControl1 = new DevExpress.XtraEditors.SplitContainerControl();
             calendarPanel = new DevExpress.XtraEditors.PanelControl();
             schedulerControl1 = new DevExpress.XtraScheduler.SchedulerControl();
             schedulerDataStorage1 = new DevExpress.XtraScheduler.SchedulerDataStorage(components);
             panelControl1 = new DevExpress.XtraEditors.PanelControl();
-            lblMonthTitle = new DevExpress.XtraEditors.LabelControl();
             btnNextMonth = new DevExpress.XtraEditors.SimpleButton();
             btnPrevMonth = new DevExpress.XtraEditors.SimpleButton();
             grpDetail = new DevExpress.XtraEditors.GroupControl();
@@ -119,11 +118,11 @@
             schedulerControl1.Start = new System.DateTime(2025, 12, 28, 0, 0, 0, 0);
             schedulerControl1.TabIndex = 0;
             schedulerControl1.Text = "schedulerControl1";
-            schedulerControl1.Views.DayView.TimeRulers.Add(timeRuler1);
+            schedulerControl1.Views.DayView.TimeRulers.Add(timeRuler4);
             schedulerControl1.Views.FullWeekView.Enabled = true;
-            schedulerControl1.Views.FullWeekView.TimeRulers.Add(timeRuler2);
+            schedulerControl1.Views.FullWeekView.TimeRulers.Add(timeRuler5);
             schedulerControl1.Views.WeekView.Enabled = false;
-            schedulerControl1.Views.WorkWeekView.TimeRulers.Add(timeRuler3);
+            schedulerControl1.Views.WorkWeekView.TimeRulers.Add(timeRuler6);
             schedulerControl1.Views.YearView.UseOptimizedScrolling = false;
             schedulerControl1.MouseDown += schedulerControl1_MouseDown;
             // 
@@ -150,7 +149,6 @@
             // 
             // panelControl1
             // 
-            panelControl1.Controls.Add(lblMonthTitle);
             panelControl1.Controls.Add(btnNextMonth);
             panelControl1.Controls.Add(btnPrevMonth);
             panelControl1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -158,14 +156,6 @@
             panelControl1.Name = "panelControl1";
             panelControl1.Size = new System.Drawing.Size(1381, 63);
             panelControl1.TabIndex = 2;
-            // 
-            // lblMonthTitle
-            // 
-            lblMonthTitle.Location = new System.Drawing.Point(124, 22);
-            lblMonthTitle.Name = "lblMonthTitle";
-            lblMonthTitle.Size = new System.Drawing.Size(86, 22);
-            lblMonthTitle.TabIndex = 0;
-            lblMonthTitle.Text = "2026年1月";
             // 
             // btnNextMonth
             // 
@@ -237,7 +227,6 @@
             ((System.ComponentModel.ISupportInitialize)schedulerDataStorage1).EndInit();
             ((System.ComponentModel.ISupportInitialize)panelControl1).EndInit();
             panelControl1.ResumeLayout(false);
-            panelControl1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)grpDetail).EndInit();
             grpDetail.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)memoDetail.Properties).EndInit();
@@ -254,7 +243,6 @@
         private DevExpress.XtraScheduler.SchedulerControl schedulerControl1;
         private DevExpress.XtraScheduler.SchedulerDataStorage schedulerDataStorage1;
         private DevExpress.XtraEditors.PanelControl panelControl1;
-        private DevExpress.XtraEditors.LabelControl lblMonthTitle;
         private DevExpress.XtraEditors.SimpleButton btnNextMonth;
         private DevExpress.XtraEditors.SimpleButton btnPrevMonth;
         private DevExpress.XtraEditors.MemoEdit memoDetail;

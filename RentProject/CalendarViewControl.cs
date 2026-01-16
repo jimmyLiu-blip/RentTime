@@ -9,15 +9,23 @@ using System.Linq;
 
 namespace RentProject
 {
-    public partial class CalendarViewControl : DevExpress.XtraEditors.XtraUserControl
+    public partial class CalendarViewControl : XtraUserControl
     {
+        #region ====== 狀態欄位（State） ======
         private DateTime _currentMonth; // 永遠存「當月 1 號」
+
+        // 詳細資料（給右側 memoDetail 顯示用）
         private List<CalendarRentTimeDetailItem> _detailList = new();
+
+        // 快速查詢用索引（Index）
         private Dictionary<DateTime, List<CalendarRentTimeDetailItem>> _detailByDate = new();
         private Dictionary<int, CalendarRentTimeDetailItem> _detailById = new();
 
+        // 防止 Scheduler 重複初始化
         private bool _schedulerInited = false;
+        #endregion
 
+        #region ====== 建構 / 生命週期 ======
         public CalendarViewControl()
         {
             InitializeComponent();
@@ -27,142 +35,68 @@ namespace RentProject
         {
             EnsureSchedulerInit();
         }
+        #endregion
 
+        #region ====== 月份切換（UI：上一個月 / 下一個月） ======
         private void btnPrevMonth_Click(object sender, EventArgs e)
         {
             _currentMonth = _currentMonth.AddMonths(-1);
             schedulerControl1.Start = _currentMonth;
-            UpdateMonthTitle();
         }
 
         private void btnNextMonth_Click(object sender, EventArgs e)
         {
             _currentMonth = _currentMonth.AddMonths(1);
             schedulerControl1.Start = _currentMonth;
-            UpdateMonthTitle();
         }
 
-        private void UpdateMonthTitle()
-        {
-            lblMonthTitle.Text = $"{_currentMonth.Year}年{_currentMonth.Month}月";
-        }
+        #endregion
 
+        #region ====== Scheduler 初始化（只做一次） ======
         private void EnsureSchedulerInit()
         {
             if (_schedulerInited) return;
 
+            // 1) 顯示模式與 UI 外觀
             schedulerControl1.ActiveViewType = SchedulerViewType.Month;
-            schedulerControl1.MonthView.DateTimeScrollbarVisible = false;
-            schedulerControl1.DateNavigationBar.Visible = false;
+            //schedulerControl1.MonthView.DateTimeScrollbarVisible = false;
+            //schedulerControl1.DateNavigationBar.Visible = false;
 
-            // 綁 DataStorage（很重要）
+            // 2) 綁 DataStorage（Scheduler 必要）
             schedulerControl1.DataStorage = schedulerDataStorage1;
 
-            // Mapping
+            // 3) Appointment Mapping：告訴 Scheduler「欄位對應到哪個屬性」
             schedulerDataStorage1.Appointments.Mappings.AppointmentId = nameof(CalendarRentTimeItem.RentTimeId);
             schedulerDataStorage1.Appointments.Mappings.Start = nameof(CalendarRentTimeItem.StartAt);
             schedulerDataStorage1.Appointments.Mappings.End = nameof(CalendarRentTimeItem.EndAt);
             schedulerDataStorage1.Appointments.Mappings.Subject = nameof(CalendarRentTimeItem.Subject);
 
+            // 4) 自訂欄位 Mapping（Custom Field）
             schedulerDataStorage1.Appointments.CustomFieldMappings.Clear();
             schedulerDataStorage1.Appointments.CustomFieldMappings.Add(
                 new AppointmentCustomFieldMapping("Location", nameof(CalendarRentTimeItem.Location))
             );
 
-            // 顯示設定
+            // 5) 月曆上的 appointment 顯示設定
             schedulerControl1.MonthView.AppointmentDisplayOptions.AppointmentAutoHeight = true;
             schedulerControl1.MonthView.AppointmentDisplayOptions.StartTimeVisibility = AppointmentTimeVisibility.Never;
             schedulerControl1.MonthView.AppointmentDisplayOptions.EndTimeVisibility = AppointmentTimeVisibility.Never;
 
-            // 預設月份：先給當月
+            // 6) 預設顯示當月
             var today = DateTime.Today;
             _currentMonth = new DateTime(today.Year, today.Month, 1);
             schedulerControl1.Start = _currentMonth;
-            UpdateMonthTitle();
 
             _schedulerInited = true;
         }
+        #endregion
 
-
-        /*
-        private void LoadDemoAppointments()
-        {
-            var list = new List<CalendarRentTimeItem>
-            {
-                new CalendarRentTimeItem
-                {
-                    RentTimeId = 1,
-                    StartAt = _currentMonth.AddDays(2).AddHours(10),  // 當月第3天 10:00
-                    EndAt   = _currentMonth.AddDays(2).AddHours(15),  // 當月第3天 15:00
-                    Subject = "TE251130001\r\n好厲害科技\r\nConducted 2",
-                    Location = "SAC D"
-                },
-                new CalendarRentTimeItem
-                {
-                    RentTimeId = 2,
-                    StartAt = _currentMonth.AddDays(9).AddHours(9),
-                    EndAt   = _currentMonth.AddDays(9).AddHours(12),
-                    Subject = "TE251125001\r\n好厲害科技\r\nConducted 1",
-                    Location = "Conducted 1"
-                }
-            };
-
-            schedulerDataStorage1.Appointments.DataSource = list;
-
-            // 保險：強制刷新一次畫面
-            schedulerControl1.Refresh();
-        }
-        */
-
-        /*
-        private void LoadDemoDetails()
-        {
-            _detailList = new List<CalendarRentTimeDetailItem>
-            {
-                new CalendarRentTimeDetailItem
-                {
-                    RentTimeId = 1,
-                    BookingNo = "TE251130001",
-                    StartAt = _currentMonth.AddDays(2).AddHours(10),
-                    EndAt   = _currentMonth.AddDays(2).AddHours(15),
-
-                    ProjectNo = "TE251130001",
-                    ProjectName = "專案A",
-                    CustomerName = "好厲害科技",
-                    ContactName = "王小明",
-                    Phone = "0800-080-128",
-                    PE = "Martin_Liu",
-                    Location = "SAC D",
-                    TestItem = "Conducted 2",
-                    Notes = "Demo備註A"
-                },
-                new CalendarRentTimeDetailItem
-                {
-                    RentTimeId = 2,
-                    BookingNo = "TE251125001",
-                    StartAt = _currentMonth.AddDays(9).AddHours(9),
-                    EndAt   = _currentMonth.AddDays(9).AddHours(12),
-
-                    ProjectNo = "TE251125001",
-                    ProjectName = "專案B",
-                    CustomerName = "好厲害科技",
-                    ContactName = "王小明",
-                    Phone = "0800-080-128",
-                    PE = "Martin_Liu",
-                    Location = "Conducted 1",
-                    TestItem = "Conducted 1",
-                    Notes = "Demo備註B"
-                }
-            };
-
-            BuildDetailIndex();
-        }
-        */
-
+        #region ====== 載入資料（外部呼叫） ======
         public void LoadData(List<RentTime> list)
         {
             EnsureSchedulerInit();
 
+            // 1) 轉成 Scheduler 要吃的 Appointment DataSource
             var appts = list
                 .Where(x => x.StartDate != null && x.EndDate != null && x.StartTime != null && x.EndTime != null)
                 .Select(x => new CalendarRentTimeItem
@@ -175,27 +109,28 @@ namespace RentProject
                 })
                 .ToList();
 
-            // 若沒資料：清空畫面
+            // 2) 先清空，避免殘留舊資料
             schedulerDataStorage1.Appointments.DataSource = null;
 
+            // 3) 沒資料就刷新後結束
             if (appts.Count == 0)
             {
                 schedulerControl1.RefreshData();
                 return;
             }
 
+            // 4) 綁回資料
             schedulerDataStorage1.Appointments.DataSource = appts;
 
-            // 自動跳到「第一筆資料」所在月份，避免你以為沒資料
+            // 5) 自動跳到第一筆資料的月份（避免你停在別的月份以為沒資料）
             var minStart = appts.Min(a => a.StartAt);
             _currentMonth = new DateTime(minStart.Year, minStart.Month, 1);
             schedulerControl1.Start = _currentMonth;
-            UpdateMonthTitle();
 
-            // 正確刷新資料（比 Refresh() 更對）
+            // 6) 正確刷新 Scheduler 資料
             schedulerControl1.RefreshData();
 
-            // detail（你原本那段保留）
+            // 7) 建立右側詳細資訊用的資料與索引
             _detailList = list
                 .Where(x => x.StartDate != null && x.EndDate != null)
                 .Select(x => new CalendarRentTimeDetailItem
@@ -220,17 +155,22 @@ namespace RentProject
 
             BuildDetailIndex();
         }
+        #endregion
 
+        #region ====== 索引建立（讓查詢更快） ======
         private void BuildDetailIndex()
         {
+            // 依日期分組：如果你之後想「點日期顯示當天所有租時單」會很好用
             _detailByDate = _detailList
                 .GroupBy(x => x.StartAt.Date)
                 .ToDictionary(g => g.Key, g => g.OrderBy(x => x.StartAt).ToList());
 
+            // 依 RentTimeId 建索引：點某個 appointment 時能 O(1) 查到 detail
             _detailById = _detailList.ToDictionary(x => x.RentTimeId, x => x);
         }
+        #endregion
 
-
+        #region ====== 詳細資訊顯示（右側 memo） ======
         private void ShowDetail(CalendarRentTimeDetailItem? d)
         {
             if (d == null)
@@ -244,23 +184,21 @@ namespace RentProject
                 $"{d.CustomerName}\r\n" +
                 $"{d.StartAt:HH:mm} - {d.EndAt:HH:mm}\r\n" +
                 $"({d.Area}) - {d.Location}\r\n" +
-
                 $"\r\nProject No:\r\n" +
                 $"{d.ProjectNo}\r\n" +
-
                 $"\r\n客戶聯絡資訊：\r\n" +
                 $"{d.ContactName} ({d.Phone})\r\n" +
-
                 $"\r\nPE：{d.PE}";
         }
+        #endregion
 
-
+        #region ====== 使用者互動（點月曆 appointment 顯示詳細） ======
         private void schedulerControl1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-            // 1) 算你滑鼠點到哪個區塊（格子/appointment/空白）
+            // 1) 計算點到哪個區塊（格子/appointment/空白）
             var hit = schedulerControl1.ActiveView.ViewInfo.CalcHitInfo(e.Location, false);
 
-            // 2) 只處理你點到 appointment 的情況
+            // 2) 只處理點到 appointment 的情況
             if (hit.HitTest == SchedulerHitTest.AppointmentContent)
             {
                 var apptViewInfo = hit.ViewInfo as AppointmentViewInfo;
@@ -280,7 +218,10 @@ namespace RentProject
                 return;
             }
 
+            // 點到空白就清除詳細
             ShowDetail(null);
         }
+
+        #endregion
     }
 }

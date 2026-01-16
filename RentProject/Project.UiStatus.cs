@@ -31,13 +31,13 @@ namespace RentProject
                 btnDeletedRentTime.Visible = isEdit;
                 btnDeletedRentTime.Enabled = isEdit;               // 未完成可刪
 
-                btnRestoreRentTime.Visible = isEdit;
-                btnRestoreRentTime.Enabled = isEdit;               // 未完成可回復
+                btnRestoreRentTime.Visible = isStarted;
+                btnRestoreRentTime.Enabled = isStarted;            // 未完成可回復
 
                 chkHandover.Visible = isEdit;
                 chkHandover.Enabled = isEdit;
 
-                btnCopyRentTime.Visible = isEdit;
+                btnCopyRentTime.Visible = isStarted;
                 btnCopyRentTime.Enabled = false; // 未鎖定時先不給複製（你原本也是想完成後才複製）
             }
             else

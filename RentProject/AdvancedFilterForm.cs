@@ -188,6 +188,5 @@ namespace RentProject
                 cmb.Properties.Items.EndUpdate();
             }
         }
-
     }
 }

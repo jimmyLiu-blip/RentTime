@@ -29,38 +29,38 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition1 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition2 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition3 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition1 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition2 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition3 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition4 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition5 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition6 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition4 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition5 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition6 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition7 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition8 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition7 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition8 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition9 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition9 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition10 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition11 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition10 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition11 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition12 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition13 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition14 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition12 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.ColumnDefinition columnDefinition13 = new DevExpress.XtraLayout.ColumnDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition15 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition16 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition17 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition18 = new DevExpress.XtraLayout.RowDefinition();
-            DevExpress.XtraLayout.RowDefinition rowDefinition19 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition14 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition15 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition16 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition20 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition21 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition22 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition23 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition24 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition25 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition17 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition18 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition19 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition20 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition21 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition26 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition27 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition28 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition22 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition23 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition24 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition29 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition30 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition31 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition32 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition33 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition25 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.ColumnDefinition columnDefinition26 = new DevExpress.XtraLayout.ColumnDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition34 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition35 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition36 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition37 = new DevExpress.XtraLayout.RowDefinition();
+            DevExpress.XtraLayout.RowDefinition rowDefinition38 = new DevExpress.XtraLayout.RowDefinition();
             dxErrorProvider1 = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(components);
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             panelControl2 = new DevExpress.XtraEditors.PanelControl();
@@ -71,6 +71,8 @@
             btnDeletedRentTime = new DevExpress.XtraEditors.SimpleButton();
             btnCreatedRentTime = new DevExpress.XtraEditors.SimpleButton();
             layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+            panelControl4 = new DevExpress.XtraEditors.PanelControl();
+            labelControl26 = new DevExpress.XtraEditors.LabelControl();
             txtPE = new DevExpress.XtraEditors.TextEdit();
             memoNote = new DevExpress.XtraEditors.MemoEdit();
             txtEstimatedHours = new DevExpress.XtraEditors.TextEdit();
@@ -123,6 +125,7 @@
             lblendTimeEdit = new DevExpress.XtraLayout.LayoutControlItem();
             layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             lblEstimatedHours = new DevExpress.XtraLayout.LayoutControlItem();
+            layoutControlItem11 = new DevExpress.XtraLayout.LayoutControlItem();
             layoutControlGroup6 = new DevExpress.XtraLayout.LayoutControlGroup();
             layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
             layoutControlItem5 = new DevExpress.XtraLayout.LayoutControlItem();
@@ -148,7 +151,6 @@
             layoutControlGroup5 = new DevExpress.XtraLayout.LayoutControlGroup();
             splitterItem1 = new DevExpress.XtraLayout.SplitterItem();
             simpleLabelItem1 = new DevExpress.XtraLayout.SimpleLabelItem();
-            labelControl26 = new DevExpress.XtraEditors.LabelControl();
             layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
             ((System.ComponentModel.ISupportInitialize)dxErrorProvider1).BeginInit();
             tableLayoutPanel1.SuspendLayout();
@@ -157,6 +159,8 @@
             ((System.ComponentModel.ISupportInitialize)chkHandover.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)layoutControl1).BeginInit();
             layoutControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)panelControl4).BeginInit();
+            panelControl4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)txtPE.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)memoNote.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)txtEstimatedHours.Properties).BeginInit();
@@ -213,6 +217,7 @@
             ((System.ComponentModel.ISupportInitialize)lblendTimeEdit).BeginInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlItem1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)lblEstimatedHours).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)layoutControlItem11).BeginInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlGroup6).BeginInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlItem3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlItem5).BeginInit();
@@ -279,7 +284,7 @@
             // 
             // btnRestoreRentTime
             // 
-            btnRestoreRentTime.Location = new System.Drawing.Point(181, 10);
+            btnRestoreRentTime.Location = new System.Drawing.Point(183, 12);
             btnRestoreRentTime.Name = "btnRestoreRentTime";
             btnRestoreRentTime.Size = new System.Drawing.Size(113, 53);
             btnRestoreRentTime.TabIndex = 251;
@@ -287,7 +292,7 @@
             // 
             // chkHandover
             // 
-            chkHandover.Location = new System.Drawing.Point(314, 24);
+            chkHandover.Location = new System.Drawing.Point(324, 25);
             chkHandover.Name = "chkHandover";
             chkHandover.Properties.Caption = "交接";
             chkHandover.Size = new System.Drawing.Size(67, 27);
@@ -295,7 +300,7 @@
             // 
             // btnRentTimeStart
             // 
-            btnRentTimeStart.Location = new System.Drawing.Point(402, 10);
+            btnRentTimeStart.Location = new System.Drawing.Point(407, 12);
             btnRentTimeStart.Name = "btnRentTimeStart";
             btnRentTimeStart.Size = new System.Drawing.Size(113, 53);
             btnRentTimeStart.TabIndex = 248;
@@ -303,7 +308,7 @@
             // 
             // btnRentTimeEnd
             // 
-            btnRentTimeEnd.Location = new System.Drawing.Point(541, 10);
+            btnRentTimeEnd.Location = new System.Drawing.Point(547, 11);
             btnRentTimeEnd.Name = "btnRentTimeEnd";
             btnRentTimeEnd.Size = new System.Drawing.Size(113, 53);
             btnRentTimeEnd.TabIndex = 247;
@@ -311,7 +316,7 @@
             // 
             // btnDeletedRentTime
             // 
-            btnDeletedRentTime.Location = new System.Drawing.Point(32, 10);
+            btnDeletedRentTime.Location = new System.Drawing.Point(43, 12);
             btnDeletedRentTime.Name = "btnDeletedRentTime";
             btnDeletedRentTime.Size = new System.Drawing.Size(113, 53);
             btnDeletedRentTime.TabIndex = 242;
@@ -320,7 +325,7 @@
             // btnCreatedRentTime
             // 
             btnCreatedRentTime.Anchor = System.Windows.Forms.AnchorStyles.None;
-            btnCreatedRentTime.Location = new System.Drawing.Point(696, 12);
+            btnCreatedRentTime.Location = new System.Drawing.Point(685, 12);
             btnCreatedRentTime.Name = "btnCreatedRentTime";
             btnCreatedRentTime.Size = new System.Drawing.Size(113, 53);
             btnCreatedRentTime.TabIndex = 253;
@@ -328,11 +333,11 @@
             // 
             // layoutControl1
             // 
+            layoutControl1.Controls.Add(panelControl4);
             layoutControl1.Controls.Add(txtPE);
             layoutControl1.Controls.Add(memoNote);
             layoutControl1.Controls.Add(txtEstimatedHours);
             layoutControl1.Controls.Add(cmbTestItem);
-            layoutControl1.Controls.Add(labelControl26);
             layoutControl1.Controls.Add(cmbTestMode);
             layoutControl1.Controls.Add(panelControl3);
             layoutControl1.Controls.Add(txtSampleNo);
@@ -364,49 +369,68 @@
             layoutControl1.TabIndex = 0;
             layoutControl1.Text = "layoutBasic";
             // 
+            // panelControl4
+            // 
+            panelControl4.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            panelControl4.Controls.Add(labelControl26);
+            panelControl4.Location = new System.Drawing.Point(614, 462);
+            panelControl4.Name = "panelControl4";
+            panelControl4.Size = new System.Drawing.Size(25, 32);
+            panelControl4.TabIndex = 300;
+            // 
+            // labelControl26
+            // 
+            labelControl26.Location = new System.Drawing.Point(4, 3);
+            labelControl26.Name = "labelControl26";
+            labelControl26.Size = new System.Drawing.Size(18, 22);
+            labelControl26.TabIndex = 295;
+            labelControl26.Text = "時";
+            // 
             // txtPE
             // 
-            txtPE.Location = new System.Drawing.Point(593, 175);
+            txtPE.Location = new System.Drawing.Point(592, 175);
             txtPE.Name = "txtPE";
             txtPE.Properties.ReadOnly = true;
-            txtPE.Size = new System.Drawing.Size(219, 28);
+            txtPE.Size = new System.Drawing.Size(220, 28);
             txtPE.StyleController = layoutControl1;
             txtPE.TabIndex = 299;
             // 
             // memoNote
             // 
-            memoNote.Location = new System.Drawing.Point(182, 710);
+            memoNote.Location = new System.Drawing.Point(181, 710);
             memoNote.Name = "memoNote";
-            memoNote.Size = new System.Drawing.Size(630, 55);
+            memoNote.Size = new System.Drawing.Size(631, 55);
             memoNote.StyleController = layoutControl1;
             memoNote.TabIndex = 294;
             // 
             // txtEstimatedHours
             // 
-            txtEstimatedHours.Location = new System.Drawing.Point(484, 462);
+            txtEstimatedHours.Location = new System.Drawing.Point(486, 462);
             txtEstimatedHours.Name = "txtEstimatedHours";
+            txtEstimatedHours.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 8.5F);
+            txtEstimatedHours.Properties.Appearance.Options.UseFont = true;
             txtEstimatedHours.Properties.ReadOnly = true;
-            txtEstimatedHours.Size = new System.Drawing.Size(134, 28);
+            txtEstimatedHours.Size = new System.Drawing.Size(122, 28);
             txtEstimatedHours.StyleController = layoutControl1;
             txtEstimatedHours.TabIndex = 293;
             // 
             // cmbTestItem
             // 
-            cmbTestItem.Location = new System.Drawing.Point(182, 674);
+            cmbTestItem.Location = new System.Drawing.Point(181, 674);
             cmbTestItem.Name = "cmbTestItem";
             cmbTestItem.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             cmbTestItem.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            cmbTestItem.Size = new System.Drawing.Size(630, 28);
+            cmbTestItem.Size = new System.Drawing.Size(631, 28);
             cmbTestItem.StyleController = layoutControl1;
             cmbTestItem.TabIndex = 293;
             // 
             // cmbTestMode
             // 
-            cmbTestMode.Location = new System.Drawing.Point(182, 638);
+            cmbTestMode.Location = new System.Drawing.Point(181, 638);
             cmbTestMode.Name = "cmbTestMode";
             cmbTestMode.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             cmbTestMode.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            cmbTestMode.Size = new System.Drawing.Size(630, 28);
+            cmbTestMode.Size = new System.Drawing.Size(631, 28);
             cmbTestMode.StyleController = layoutControl1;
             cmbTestMode.TabIndex = 292;
             // 
@@ -415,18 +439,20 @@
             panelControl3.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             panelControl3.Controls.Add(cmbDinnerMinutes);
             panelControl3.Controls.Add(chkHasDinner);
-            panelControl3.Location = new System.Drawing.Point(639, 426);
+            panelControl3.Location = new System.Drawing.Point(645, 426);
             panelControl3.Name = "panelControl3";
-            panelControl3.Size = new System.Drawing.Size(173, 30);
+            panelControl3.Size = new System.Drawing.Size(167, 30);
             panelControl3.TabIndex = 298;
             // 
             // cmbDinnerMinutes
             // 
-            cmbDinnerMinutes.Location = new System.Drawing.Point(72, 1);
+            cmbDinnerMinutes.Location = new System.Drawing.Point(77, 2);
             cmbDinnerMinutes.Name = "cmbDinnerMinutes";
+            cmbDinnerMinutes.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 8.5F);
+            cmbDinnerMinutes.Properties.Appearance.Options.UseFont = true;
             cmbDinnerMinutes.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             cmbDinnerMinutes.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            cmbDinnerMinutes.Size = new System.Drawing.Size(94, 28);
+            cmbDinnerMinutes.Size = new System.Drawing.Size(87, 28);
             cmbDinnerMinutes.TabIndex = 291;
             // 
             // chkHasDinner
@@ -439,53 +465,57 @@
             // 
             // txtSampleNo
             // 
-            txtSampleNo.Location = new System.Drawing.Point(182, 602);
+            txtSampleNo.Location = new System.Drawing.Point(181, 602);
             txtSampleNo.Name = "txtSampleNo";
-            txtSampleNo.Size = new System.Drawing.Size(219, 28);
+            txtSampleNo.Size = new System.Drawing.Size(220, 28);
             txtSampleNo.StyleController = layoutControl1;
             txtSampleNo.TabIndex = 291;
             // 
             // txtSampleModel
             // 
-            txtSampleModel.Location = new System.Drawing.Point(593, 602);
+            txtSampleModel.Location = new System.Drawing.Point(592, 602);
             txtSampleModel.Name = "txtSampleModel";
-            txtSampleModel.Size = new System.Drawing.Size(219, 28);
+            txtSampleModel.Size = new System.Drawing.Size(220, 28);
             txtSampleModel.StyleController = layoutControl1;
             txtSampleModel.TabIndex = 243;
             // 
             // endTimeEdit
             // 
             endTimeEdit.EditValue = new System.DateTime(2025, 12, 21, 0, 0, 0, 0);
-            endTimeEdit.Location = new System.Drawing.Point(484, 426);
+            endTimeEdit.Location = new System.Drawing.Point(486, 426);
             endTimeEdit.Name = "endTimeEdit";
+            endTimeEdit.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 8.5F);
+            endTimeEdit.Properties.Appearance.Options.UseFont = true;
             endTimeEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             endTimeEdit.Properties.MaskSettings.Set("mask", "HH:mm");
             endTimeEdit.Properties.MaskSettings.Set("MaskManagerType", typeof(DevExpress.Data.Mask.DateTimeMaskManager));
             endTimeEdit.Properties.MaskSettings.Set("MaskManagerSignature", "allowNull=False");
             endTimeEdit.Properties.MaskSettings.Set("spinWithCarry", null);
             endTimeEdit.Properties.MaskSettings.Set("useAdvancingCaret", false);
-            endTimeEdit.Size = new System.Drawing.Size(134, 28);
+            endTimeEdit.Size = new System.Drawing.Size(122, 28);
             endTimeEdit.StyleController = layoutControl1;
             endTimeEdit.TabIndex = 291;
             // 
             // startTimeEdit
             // 
             startTimeEdit.EditValue = new System.DateTime(2025, 12, 21, 0, 0, 0, 0);
-            startTimeEdit.Location = new System.Drawing.Point(182, 426);
+            startTimeEdit.Location = new System.Drawing.Point(181, 426);
             startTimeEdit.Name = "startTimeEdit";
+            startTimeEdit.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 8.5F);
+            startTimeEdit.Properties.Appearance.Options.UseFont = true;
             startTimeEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             startTimeEdit.Properties.MaskSettings.Set("mask", "HH:mm");
             startTimeEdit.Properties.MaskSettings.Set("useAdvancingCaret", false);
-            startTimeEdit.Size = new System.Drawing.Size(134, 28);
+            startTimeEdit.Size = new System.Drawing.Size(122, 28);
             startTimeEdit.StyleController = layoutControl1;
             startTimeEdit.TabIndex = 297;
             // 
             // txtArea
             // 
-            txtArea.Location = new System.Drawing.Point(593, 566);
+            txtArea.Location = new System.Drawing.Point(592, 566);
             txtArea.Name = "txtArea";
             txtArea.Properties.ReadOnly = true;
-            txtArea.Size = new System.Drawing.Size(219, 28);
+            txtArea.Size = new System.Drawing.Size(220, 28);
             txtArea.StyleController = layoutControl1;
             txtArea.TabIndex = 291;
             // 
@@ -494,14 +524,14 @@
             panelControl1.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             panelControl1.Controls.Add(chkHasLunch);
             panelControl1.Controls.Add(txtLunchMinutes);
-            panelControl1.Location = new System.Drawing.Point(639, 390);
+            panelControl1.Location = new System.Drawing.Point(645, 390);
             panelControl1.Name = "panelControl1";
-            panelControl1.Size = new System.Drawing.Size(173, 30);
+            panelControl1.Size = new System.Drawing.Size(167, 30);
             panelControl1.TabIndex = 295;
             // 
             // chkHasLunch
             // 
-            chkHasLunch.Location = new System.Drawing.Point(4, 1);
+            chkHasLunch.Location = new System.Drawing.Point(4, 3);
             chkHasLunch.Name = "chkHasLunch";
             chkHasLunch.Properties.Caption = "午餐";
             chkHasLunch.Size = new System.Drawing.Size(67, 27);
@@ -509,131 +539,137 @@
             // 
             // txtLunchMinutes
             // 
-            txtLunchMinutes.Location = new System.Drawing.Point(73, 2);
+            txtLunchMinutes.Location = new System.Drawing.Point(77, 2);
             txtLunchMinutes.Name = "txtLunchMinutes";
+            txtLunchMinutes.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 8.5F);
+            txtLunchMinutes.Properties.Appearance.Options.UseFont = true;
             txtLunchMinutes.Properties.ReadOnly = true;
-            txtLunchMinutes.Size = new System.Drawing.Size(93, 28);
+            txtLunchMinutes.Size = new System.Drawing.Size(87, 28);
             txtLunchMinutes.TabIndex = 292;
             // 
             // cmbEngineer
             // 
-            cmbEngineer.Location = new System.Drawing.Point(182, 566);
+            cmbEngineer.Location = new System.Drawing.Point(181, 566);
             cmbEngineer.Name = "cmbEngineer";
             cmbEngineer.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             cmbEngineer.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            cmbEngineer.Size = new System.Drawing.Size(219, 28);
+            cmbEngineer.Size = new System.Drawing.Size(220, 28);
             cmbEngineer.StyleController = layoutControl1;
             cmbEngineer.TabIndex = 291;
             // 
             // endDateEdit
             // 
             endDateEdit.EditValue = null;
-            endDateEdit.Location = new System.Drawing.Point(484, 390);
+            endDateEdit.Location = new System.Drawing.Point(486, 390);
             endDateEdit.Name = "endDateEdit";
+            endDateEdit.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 8.5F);
+            endDateEdit.Properties.Appearance.Options.UseFont = true;
             endDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             endDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             endDateEdit.Properties.MaskSettings.Set("mask", "");
-            endDateEdit.Size = new System.Drawing.Size(134, 28);
+            endDateEdit.Size = new System.Drawing.Size(122, 28);
             endDateEdit.StyleController = layoutControl1;
             endDateEdit.TabIndex = 292;
             // 
             // startDateEdit
             // 
             startDateEdit.EditValue = null;
-            startDateEdit.Location = new System.Drawing.Point(182, 390);
+            startDateEdit.Location = new System.Drawing.Point(181, 390);
             startDateEdit.Name = "startDateEdit";
+            startDateEdit.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 8.5F);
+            startDateEdit.Properties.Appearance.Options.UseFont = true;
             startDateEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             startDateEdit.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             startDateEdit.Properties.MaskSettings.Set("useAdvancingCaret", false);
             startDateEdit.Properties.MaskSettings.Set("mask", "");
-            startDateEdit.Size = new System.Drawing.Size(134, 28);
+            startDateEdit.Size = new System.Drawing.Size(122, 28);
             startDateEdit.StyleController = layoutControl1;
             startDateEdit.TabIndex = 294;
             // 
             // memoTestInformation
             // 
-            memoTestInformation.Location = new System.Drawing.Point(182, 247);
+            memoTestInformation.Location = new System.Drawing.Point(181, 247);
             memoTestInformation.Name = "memoTestInformation";
-            memoTestInformation.Size = new System.Drawing.Size(630, 71);
+            memoTestInformation.Size = new System.Drawing.Size(631, 71);
             memoTestInformation.StyleController = layoutControl1;
             memoTestInformation.TabIndex = 11;
             // 
             // txtProjectNo
             // 
-            txtProjectNo.Location = new System.Drawing.Point(182, 211);
+            txtProjectNo.Location = new System.Drawing.Point(181, 211);
             txtProjectNo.Name = "txtProjectNo";
             txtProjectNo.Properties.ReadOnly = true;
-            txtProjectNo.Size = new System.Drawing.Size(219, 28);
+            txtProjectNo.Size = new System.Drawing.Size(220, 28);
             txtProjectNo.StyleController = layoutControl1;
             txtProjectNo.TabIndex = 8;
             // 
             // txtProjectName
             // 
-            txtProjectName.Location = new System.Drawing.Point(593, 211);
+            txtProjectName.Location = new System.Drawing.Point(592, 211);
             txtProjectName.Name = "txtProjectName";
             txtProjectName.Properties.ReadOnly = true;
-            txtProjectName.Size = new System.Drawing.Size(219, 28);
+            txtProjectName.Size = new System.Drawing.Size(220, 28);
             txtProjectName.StyleController = layoutControl1;
             txtProjectName.TabIndex = 10;
             // 
             // cmbCompany
             // 
-            cmbCompany.Location = new System.Drawing.Point(182, 139);
+            cmbCompany.Location = new System.Drawing.Point(181, 139);
             cmbCompany.Name = "cmbCompany";
             cmbCompany.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
-            cmbCompany.Size = new System.Drawing.Size(219, 28);
+            cmbCompany.Size = new System.Drawing.Size(220, 28);
             cmbCompany.StyleController = layoutControl1;
             cmbCompany.TabIndex = 5;
             // 
             // txtContactName
             // 
-            txtContactName.Location = new System.Drawing.Point(593, 139);
+            txtContactName.Location = new System.Drawing.Point(592, 139);
             txtContactName.Name = "txtContactName";
-            txtContactName.Size = new System.Drawing.Size(219, 28);
+            txtContactName.Size = new System.Drawing.Size(220, 28);
             txtContactName.StyleController = layoutControl1;
             txtContactName.TabIndex = 6;
             // 
             // txtContactPhone
             // 
-            txtContactPhone.Location = new System.Drawing.Point(182, 175);
+            txtContactPhone.Location = new System.Drawing.Point(181, 175);
             txtContactPhone.Name = "txtContactPhone";
-            txtContactPhone.Size = new System.Drawing.Size(219, 28);
+            txtContactPhone.Size = new System.Drawing.Size(220, 28);
             txtContactPhone.StyleController = layoutControl1;
             txtContactPhone.TabIndex = 7;
             // 
             // txtSales
             // 
-            txtSales.Location = new System.Drawing.Point(593, 103);
+            txtSales.Location = new System.Drawing.Point(592, 103);
             txtSales.Name = "txtSales";
-            txtSales.Size = new System.Drawing.Size(219, 28);
+            txtSales.Size = new System.Drawing.Size(220, 28);
             txtSales.StyleController = layoutControl1;
             txtSales.TabIndex = 4;
             // 
             // cmbJobNo
             // 
-            cmbJobNo.Location = new System.Drawing.Point(182, 103);
+            cmbJobNo.Location = new System.Drawing.Point(181, 103);
             cmbJobNo.Name = "cmbJobNo";
             cmbJobNo.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
-            cmbJobNo.Size = new System.Drawing.Size(219, 28);
+            cmbJobNo.Size = new System.Drawing.Size(220, 28);
             cmbJobNo.StyleController = layoutControl1;
             cmbJobNo.TabIndex = 3;
             // 
             // txtCreatedBy
             // 
-            txtCreatedBy.Location = new System.Drawing.Point(593, 67);
+            txtCreatedBy.Location = new System.Drawing.Point(592, 67);
             txtCreatedBy.Name = "txtCreatedBy";
-            txtCreatedBy.Size = new System.Drawing.Size(219, 28);
+            txtCreatedBy.Size = new System.Drawing.Size(220, 28);
             txtCreatedBy.StyleController = layoutControl1;
             txtCreatedBy.TabIndex = 2;
             // 
             // cmbLocation
             // 
-            cmbLocation.Location = new System.Drawing.Point(182, 67);
+            cmbLocation.Location = new System.Drawing.Point(181, 67);
             cmbLocation.Name = "cmbLocation";
             cmbLocation.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             cmbLocation.Properties.Items.AddRange(new object[] { "Conducted 1", "Conducted 2", "Conducted 3", "Conducted 4", "Conducted 5", "Conducted 6", "Setup Room 1", "SAC 1", "SAC 2", "SAC 3", "FAC 1", "Conducted A", "Conducted B", " Conducted C", "Conducted D", "Conducted E", "Conducted F", "Setup Room A", "SAC C", "SAC D", "SAC G", "FAC A" });
             cmbLocation.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            cmbLocation.Size = new System.Drawing.Size(219, 28);
+            cmbLocation.Size = new System.Drawing.Size(220, 28);
             cmbLocation.StyleController = layoutControl1;
             cmbLocation.TabIndex = 0;
             // 
@@ -673,26 +709,26 @@
             layoutControlGroup3.LayoutMode = DevExpress.XtraLayout.Utils.LayoutMode.Table;
             layoutControlGroup3.Location = new System.Drawing.Point(0, 0);
             layoutControlGroup3.Name = "layoutControlGroup3";
-            columnDefinition1.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition1.Width = 47.5D;
-            columnDefinition2.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition2.Width = 5D;
-            columnDefinition3.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition3.Width = 47.5D;
-            layoutControlGroup3.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] { columnDefinition1, columnDefinition2, columnDefinition3 });
-            rowDefinition1.Height = 14D;
-            rowDefinition1.SizeType = System.Windows.Forms.SizeType.Percent;
-            rowDefinition2.Height = 14D;
-            rowDefinition2.SizeType = System.Windows.Forms.SizeType.Percent;
-            rowDefinition3.Height = 14D;
-            rowDefinition3.SizeType = System.Windows.Forms.SizeType.Percent;
-            rowDefinition4.Height = 14D;
-            rowDefinition4.SizeType = System.Windows.Forms.SizeType.Percent;
-            rowDefinition5.Height = 14D;
-            rowDefinition5.SizeType = System.Windows.Forms.SizeType.Percent;
-            rowDefinition6.Height = 30D;
-            rowDefinition6.SizeType = System.Windows.Forms.SizeType.Percent;
-            layoutControlGroup3.OptionsTableLayoutGroup.RowDefinitions.AddRange(new DevExpress.XtraLayout.RowDefinition[] { rowDefinition1, rowDefinition2, rowDefinition3, rowDefinition4, rowDefinition5, rowDefinition6 });
+            columnDefinition14.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition14.Width = 47.5D;
+            columnDefinition15.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition15.Width = 5D;
+            columnDefinition16.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition16.Width = 47.5D;
+            layoutControlGroup3.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] { columnDefinition14, columnDefinition15, columnDefinition16 });
+            rowDefinition20.Height = 14D;
+            rowDefinition20.SizeType = System.Windows.Forms.SizeType.Percent;
+            rowDefinition21.Height = 14D;
+            rowDefinition21.SizeType = System.Windows.Forms.SizeType.Percent;
+            rowDefinition22.Height = 14D;
+            rowDefinition22.SizeType = System.Windows.Forms.SizeType.Percent;
+            rowDefinition23.Height = 14D;
+            rowDefinition23.SizeType = System.Windows.Forms.SizeType.Percent;
+            rowDefinition24.Height = 14D;
+            rowDefinition24.SizeType = System.Windows.Forms.SizeType.Percent;
+            rowDefinition25.Height = 30D;
+            rowDefinition25.SizeType = System.Windows.Forms.SizeType.Percent;
+            layoutControlGroup3.OptionsTableLayoutGroup.RowDefinitions.AddRange(new DevExpress.XtraLayout.RowDefinition[] { rowDefinition20, rowDefinition21, rowDefinition22, rowDefinition23, rowDefinition24, rowDefinition25 });
             layoutControlGroup3.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
             layoutControlGroup3.Size = new System.Drawing.Size(817, 323);
             layoutControlGroup3.Text = "基本資訊";
@@ -705,7 +741,7 @@
             lblCreatedBy.OptionsTableLayoutItem.ColumnIndex = 2;
             lblCreatedBy.Size = new System.Drawing.Size(372, 36);
             lblCreatedBy.Text = "建單人員";
-            lblCreatedBy.TextSize = new System.Drawing.Size(129, 22);
+            lblCreatedBy.TextSize = new System.Drawing.Size(128, 22);
             // 
             // lblJobNo
             // 
@@ -715,8 +751,8 @@
             lblJobNo.Name = "lblJobNo";
             lblJobNo.OptionsTableLayoutItem.RowIndex = 1;
             lblJobNo.Size = new System.Drawing.Size(372, 36);
-            lblJobNo.Text = "Job No.   (選填)";
-            lblJobNo.TextSize = new System.Drawing.Size(129, 22);
+            lblJobNo.Text = "Job No. (選填)";
+            lblJobNo.TextSize = new System.Drawing.Size(128, 22);
             // 
             // lblSales
             // 
@@ -727,7 +763,7 @@
             lblSales.OptionsTableLayoutItem.RowIndex = 1;
             lblSales.Size = new System.Drawing.Size(372, 36);
             lblSales.Text = "Sales";
-            lblSales.TextSize = new System.Drawing.Size(129, 22);
+            lblSales.TextSize = new System.Drawing.Size(128, 22);
             // 
             // lblContactPhone
             // 
@@ -737,8 +773,8 @@
             lblContactPhone.Name = "lblContactPhone";
             lblContactPhone.OptionsTableLayoutItem.RowIndex = 3;
             lblContactPhone.Size = new System.Drawing.Size(372, 36);
-            lblContactPhone.Text = "電話       (選填)";
-            lblContactPhone.TextSize = new System.Drawing.Size(129, 22);
+            lblContactPhone.Text = "電話 (選填)";
+            lblContactPhone.TextSize = new System.Drawing.Size(128, 22);
             // 
             // lblContactName
             // 
@@ -749,7 +785,7 @@
             lblContactName.OptionsTableLayoutItem.RowIndex = 2;
             lblContactName.Size = new System.Drawing.Size(372, 36);
             lblContactName.Text = "聯絡人 (選填)";
-            lblContactName.TextSize = new System.Drawing.Size(129, 22);
+            lblContactName.TextSize = new System.Drawing.Size(128, 22);
             // 
             // lblCompany
             // 
@@ -761,7 +797,7 @@
             lblCompany.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
             lblCompany.Size = new System.Drawing.Size(372, 36);
             lblCompany.Text = "客戶名稱";
-            lblCompany.TextSize = new System.Drawing.Size(129, 22);
+            lblCompany.TextSize = new System.Drawing.Size(128, 22);
             // 
             // lblProjectName
             // 
@@ -772,7 +808,7 @@
             lblProjectName.OptionsTableLayoutItem.RowIndex = 4;
             lblProjectName.Size = new System.Drawing.Size(372, 36);
             lblProjectName.Text = "ProjectName";
-            lblProjectName.TextSize = new System.Drawing.Size(129, 22);
+            lblProjectName.TextSize = new System.Drawing.Size(128, 22);
             // 
             // lblTestInformation
             // 
@@ -783,7 +819,7 @@
             lblTestInformation.OptionsTableLayoutItem.RowIndex = 5;
             lblTestInformation.Size = new System.Drawing.Size(783, 77);
             lblTestInformation.Text = "測試資訊 (選填)";
-            lblTestInformation.TextSize = new System.Drawing.Size(129, 22);
+            lblTestInformation.TextSize = new System.Drawing.Size(128, 22);
             // 
             // lblLocation
             // 
@@ -792,7 +828,7 @@
             lblLocation.Name = "lblLocation";
             lblLocation.Size = new System.Drawing.Size(372, 36);
             lblLocation.Text = "場地";
-            lblLocation.TextSize = new System.Drawing.Size(129, 22);
+            lblLocation.TextSize = new System.Drawing.Size(128, 22);
             // 
             // lblPE
             // 
@@ -803,7 +839,7 @@
             lblPE.OptionsTableLayoutItem.RowIndex = 3;
             lblPE.Size = new System.Drawing.Size(372, 36);
             lblPE.Text = "PE";
-            lblPE.TextSize = new System.Drawing.Size(129, 22);
+            lblPE.TextSize = new System.Drawing.Size(128, 22);
             // 
             // lblProjectNo
             // 
@@ -813,32 +849,32 @@
             lblProjectNo.OptionsTableLayoutItem.RowIndex = 4;
             lblProjectNo.Size = new System.Drawing.Size(372, 36);
             lblProjectNo.Text = "ProjectNo";
-            lblProjectNo.TextSize = new System.Drawing.Size(129, 22);
+            lblProjectNo.TextSize = new System.Drawing.Size(128, 22);
             // 
             // layoutControlGroup4
             // 
-            layoutControlGroup4.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] { lblstartDateEdit, lblendDateEdit, layoutControlItem2, lblstartTimeEdit, lblendTimeEdit, layoutControlItem1, lblEstimatedHours });
+            layoutControlGroup4.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] { lblstartDateEdit, lblendDateEdit, layoutControlItem2, lblstartTimeEdit, lblendTimeEdit, layoutControlItem1, lblEstimatedHours, layoutControlItem11 });
             layoutControlGroup4.LayoutMode = DevExpress.XtraLayout.Utils.LayoutMode.Table;
             layoutControlGroup4.Location = new System.Drawing.Point(0, 323);
             layoutControlGroup4.Name = "layoutControlGroup4";
-            columnDefinition4.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition4.Width = 37D;
-            columnDefinition5.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition5.Width = 2D;
-            columnDefinition6.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition6.Width = 37D;
-            columnDefinition7.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition7.Width = 2D;
-            columnDefinition8.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition8.Width = 23D;
-            layoutControlGroup4.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] { columnDefinition4, columnDefinition5, columnDefinition6, columnDefinition7, columnDefinition8 });
-            rowDefinition7.Height = 33D;
-            rowDefinition7.SizeType = System.Windows.Forms.SizeType.Percent;
-            rowDefinition8.Height = 33D;
-            rowDefinition8.SizeType = System.Windows.Forms.SizeType.Percent;
-            rowDefinition9.Height = 34D;
-            rowDefinition9.SizeType = System.Windows.Forms.SizeType.Percent;
-            layoutControlGroup4.OptionsTableLayoutGroup.RowDefinitions.AddRange(new DevExpress.XtraLayout.RowDefinition[] { rowDefinition7, rowDefinition8, rowDefinition9 });
+            columnDefinition17.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition17.Width = 35D;
+            columnDefinition18.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition18.Width = 4D;
+            columnDefinition19.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition19.Width = 35D;
+            columnDefinition20.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition20.Width = 4D;
+            columnDefinition21.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition21.Width = 22D;
+            layoutControlGroup4.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] { columnDefinition17, columnDefinition18, columnDefinition19, columnDefinition20, columnDefinition21 });
+            rowDefinition26.Height = 33D;
+            rowDefinition26.SizeType = System.Windows.Forms.SizeType.Percent;
+            rowDefinition27.Height = 33D;
+            rowDefinition27.SizeType = System.Windows.Forms.SizeType.Percent;
+            rowDefinition28.Height = 34D;
+            rowDefinition28.SizeType = System.Windows.Forms.SizeType.Percent;
+            layoutControlGroup4.OptionsTableLayoutGroup.RowDefinitions.AddRange(new DevExpress.XtraLayout.RowDefinition[] { rowDefinition26, rowDefinition27, rowDefinition28 });
             layoutControlGroup4.Size = new System.Drawing.Size(817, 176);
             layoutControlGroup4.Text = "時間";
             // 
@@ -847,27 +883,27 @@
             lblstartDateEdit.Control = startDateEdit;
             lblstartDateEdit.Location = new System.Drawing.Point(0, 0);
             lblstartDateEdit.Name = "lblstartDateEdit";
-            lblstartDateEdit.Size = new System.Drawing.Size(287, 36);
+            lblstartDateEdit.Size = new System.Drawing.Size(274, 36);
             lblstartDateEdit.Text = "開始日期";
-            lblstartDateEdit.TextSize = new System.Drawing.Size(129, 22);
+            lblstartDateEdit.TextSize = new System.Drawing.Size(128, 22);
             // 
             // lblendDateEdit
             // 
             lblendDateEdit.Control = endDateEdit;
-            lblendDateEdit.Location = new System.Drawing.Point(302, 0);
+            lblendDateEdit.Location = new System.Drawing.Point(305, 0);
             lblendDateEdit.Name = "lblendDateEdit";
             lblendDateEdit.OptionsTableLayoutItem.ColumnIndex = 2;
-            lblendDateEdit.Size = new System.Drawing.Size(287, 36);
+            lblendDateEdit.Size = new System.Drawing.Size(274, 36);
             lblendDateEdit.Text = "結束日期";
-            lblendDateEdit.TextSize = new System.Drawing.Size(129, 22);
+            lblendDateEdit.TextSize = new System.Drawing.Size(128, 22);
             // 
             // layoutControlItem2
             // 
             layoutControlItem2.Control = panelControl1;
-            layoutControlItem2.Location = new System.Drawing.Point(604, 0);
+            layoutControlItem2.Location = new System.Drawing.Point(610, 0);
             layoutControlItem2.Name = "layoutControlItem2";
             layoutControlItem2.OptionsTableLayoutItem.ColumnIndex = 4;
-            layoutControlItem2.Size = new System.Drawing.Size(179, 36);
+            layoutControlItem2.Size = new System.Drawing.Size(173, 36);
             layoutControlItem2.TextVisible = false;
             // 
             // lblstartTimeEdit
@@ -876,41 +912,51 @@
             lblstartTimeEdit.Location = new System.Drawing.Point(0, 36);
             lblstartTimeEdit.Name = "lblstartTimeEdit";
             lblstartTimeEdit.OptionsTableLayoutItem.RowIndex = 1;
-            lblstartTimeEdit.Size = new System.Drawing.Size(287, 36);
+            lblstartTimeEdit.Size = new System.Drawing.Size(274, 36);
             lblstartTimeEdit.Text = "開始時間";
-            lblstartTimeEdit.TextSize = new System.Drawing.Size(129, 22);
+            lblstartTimeEdit.TextSize = new System.Drawing.Size(128, 22);
             // 
             // lblendTimeEdit
             // 
             lblendTimeEdit.Control = endTimeEdit;
-            lblendTimeEdit.Location = new System.Drawing.Point(302, 36);
+            lblendTimeEdit.Location = new System.Drawing.Point(305, 36);
             lblendTimeEdit.Name = "lblendTimeEdit";
             lblendTimeEdit.OptionsTableLayoutItem.ColumnIndex = 2;
             lblendTimeEdit.OptionsTableLayoutItem.RowIndex = 1;
-            lblendTimeEdit.Size = new System.Drawing.Size(287, 36);
+            lblendTimeEdit.Size = new System.Drawing.Size(274, 36);
             lblendTimeEdit.Text = "結束時間";
-            lblendTimeEdit.TextSize = new System.Drawing.Size(129, 22);
+            lblendTimeEdit.TextSize = new System.Drawing.Size(128, 22);
             // 
             // layoutControlItem1
             // 
             layoutControlItem1.Control = panelControl3;
-            layoutControlItem1.Location = new System.Drawing.Point(604, 36);
+            layoutControlItem1.Location = new System.Drawing.Point(610, 36);
             layoutControlItem1.Name = "layoutControlItem1";
             layoutControlItem1.OptionsTableLayoutItem.ColumnIndex = 4;
             layoutControlItem1.OptionsTableLayoutItem.RowIndex = 1;
-            layoutControlItem1.Size = new System.Drawing.Size(179, 36);
+            layoutControlItem1.Size = new System.Drawing.Size(173, 36);
             layoutControlItem1.TextVisible = false;
             // 
             // lblEstimatedHours
             // 
             lblEstimatedHours.Control = txtEstimatedHours;
-            lblEstimatedHours.Location = new System.Drawing.Point(302, 72);
+            lblEstimatedHours.Location = new System.Drawing.Point(305, 72);
             lblEstimatedHours.Name = "lblEstimatedHours";
             lblEstimatedHours.OptionsTableLayoutItem.ColumnIndex = 2;
             lblEstimatedHours.OptionsTableLayoutItem.RowIndex = 2;
-            lblEstimatedHours.Size = new System.Drawing.Size(287, 38);
+            lblEstimatedHours.Size = new System.Drawing.Size(274, 38);
             lblEstimatedHours.Text = "預估時間";
-            lblEstimatedHours.TextSize = new System.Drawing.Size(129, 22);
+            lblEstimatedHours.TextSize = new System.Drawing.Size(128, 22);
+            // 
+            // layoutControlItem11
+            // 
+            layoutControlItem11.Control = panelControl4;
+            layoutControlItem11.Location = new System.Drawing.Point(579, 72);
+            layoutControlItem11.Name = "layoutControlItem11";
+            layoutControlItem11.OptionsTableLayoutItem.ColumnIndex = 3;
+            layoutControlItem11.OptionsTableLayoutItem.RowIndex = 2;
+            layoutControlItem11.Size = new System.Drawing.Size(31, 38);
+            layoutControlItem11.TextVisible = false;
             // 
             // layoutControlGroup6
             // 
@@ -918,24 +964,24 @@
             layoutControlGroup6.LayoutMode = DevExpress.XtraLayout.Utils.LayoutMode.Table;
             layoutControlGroup6.Location = new System.Drawing.Point(0, 499);
             layoutControlGroup6.Name = "layoutControlGroup6";
-            columnDefinition9.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition9.Width = 47.5D;
-            columnDefinition10.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition10.Width = 5D;
-            columnDefinition11.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition11.Width = 47.5D;
-            layoutControlGroup6.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] { columnDefinition9, columnDefinition10, columnDefinition11 });
-            rowDefinition10.Height = 17.5D;
-            rowDefinition10.SizeType = System.Windows.Forms.SizeType.Percent;
-            rowDefinition11.Height = 17.5D;
-            rowDefinition11.SizeType = System.Windows.Forms.SizeType.Percent;
-            rowDefinition12.Height = 17.5D;
-            rowDefinition12.SizeType = System.Windows.Forms.SizeType.Percent;
-            rowDefinition13.Height = 17.5D;
-            rowDefinition13.SizeType = System.Windows.Forms.SizeType.Percent;
-            rowDefinition14.Height = 30D;
-            rowDefinition14.SizeType = System.Windows.Forms.SizeType.Percent;
-            layoutControlGroup6.OptionsTableLayoutGroup.RowDefinitions.AddRange(new DevExpress.XtraLayout.RowDefinition[] { rowDefinition10, rowDefinition11, rowDefinition12, rowDefinition13, rowDefinition14 });
+            columnDefinition22.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition22.Width = 47.5D;
+            columnDefinition23.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition23.Width = 5D;
+            columnDefinition24.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition24.Width = 47.5D;
+            layoutControlGroup6.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] { columnDefinition22, columnDefinition23, columnDefinition24 });
+            rowDefinition29.Height = 17.5D;
+            rowDefinition29.SizeType = System.Windows.Forms.SizeType.Percent;
+            rowDefinition30.Height = 17.5D;
+            rowDefinition30.SizeType = System.Windows.Forms.SizeType.Percent;
+            rowDefinition31.Height = 17.5D;
+            rowDefinition31.SizeType = System.Windows.Forms.SizeType.Percent;
+            rowDefinition32.Height = 17.5D;
+            rowDefinition32.SizeType = System.Windows.Forms.SizeType.Percent;
+            rowDefinition33.Height = 30D;
+            rowDefinition33.SizeType = System.Windows.Forms.SizeType.Percent;
+            layoutControlGroup6.OptionsTableLayoutGroup.RowDefinitions.AddRange(new DevExpress.XtraLayout.RowDefinition[] { rowDefinition29, rowDefinition30, rowDefinition31, rowDefinition32, rowDefinition33 });
             layoutControlGroup6.Size = new System.Drawing.Size(817, 271);
             layoutControlGroup6.Text = "測試資訊 (選填)";
             // 
@@ -946,7 +992,7 @@
             layoutControlItem3.Name = "layoutControlItem3";
             layoutControlItem3.Size = new System.Drawing.Size(372, 36);
             layoutControlItem3.Text = "工程師";
-            layoutControlItem3.TextSize = new System.Drawing.Size(129, 22);
+            layoutControlItem3.TextSize = new System.Drawing.Size(128, 22);
             // 
             // layoutControlItem5
             // 
@@ -956,7 +1002,7 @@
             layoutControlItem5.OptionsTableLayoutItem.ColumnIndex = 2;
             layoutControlItem5.Size = new System.Drawing.Size(372, 36);
             layoutControlItem5.Text = "區域";
-            layoutControlItem5.TextSize = new System.Drawing.Size(129, 22);
+            layoutControlItem5.TextSize = new System.Drawing.Size(128, 22);
             // 
             // layoutControlItem6
             // 
@@ -967,7 +1013,7 @@
             layoutControlItem6.OptionsTableLayoutItem.RowIndex = 1;
             layoutControlItem6.Size = new System.Drawing.Size(372, 36);
             layoutControlItem6.Text = "產品型號";
-            layoutControlItem6.TextSize = new System.Drawing.Size(129, 22);
+            layoutControlItem6.TextSize = new System.Drawing.Size(128, 22);
             // 
             // layoutControlItem7
             // 
@@ -978,7 +1024,7 @@
             layoutControlItem7.OptionsTableLayoutItem.RowIndex = 1;
             layoutControlItem7.Size = new System.Drawing.Size(372, 36);
             layoutControlItem7.Text = "產品名稱";
-            layoutControlItem7.TextSize = new System.Drawing.Size(129, 22);
+            layoutControlItem7.TextSize = new System.Drawing.Size(128, 22);
             // 
             // layoutControlItem8
             // 
@@ -989,7 +1035,7 @@
             layoutControlItem8.OptionsTableLayoutItem.RowIndex = 2;
             layoutControlItem8.Size = new System.Drawing.Size(783, 36);
             layoutControlItem8.Text = "測試模式";
-            layoutControlItem8.TextSize = new System.Drawing.Size(129, 22);
+            layoutControlItem8.TextSize = new System.Drawing.Size(128, 22);
             // 
             // layoutControlItem9
             // 
@@ -1000,7 +1046,7 @@
             layoutControlItem9.OptionsTableLayoutItem.RowIndex = 3;
             layoutControlItem9.Size = new System.Drawing.Size(783, 36);
             layoutControlItem9.Text = "測試項目";
-            layoutControlItem9.TextSize = new System.Drawing.Size(129, 22);
+            layoutControlItem9.TextSize = new System.Drawing.Size(128, 22);
             // 
             // layoutControlItem10
             // 
@@ -1011,7 +1057,7 @@
             layoutControlItem10.OptionsTableLayoutItem.RowIndex = 4;
             layoutControlItem10.Size = new System.Drawing.Size(783, 61);
             layoutControlItem10.Text = "備註";
-            layoutControlItem10.TextSize = new System.Drawing.Size(129, 22);
+            layoutControlItem10.TextSize = new System.Drawing.Size(128, 22);
             // 
             // panelHeader
             // 
@@ -1153,22 +1199,22 @@
             layoutControlGroup5.LayoutMode = DevExpress.XtraLayout.Utils.LayoutMode.Table;
             layoutControlGroup5.Location = new System.Drawing.Point(0, 0);
             layoutControlGroup5.Name = "layoutControlGroup5";
-            columnDefinition12.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition12.Width = 100D;
-            columnDefinition13.SizeType = System.Windows.Forms.SizeType.Percent;
-            columnDefinition13.Width = 100D;
-            layoutControlGroup5.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] { columnDefinition12, columnDefinition13 });
-            rowDefinition15.Height = 20D;
-            rowDefinition15.SizeType = System.Windows.Forms.SizeType.Percent;
-            rowDefinition16.Height = 20D;
-            rowDefinition16.SizeType = System.Windows.Forms.SizeType.Percent;
-            rowDefinition17.Height = 20D;
-            rowDefinition17.SizeType = System.Windows.Forms.SizeType.Percent;
-            rowDefinition18.Height = 20D;
-            rowDefinition18.SizeType = System.Windows.Forms.SizeType.Percent;
-            rowDefinition19.Height = 20D;
-            rowDefinition19.SizeType = System.Windows.Forms.SizeType.Percent;
-            layoutControlGroup5.OptionsTableLayoutGroup.RowDefinitions.AddRange(new DevExpress.XtraLayout.RowDefinition[] { rowDefinition15, rowDefinition16, rowDefinition17, rowDefinition18, rowDefinition19 });
+            columnDefinition25.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition25.Width = 100D;
+            columnDefinition26.SizeType = System.Windows.Forms.SizeType.Percent;
+            columnDefinition26.Width = 100D;
+            layoutControlGroup5.OptionsTableLayoutGroup.ColumnDefinitions.AddRange(new DevExpress.XtraLayout.ColumnDefinition[] { columnDefinition25, columnDefinition26 });
+            rowDefinition34.Height = 20D;
+            rowDefinition34.SizeType = System.Windows.Forms.SizeType.Percent;
+            rowDefinition35.Height = 20D;
+            rowDefinition35.SizeType = System.Windows.Forms.SizeType.Percent;
+            rowDefinition36.Height = 20D;
+            rowDefinition36.SizeType = System.Windows.Forms.SizeType.Percent;
+            rowDefinition37.Height = 20D;
+            rowDefinition37.SizeType = System.Windows.Forms.SizeType.Percent;
+            rowDefinition38.Height = 20D;
+            rowDefinition38.SizeType = System.Windows.Forms.SizeType.Percent;
+            layoutControlGroup5.OptionsTableLayoutGroup.RowDefinitions.AddRange(new DevExpress.XtraLayout.RowDefinition[] { rowDefinition34, rowDefinition35, rowDefinition36, rowDefinition37, rowDefinition38 });
             layoutControlGroup5.Size = new System.Drawing.Size(794, 312);
             layoutControlGroup5.Text = "測試資訊";
             // 
@@ -1186,15 +1232,6 @@
             simpleLabelItem1.OptionsTableLayoutItem.RowIndex = 2;
             simpleLabelItem1.Size = new System.Drawing.Size(185, 36);
             simpleLabelItem1.TextSize = new System.Drawing.Size(129, 22);
-            // 
-            // labelControl26
-            // 
-            labelControl26.Location = new System.Drawing.Point(624, 465);
-            labelControl26.Name = "labelControl26";
-            labelControl26.Size = new System.Drawing.Size(18, 22);
-            labelControl26.StyleController = layoutControl1;
-            labelControl26.TabIndex = 295;
-            labelControl26.Text = "時";
             // 
             // layoutControlItem4
             // 
@@ -1227,7 +1264,8 @@
             ((System.ComponentModel.ISupportInitialize)chkHandover.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)layoutControl1).EndInit();
             layoutControl1.ResumeLayout(false);
-            layoutControl1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)panelControl4).EndInit();
+            panelControl4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)txtPE.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)memoNote.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)txtEstimatedHours.Properties).EndInit();
@@ -1284,6 +1322,7 @@
             ((System.ComponentModel.ISupportInitialize)lblendTimeEdit).EndInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlItem1).EndInit();
             ((System.ComponentModel.ISupportInitialize)lblEstimatedHours).EndInit();
+            ((System.ComponentModel.ISupportInitialize)layoutControlItem11).EndInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlGroup6).EndInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlItem3).EndInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlItem5).EndInit();
@@ -1402,5 +1441,7 @@
         private DevExpress.XtraEditors.LabelControl labelControl26;
         private DevExpress.XtraLayout.SimpleLabelItem simpleLabelItem1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
+        private DevExpress.XtraEditors.PanelControl panelControl4;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem11;
     }
 }
