@@ -1,11 +1,12 @@
-﻿using DevExpress.XtraEditors;
+﻿using DevExpress.XtraBars.Docking;
+using DevExpress.XtraEditors;
 using DevExpress.XtraScheduler;
+using DevExpress.XtraScheduler.Drawing;
 using RentProject.Domain;
 using RentProject.Shared.UIModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DevExpress.XtraScheduler.Drawing;
 
 namespace RentProject
 {
@@ -22,8 +23,7 @@ namespace RentProject
 
         private List<CalendarRentTimeDetailItem> _details = new();
         private Dictionary<int, CalendarRentTimeDetailItem> _detailById = new();
-
-
+        private Dictionary<string, CalendarRentTimeDetailItem> _pickByBookingNo = new(StringComparer.OrdinalIgnoreCase);
 
         // ====== 建構 / 生命週期 ======
         public CalendarViewControl()
@@ -43,7 +43,7 @@ namespace RentProject
 
             // 1) 顯示模式與 UI 外觀
             schedulerControl1.ActiveViewType = SchedulerViewType.Month;
-            schedulerControl1.MonthView.DateTimeScrollbarVisible = false; 
+            schedulerControl1.MonthView.DateTimeScrollbarVisible = false;
             schedulerControl1.DateNavigationBar.Visible = false;  // 關閉Calendar中內建的日期切換
 
             // 2) 綁 DataStorage（Scheduler 必要），schedulerDataStorage中常用：Appointments：行程/案件；Resources：資源/場地/機台；Labels / Statuses：顏色標籤、忙碌狀態
@@ -63,7 +63,7 @@ namespace RentProject
                 new AppointmentCustomFieldMapping("RentTimeIds", nameof(CalendarRentTimeItem.RentTimeIds)));
 
             // 5) 月曆上的 appointment 顯示設定
-            schedulerControl1.MonthView.AppointmentDisplayOptions.AppointmentAutoHeight =true;
+            schedulerControl1.MonthView.AppointmentDisplayOptions.AppointmentAutoHeight = true;
             schedulerControl1.MonthView.AppointmentDisplayOptions.StartTimeVisibility = AppointmentTimeVisibility.Never;
             schedulerControl1.MonthView.AppointmentDisplayOptions.EndTimeVisibility = AppointmentTimeVisibility.Never;
 
@@ -79,6 +79,9 @@ namespace RentProject
 
             schedulerControl1.MouseDown -= schedulerControl1_MouseDown;
             schedulerControl1.MouseDown += schedulerControl1_MouseDown;
+
+            cmbBookingNo.EditValueChanged -= cmbBookingNo_EditValueChanged;
+            cmbBookingNo.EditValueChanged += cmbBookingNo_EditValueChanged;
 
             _schedulerInited = true;
         }
@@ -100,11 +103,11 @@ namespace RentProject
                     Location = x.Location ?? ""
                 })
                 .ToList();
-            
+
             _details = list
                 .Where(x => x.StartDate != null && x.EndDate != null && x.StartTime != null && x.EndTime != null)
                 .Select(x => new CalendarRentTimeDetailItem
-                { 
+                {
                     RentTimeId = x.RentTimeId,
                     StartAt = x.StartDate.Value.Date + x.StartTime.Value,
                     EndAt = x.EndDate.Value.Date + x.EndTime.Value,
@@ -121,7 +124,8 @@ namespace RentProject
 
             _detailById = _details
                 .Where(d => d.RentTimeId.HasValue)
-                .ToDictionary(d => d.RentTimeId.Value, d => d);
+                .GroupBy(d => d.RentTimeId.Value)
+                .ToDictionary(g => g.Key, g => g.First()); // g.First()這組裡的第一筆資料（例如 A）
 
             _apptsAll = appts;
             _apptsMonth = BuildMonthSummaryAppointments(_apptsAll);
@@ -228,9 +232,9 @@ namespace RentProject
 
         // 依照你目前看的視圖（Month / Day / Week / Timeline），切換要顯示的資料來源
         private void ApplyAppointForCurrentView()
-        { 
-            if (_apptsAll == null || _apptsAll.Count == 0) 
-            { 
+        {
+            if (_apptsAll == null || _apptsAll.Count == 0)
+            {
                 schedulerDataStorage1.Appointments.DataSource = null;
                 schedulerControl1.RefreshData();
                 return;
@@ -245,7 +249,7 @@ namespace RentProject
 
         // 把「同一天多筆案件」變成「一筆摘要」：
         private List<CalendarRentTimeItem> BuildMonthSummaryAppointments(List<CalendarRentTimeItem> all)
-        { 
+        {
             var result = new List<CalendarRentTimeItem>();
 
             // Key是分組的標籤
@@ -279,20 +283,142 @@ namespace RentProject
         }
 
         // 點到 appointment 就能進來，並抓到 Appointment 物件
+        // MouseDown：滑鼠按鍵「按下」的瞬間 ； MouseClick（按下再放開，形成一次點擊）
         private void schedulerControl1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
         {
+            // hit：「滑鼠位置底下」到底是什麼 UI 元素（可能是 appointment、格子 cell、標題、More(+2)按鈕、時間刻度…等）
+            // e.Location = 滑鼠點下去的座標
+            // true：把 Appointment 當成透明的（你想知道「它底下的格子/區域是什麼」）
+            // false：連 Appointment 本身也算進去（你想知道「我是不是點到某一筆單」）
             var hit = schedulerControl1.ActiveView.ViewInfo.CalcHitInfo(e.Location, false);
 
             // Month/Week/Day 點到 appointment 時，常見是 AppointmentContent 或 Appointment
+            // HitTest 就像「點擊偵測結果」
             if (hit.HitTest != SchedulerHitTest.AppointmentContent) return;
 
+            // 你滑鼠點到的那個元素，它的 ViewInfo 不是「AppointmentViewInfo」這一種型別 → 那就不能當 appointment 來處理，所以 return。
             if (hit.ViewInfo is not AppointmentViewInfo appointmentViewInfo) return;
 
             var appt = appointmentViewInfo.Appointment;
             if (appt == null) return;
 
             // 先用這行測試：確認真的點得到 appointment
-            XtraMessageBox.Show($"你點到：{appt.Subject}");
+            PopulateBookingNoPicker(appt);
+        }
+
+        private void PopulateBookingNoPicker(Appointment appt)
+        {
+            // 1) 取得「這次點擊」要顯示的 BookingNo 清單
+            var candidates = GetCandidatesForPicker(appt);
+
+            // 2) 清空下拉與對照表
+            cmbBookingNo.Properties.Items.Clear();
+            _pickByBookingNo.Clear();
+
+            // 3) 灌入下拉
+            foreach (var d in candidates)
+            {
+                cmbBookingNo.Properties.Items.Add(d.BookingNo);
+                _pickByBookingNo[d.BookingNo] = d;
+            }
+
+            // 4) 預選：優先選你點到的那一筆
+            if (candidates.Count > 0)
+            {
+                var clickedId = 0;
+                _ = int.TryParse(appt.Id?.ToString(), out clickedId);
+
+                var idx = candidates.FindIndex(x => x.RentTimeId == clickedId);
+                cmbBookingNo.SelectedIndex = (idx >= 0) ? idx : 0;
+            }
+        }
+
+        // 把「這次要顯示在右側下拉的明細清單」找出來
+        private List<CalendarRentTimeDetailItem> GetCandidatesForPicker(Appointment appt)
+        {
+            var result = new List<CalendarRentTimeDetailItem>();
+
+            // 判斷是不是 Month 的「摘要」
+            var isSummary = appt.CustomFields["IsSummary"] as bool? == true;
+
+            if (isSummary)
+            {
+                // 摘要：從 RentTimeIds 把那一天的 id 全撈出來
+                var csv = appt.CustomFields["RentTimeIds"]?.ToString() ?? "";
+                var ids = csv.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                             .Select(s => int.TryParse(s.Trim(), out var id) ? id : (int?)null)
+                             .Where(id => id.HasValue)
+                             .Select(id => id!.Value)
+                             .ToList();
+
+                foreach (var id in ids)
+                {
+                    if (_detailById.TryGetValue(id, out var d))
+                        result.Add(d);
+                }
+
+                return result.OrderBy(x => x.StartAt).ToList();
+            }
+
+            // 一般 appointment：顯示「同一天」全部 BookingNo
+            var day = appt.Start.Date;
+            result = _details
+                .Where(d => d.StartAt.Date == day)
+                .OrderBy(d => d.StartAt)
+                .ToList();
+
+            return result;
+        }
+
+        // cmbBookingNo_EditValueChanged
+        private void cmbBookingNo_EditValueChanged(object sender, EventArgs e)
+        {
+            var key = cmbBookingNo.EditValue?.ToString()?.Trim();
+
+            // 1. 下拉沒值：清空欄位
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                ClearDetailPanel();
+                return;
+            }
+
+            // 2. 用BookingNo 找到對應值； !TryGetValue(...)：字典裡沒有這個 BookingNo
+            if (!_pickByBookingNo.TryGetValue(key, out var d) || d == null)
+            {
+                ClearDetailPanel();
+                return;
+            }
+
+            ApplyDetailToUI(d);
+        }
+
+
+        private void ApplyDetailToUI(CalendarRentTimeDetailItem d)
+        {
+            txtBookingNo.Text = d.BookingNo;
+            txtCustomerName.Text = d.CustomerName;
+            txtLocation.Text = d.Location;
+            txtArea.Text = "(" + d.Area + ")";
+            txtProjectNo.Text = d.ProjectNo;
+            txtPhone.Text = d.Phone;
+            txtContactName.Text = d.ContactName;
+            txtPE.Text = d.PE;
+            txtStartTime.Text = d.StartAt.ToString("HH:mm");
+            txtEndTime.Text = d.EndAt.ToString("HH:mm");
+        }
+
+        private void ClearDetailPanel()
+        {
+            txtBookingNo.Text = "";
+            txtCustomerName.Text = "";
+            txtLocation.Text = "";
+            txtArea.Text = "";
+            txtProjectNo.Text = "";
+            txtPhone.Text = "";
+            txtContactName.Text = "";
+            txtPE.Text = "";
+            txtStartTime.Text = "";
+            txtEndTime.Text = "";
         }
     }
 }
