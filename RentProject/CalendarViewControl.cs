@@ -34,6 +34,9 @@ namespace RentProject
         private void CalendarViewControl_Load(object sender, EventArgs e)
         {
             EnsureSchedulerInit();
+
+            HideDetailPanel();
+            ClearDetailPanel();
         }
 
         // ====== Scheduler 初始化（只做一次） ======
@@ -118,7 +121,8 @@ namespace RentProject
                     BookingNo = x.BookingNo ?? "",
                     CustomerName = x.CustomerName ?? "",
                     ContactName = x.ContactName ?? "",
-                    Phone = x.Phone ?? ""
+                    Phone = x.Phone ?? "",
+                    Status = x.Status
                 })
                 .ToList();
 
@@ -294,7 +298,11 @@ namespace RentProject
 
             // Month/Week/Day 點到 appointment 時，常見是 AppointmentContent 或 Appointment
             // HitTest 就像「點擊偵測結果」
-            if (hit.HitTest != SchedulerHitTest.AppointmentContent) return;
+            if (hit.HitTest != SchedulerHitTest.AppointmentContent)
+            {
+                    HideDetailPanel();
+                    return;
+            } 
 
             // 你滑鼠點到的那個元素，它的 ViewInfo 不是「AppointmentViewInfo」這一種型別 → 那就不能當 appointment 來處理，所以 return。
             if (hit.ViewInfo is not AppointmentViewInfo appointmentViewInfo) return;
@@ -303,6 +311,7 @@ namespace RentProject
             if (appt == null) return;
 
             // 先用這行測試：確認真的點得到 appointment
+            ShowDetailPanel();
             PopulateBookingNoPicker(appt);
         }
 
@@ -419,6 +428,35 @@ namespace RentProject
             txtPE.Text = "";
             txtStartTime.Text = "";
             txtEndTime.Text = "";
+        }
+
+        // SplitPanel只顯示左側（行事曆）
+        private void HideDetailPanel()
+        {
+            splitContainerControl1.PanelVisibility = DevExpress.XtraEditors.SplitPanelVisibility.Panel1;
+        }
+
+        // SplitPanel左右都顯示
+        private void ShowDetailPanel()
+        { 
+            splitContainerControl1.PanelVisibility = DevExpress.XtraEditors.SplitPanelVisibility.Both;
+        }
+
+        // 取得目前選取刪除項
+        public List<CalendarRentTimeDetailItem> GetSelectedForDelete()
+        { 
+            var key = cmbBookingNo.EditValue?.ToString()?.Trim();
+
+            if (string.IsNullOrWhiteSpace(key))
+                return new List<CalendarRentTimeDetailItem>();
+
+            if (!_pickByBookingNo.TryGetValue(key, out var d) || d == null)
+                return new List<CalendarRentTimeDetailItem>();
+
+            if (!d.RentTimeId.HasValue)
+                return new List<CalendarRentTimeDetailItem>();
+
+            return new List<CalendarRentTimeDetailItem> { d };
         }
     }
 }

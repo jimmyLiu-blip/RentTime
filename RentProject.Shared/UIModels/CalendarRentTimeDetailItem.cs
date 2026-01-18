@@ -19,5 +19,7 @@
         public string Phone { get; set; } = "";
         public string ContactName { get; set; } = "";
         public string PE { get; set; } = "";
+
+        public int Status { get; set; }
     }
 }

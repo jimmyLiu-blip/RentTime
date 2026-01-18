@@ -328,13 +328,34 @@ namespace RentProject
         // 刪除租時單(可多選)
         private void btnDelete_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            // 假設目前顯示的是ProjectView
-            // 1) 取出勾選
-            var selected = _projectView.GetCheckedRentTime();
+            // 0. 先把「選取來源」統一成同一種格式：只保留刪除需要的欄位
+            var selected = new List<(int RentTimeId, string BookingNo, int Status)>();
+
+            if (_isCalendarView)
+            {
+                // CalendarView：GetSelectedForDelete() 會回傳 0 或 1 筆（目前設計）
+                var calSelected = _calendarView.GetSelectedForDelete();
+
+                selected = calSelected
+                    .Where(x => x.RentTimeId.HasValue)
+                    .Select(x => (x.RentTimeId!.Value, x.BookingNo ?? "", x.Status))
+                    .ToList();
+            }
+            else
+            {
+                // ProjectView：原本就是可多選
+                var projectSelected = _projectView.GetCheckedRentTime();
+
+                selected = projectSelected
+                    .Select(x => (x.RentTimeId, x.BookingNo ?? "", x.Status))
+                    .ToList();  
+            }
 
             if (selected.Count == 0)
             {
-                XtraMessageBox.Show("請先勾選要刪除的租時單", "提示");
+                XtraMessageBox.Show(
+                    _isCalendarView ? "請先點選日曆上的案件並選擇右側 BookingNo 再刪除" : "請先勾選要刪除的租時單",
+            "提示");
                 return;
             }
 
@@ -342,14 +363,14 @@ namespace RentProject
             var blocked = selected.Where(x => x.Status == 2 || x.Status == 3).ToList();
             if (blocked.Count > 0)
             {
-                var previewFinished = string.Join("\n",
+                var preview = string.Join("\n",
                     blocked.Take(10).Select(x => $"{x.BookingNo}(Id:{x.RentTimeId})"));
 
                 XtraMessageBox.Show(
-                    $"你勾選的資料包含「已完成(Finished)」狀態，不能刪除。\n" +
-                    $"請取消勾選後再刪除。\n\n" +
+                    $"你勾選的資料包含「已完成/已送出」狀態，不能刪除。\n" +
+                    $"請取消選取後再刪除。\n\n" +
                     $"筆數：{blocked.Count}\n" +
-                    $"{previewFinished}",
+                    $"{preview}",
                     "禁止刪除",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
