@@ -30,6 +30,9 @@ namespace RentProject
         // 只要有人訂閱我，就要提供一個方法；這個方法會吃一個 int（RentTimeId），不用回傳
         // 外面的人只能訂閱/取消訂閱（+= / -=)；外面的人不能直接觸發（Invoke）事件；只有在這個類別裡面才能 Invoke（發射事件）
         public event Action<int>? EditRequested;
+
+        // 是否為「7天週時間表模式」
+        private bool _isWeek7Mode = false;
         
         // ====== 建構 / 生命週期 ======
         public CalendarViewControl()
@@ -101,6 +104,13 @@ namespace RentProject
             _schedulerInited = true;
         }
 
+        // 設定一週第一天是星期一
+        private static DateTime GetWeekStartMonday(DateTime date)
+        { 
+            int offset = ((int)date.DayOfWeek - (int)DayOfWeek.Monday +7) % 7;  
+            return date.Date.AddDays(-offset);
+        }
+
         // ====== 載入資料（給外部呼叫） ======
         public void LoadData(List<RentTime> list)
         {
@@ -166,16 +176,24 @@ namespace RentProject
         // ===== 視圖切換 =====
         private void btnViewDay_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
+            _isWeek7Mode = false;
             schedulerControl1.ActiveViewType = SchedulerViewType.Day;
+            schedulerControl1.DayView.DayCount = 1;
         }
 
         private void btnViewWeek_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            schedulerControl1.ActiveViewType = SchedulerViewType.Week;
+            _isWeek7Mode = true;
+            schedulerControl1.ActiveViewType = SchedulerViewType.Day;
+            schedulerControl1.DayView.DayCount = 7;
+
+            // 週一為第一天
+            schedulerControl1.Start = GetWeekStartMonday(schedulerControl1.Start);
         }
 
         private void btnViewMonth_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
+            _isWeek7Mode = false;
             schedulerControl1.ActiveViewType = SchedulerViewType.Month;
         }
 
@@ -197,7 +215,15 @@ namespace RentProject
 
         private void btnToday_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            schedulerControl1.Start = DateTime.Today;
+            if (schedulerControl1.ActiveViewType == SchedulerViewType.Month)
+            {
+                schedulerControl1.Start = DateTime.Today;
+                return;
+            }
+
+            schedulerControl1.Start = _isWeek7Mode ? 
+                GetWeekStartMonday(DateTime.Today)
+                :DateTime.Today;
         }
 
         private void GoToPreviousPeriod()
@@ -205,10 +231,7 @@ namespace RentProject
             switch (schedulerControl1.ActiveViewType)
             {
                 case SchedulerViewType.Day:
-                    schedulerControl1.Start = schedulerControl1.Start.AddDays(-1);
-                    break;
-                case SchedulerViewType.Week:
-                    schedulerControl1.Start = schedulerControl1.Start.AddDays(-7);
+                    schedulerControl1.Start = schedulerControl1.Start.AddDays(_isWeek7Mode ? -7:-1);
                     break;
                 case SchedulerViewType.Month:
                     _currentMonth = _currentMonth.AddMonths(-1);
@@ -228,10 +251,7 @@ namespace RentProject
             switch (schedulerControl1.ActiveViewType)
             {
                 case SchedulerViewType.Day:
-                    schedulerControl1.Start = schedulerControl1.Start.AddDays(1);
-                    break;
-                case SchedulerViewType.Week:
-                    schedulerControl1.Start = schedulerControl1.Start.AddDays(7);
+                    schedulerControl1.Start = schedulerControl1.Start.AddDays(_isWeek7Mode ? 7 : 1);
                     break;
                 case SchedulerViewType.Month:
                     _currentMonth = _currentMonth.AddMonths(1);
@@ -436,7 +456,6 @@ namespace RentProject
 
             ApplyDetailToUI(d);
         }
-
 
         private void ApplyDetailToUI(CalendarRentTimeDetailItem d)
         {
