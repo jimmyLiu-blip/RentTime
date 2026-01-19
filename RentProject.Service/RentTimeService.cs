@@ -141,6 +141,14 @@ namespace RentProject.Service
             _repo.SubmitToAssistantById(rentTimeId, user, DateTime.Now);
         }
 
+        public bool ChangeDraftPeriodWithSplit(int rentTimeId, DateTime newStart, DateTime newEnd, string modifiedBy, DateTime now)
+        {
+            return _repo.ChangeDraftPeriodWithSplit(rentTimeId, newStart, newEnd, modifiedBy, now);
+        }
+
+
+
+
         // 小工具
         private static void ValidateRequired(RentTime model)
         {

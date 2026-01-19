@@ -573,6 +573,169 @@ namespace RentProject.Repository
             });
         }
 
+        public bool ChangeDraftPeriodWithSplit(int rentTimeId, DateTime newStart, DateTime newEnd, string modifiedBy, DateTime now)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+
+            using var tx = connection.BeginTransaction();
+
+            try
+            {
+                // 1. 先確認這張單存在、未刪除、且是 Draft
+                var srcSql = @"
+                    SELECT TOP 1 *
+                    FROM dbo.RentTimes
+                    WHERE RentTimeId = @Id
+                    AND IsDeleted = 0
+                    AND Status = 0;";
+
+                var src = connection.QueryFirstOrDefault<RentTime>(srcSql, new { Id = rentTimeId }, tx);
+                if (src == null) return false; // 不是 Draft 或找不到
+
+                // 2. 算天數
+                var startDate = newStart.Date;
+                var endDate = newEnd.Date;
+                if (endDate < startDate) return false;
+
+                int days = (endDate - startDate).Days + 1;
+
+                // 3. 先把「原本那張」更新成第 1 天（保留 RentTimeId，不影響 UI 追蹤）
+                var updateSql = @"
+                    UPDATE dbo.RentTimes
+                    SET StartDate = @StartDate,
+                    EndDate   = @EndDate,
+                    StartTime = @StartTime,
+                    EndTime   = @EndTime,
+                    ModifiedBy = @ModifiedBy,
+                    ModifiedDate = @Now
+                    WHERE RentTimeId = @RentTimeId
+                    AND IsDeleted = 0
+                    AND Status = 0;";
+
+                int updated = connection.Execute(updateSql, new
+                {
+                    RentTimeId = rentTimeId,
+                    StartDate = startDate,
+                    EndDate = startDate,                 // 第一天固定同一天
+                    StartTime = newStart.TimeOfDay,
+                    EndTime = newEnd.TimeOfDay,
+                    ModifiedBy = modifiedBy,
+                    Now = now
+                }, tx);
+
+                if (updated != 1) return false;
+
+                // 4. 沒跨日：到此結束
+                if (days == 1)
+                {
+                    tx.Commit();
+                    return true;
+                }
+
+                // 5) 跨日：補第 2 天～第 N 天（同 batch / seq 往下）
+                // 5-1 batch：優先沿用原本 BookingNo 的 batch；若格式不對就新建 batch
+                string batchText;
+                try
+                {
+                    batchText = ExtractBatch(src.BookingNo);
+                }
+                catch
+                {
+                    var batchIdSql = @"
+                INSERT INTO dbo.BookingBatch DEFAULT VALUES;
+                SELECT CAST(SCOPE_IDENTITY() AS BIGINT);";
+                    long newBatchId = connection.ExecuteScalar<long>(batchIdSql, transaction: tx);
+                    batchText = $"{newBatchId:D7}";
+                }
+
+                // 5-2 prefix：沿用原本是 TMP 還是 RF（通常 Draft 會是 TMP）
+                string prefix = (src.BookingNo ?? "").StartsWith("RF-", StringComparison.OrdinalIgnoreCase) ? "RF" : "TMP";
+
+                // 5-3 找下一個 seq（避免撞號）
+                int nextSeq = GetNextSeqForBatch(connection, tx, batchText);
+
+                // 5-4 Insert：複製 src 的欄位，只改 BookingNo + 日期時間
+                // 下面欄位清單請以你表內實際欄位為主；我用你 CreateRentTime 的欄位做基礎
+                var insertSql = @"
+                INSERT INTO dbo.RentTimes
+                (
+                JobId, BookingNo, CreatedBy, Area, CustomerName, Sales, ProjectNo, ProjectName, PE, Location,
+                ContactName, Phone, TestInformation, EngineerName, SampleModel, SampleNo,
+                TestMode, TestItem, Notes,
+                StartDate, EndDate, StartTime, EndTime, EstimatedMinutes, EstimatedHours,
+                HasLunch, LunchMinutes, HasDinner, DinnerMinutes,
+                Status, IsDeleted, ModifiedBy, ModifiedDate, IsHandOver
+                )
+                VALUES
+                (
+                @JobId, @BookingNo, @CreatedBy, @Area, @CustomerName, @Sales, @ProjectNo, @ProjectName, @PE, @Location,
+                @ContactName, @Phone, @TestInformation, @EngineerName, @SampleModel, @SampleNo,
+                @TestMode, @TestItem, @Notes,
+                @StartDate, @EndDate, @StartTime, @EndTime, @EstimatedMinutes, @EstimatedHours,
+                @HasLunch, @LunchMinutes, @HasDinner, @DinnerMinutes,
+                0, 0, @ModifiedBy, @Now, @IsHandOver
+                );";
+
+                for (int i = 2; i <= days; i++)
+                {
+                    var day = startDate.AddDays(i - 1);
+                    string bookingNo = $"{prefix}-{batchText}-{nextSeq}";
+                    nextSeq++;
+
+                    connection.Execute(insertSql, new
+                    {
+                        src.JobId,
+                        BookingNo = bookingNo,
+
+                        src.CreatedBy,
+                        src.Area,
+                        src.CustomerName,
+                        src.Sales,
+                        src.ProjectNo,
+                        src.ProjectName,
+                        src.PE,
+                        src.Location,
+
+                        src.ContactName,
+                        src.Phone,
+                        src.TestInformation,
+                        src.EngineerName,
+                        src.SampleModel,
+                        src.SampleNo,
+
+                        src.TestMode,
+                        src.TestItem,
+                        src.Notes,
+
+                        StartDate = day,
+                        EndDate = day,
+                        StartTime = newStart.TimeOfDay,
+                        EndTime = newEnd.TimeOfDay,
+
+                        src.EstimatedMinutes,
+                        src.EstimatedHours,
+
+                        src.HasLunch,
+                        src.LunchMinutes,
+                        src.HasDinner,
+                        src.DinnerMinutes,
+
+                        ModifiedBy = modifiedBy,
+                        Now = now,
+                        src.IsHandOver
+                    }, tx);
+                }
+
+                tx.Commit();
+                return true;
+            }
+            catch
+            {
+                try { tx.Rollback(); } catch { }
+                throw;
+            }
+        }
 
         // ====== 小工具 ======
         // 組合預排的 Date+Time
@@ -617,7 +780,5 @@ namespace RentProject.Repository
 
             return conn.ExecuteScalar<int>(sql, new { Batch = batchText }, tx);
         }
-
-
     }
 }

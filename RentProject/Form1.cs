@@ -110,6 +110,10 @@ namespace RentProject
             btnAdvancedFilter.Click -= btnAdvancedFilter_Click;
             btnAdvancedFilter.Click += btnAdvancedFilter_Click;
 
+            _calendarView.PeriodChangeRequested -= CalendarView_PeriodChangeRequested;
+            _calendarView.PeriodChangeRequested += CalendarView_PeriodChangeRequested;
+
+
             // 先抓資料 + 塞場地下拉（但不顯示資料）
             RefreshProjectView();
 
@@ -806,5 +810,42 @@ namespace RentProject
             }
             return result;
         }*/
+
+        private bool CalendarView_PeriodChangeRequested(int rentTimeId, DateTime newStart, DateTime newEnd)
+        {
+            try
+            {
+                // 1) 基本防呆
+                if (newEnd < newStart)
+                {
+                    XtraMessageBox.Show("結束時間不能早於開始時間", "提示");
+                    return false;
+                }
+
+                var now = DateTime.Now;
+                var user = "Jimmy";  // 你自己的登入者名稱變數
+
+                // 2) 寫回 DB（含跨日拆單）
+                // 建議放在 Service，Form1 不要直接寫 SQL
+                bool ok = _rentTimeservice.ChangeDraftPeriodWithSplit(rentTimeId, newStart, newEnd, user, now);
+
+                if (!ok)
+                {
+                    // 常見原因：已不是 Draft / 已刪除 / 資料被改過
+                    XtraMessageBox.Show("只有 Draft 才能拖拉調整（或資料已更新）", "提示");
+                    return false;
+                }
+
+                // 3) 成功就重新載入（重畫行事曆＋右側明細）
+                RefreshProjectView();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show($"更新失敗：{ex.Message}", "錯誤");
+                return false;
+            }
+        }
     }
 }

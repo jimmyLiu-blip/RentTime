@@ -504,6 +504,7 @@
             cmbBookingNo.Location = new System.Drawing.Point(18, 18);
             cmbBookingNo.MenuManager = ribbonControl1;
             cmbBookingNo.Name = "cmbBookingNo";
+            cmbBookingNo.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             cmbBookingNo.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             cmbBookingNo.Size = new System.Drawing.Size(362, 28);
             cmbBookingNo.StyleController = layoutControl1;

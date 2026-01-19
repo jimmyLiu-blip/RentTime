@@ -1,11 +1,13 @@
 ﻿using DevExpress.XtraBars.Docking;
 using DevExpress.XtraEditors;
+using DevExpress.XtraRichEdit.Model;
 using DevExpress.XtraScheduler;
 using DevExpress.XtraScheduler.Drawing;
 using RentProject.Domain;
 using RentProject.Shared.UIModels;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace RentProject
@@ -31,9 +33,14 @@ namespace RentProject
         // 外面的人只能訂閱/取消訂閱（+= / -=)；外面的人不能直接觸發（Invoke）事件；只有在這個類別裡面才能 Invoke（發射事件）
         public event Action<int>? EditRequested;
 
+        public event Func<int, DateTime, DateTime, bool>? PeriodChangeRequested;
+
         // 是否為「7天週時間表模式」
         private bool _isWeek7Mode = false;
-        
+
+        // 防止遞迴的旗標
+        private bool _symcingStart = false;
+
         // ====== 建構 / 生命週期 ======
         public CalendarViewControl()
         {
@@ -55,7 +62,7 @@ namespace RentProject
 
             // 1) 顯示模式與 UI 外觀
             schedulerControl1.ActiveViewType = SchedulerViewType.Month;
-            schedulerControl1.MonthView.DateTimeScrollbarVisible = false;
+            schedulerControl1.MonthView.DateTimeScrollbarVisible = true;
             schedulerControl1.DateNavigationBar.Visible = false;  // 關閉Calendar中內建的日期切換
 
             // 2) 綁 DataStorage（Scheduler 必要），schedulerDataStorage中常用：Appointments：行程/案件；Resources：資源/場地/機台；Labels / Statuses：顏色標籤、忙碌狀態
@@ -68,6 +75,7 @@ namespace RentProject
             schedulerDataStorage1.Appointments.Mappings.End = nameof(CalendarRentTimeItem.EndAt);
             schedulerDataStorage1.Appointments.Mappings.Subject = nameof(CalendarRentTimeItem.Subject);
             schedulerDataStorage1.Appointments.Mappings.Location = nameof(CalendarRentTimeItem.Location);
+            schedulerDataStorage1.Appointments.Mappings.Label = nameof(CalendarRentTimeItem.LabelId);
 
             schedulerDataStorage1.Appointments.CustomFieldMappings.Add(
                 new AppointmentCustomFieldMapping("IsSummary", nameof(CalendarRentTimeItem.IsSummary)));
@@ -84,6 +92,21 @@ namespace RentProject
             _currentMonth = new DateTime(today.Year, today.Month, 1);
             schedulerControl1.Start = _currentMonth;
 
+            schedulerControl1.OptionsCustomization.AllowAppointmentDrag = UsedAppointmentType.Custom;
+            schedulerControl1.OptionsCustomization.AllowAppointmentResize = UsedAppointmentType.Custom;
+
+            schedulerControl1.AllowAppointmentDrag -= schedulerControl1_AllowAppointmentDrag;
+            schedulerControl1.AllowAppointmentDrag += schedulerControl1_AllowAppointmentDrag;
+
+            schedulerControl1.AllowAppointmentResize -= schedulerControl1_AllowAppointmentResize;
+            schedulerControl1.AllowAppointmentResize += schedulerControl1_AllowAppointmentResize;
+
+            schedulerControl1.AppointmentDrop -= schedulerControl1_AppointmentDrop;
+            schedulerControl1.AppointmentDrop += schedulerControl1_AppointmentDrop;
+
+            schedulerControl1.AppointmentResized -= schedulerControl1_AppointmentResized;
+            schedulerControl1.AppointmentResized += schedulerControl1_AppointmentResized;
+
             schedulerControl1.ActiveViewChanged += (s, e) =>
             {
                 ApplyAppointForCurrentView();
@@ -95,11 +118,16 @@ namespace RentProject
             schedulerControl1.MouseDoubleClick -= schedulerControl1_MouseDoubleClick;
             schedulerControl1.MouseDoubleClick += schedulerControl1_MouseDoubleClick;
 
+            schedulerControl1.VisibleIntervalChanged -= schedulerControl1_VisibleIntervalChanged;
+            schedulerControl1.VisibleIntervalChanged += schedulerControl1_VisibleIntervalChanged;
+
             cmbBookingNo.EditValueChanged -= cmbBookingNo_EditValueChanged;
             cmbBookingNo.EditValueChanged += cmbBookingNo_EditValueChanged;
 
             schedulerControl1.EditAppointmentFormShowing -= schedulerControl1_EditAppointmentFormShowing;
             schedulerControl1.EditAppointmentFormShowing += schedulerControl1_EditAppointmentFormShowing;
+
+            InitStatusLabels();
 
             _schedulerInited = true;
         }
@@ -114,7 +142,19 @@ namespace RentProject
         // ====== 載入資料（給外部呼叫） ======
         public void LoadData(List<RentTime> list)
         {
+            string StatusToText(int s) => s switch
+            {
+                0 => "草稿",
+                1 => "租時中",
+                2 => "已完成",
+                3 => "已送出",
+                _ => "未知"
+            };
+
             EnsureSchedulerInit();
+
+            // 先記住使用者目前在看的日期
+            var keepStart = schedulerControl1.Start;
 
             // 1) 轉成 Scheduler 要吃的 Appointment DataSource
             var appts = list
@@ -124,8 +164,10 @@ namespace RentProject
                     RentTimeId = x.RentTimeId,
                     StartAt = x.StartDate.Value.Date + x.StartTime.Value,
                     EndAt = x.EndDate.Value.Date + x.EndTime.Value,
-                    Subject = $"{x.BookingNo}\r\n{x.CustomerName}",
-                    Location = x.Location ?? ""
+                    Subject = $"[{StatusToText(x.Status)}]\r\n{x.BookingNo}\r\n{x.CustomerName}\r\n",
+                    Location = x.Location ?? "",
+                    Status = x.Status,
+                    LabelId = x.Status
                 })
                 .ToList();
 
@@ -164,14 +206,16 @@ namespace RentProject
                 return;
             }
 
-            // 5) 自動跳到第一筆資料的月份（避免你停在別的月份以為沒資料）
-            var minStart = _apptsAll.Min(a => a.StartAt);
-            _currentMonth = new DateTime(minStart.Year, minStart.Month, 1);
-            schedulerControl1.Start = _currentMonth;
-
             ApplyAppointForCurrentView();
-        }
 
+            // 資料更新後，把畫面拉回使用者剛剛在看的日期
+            if (_isWeek7Mode) schedulerControl1.Start = GetWeekStartMonday(keepStart);
+            else schedulerControl1.Start = keepStart;
+
+            // 若你剛好在月視圖，讓 _currentMonth 跟著現在顯示月份一致（避免上下月按鈕邏輯怪）
+            if (schedulerControl1.ActiveViewType == SchedulerViewType.Month)
+                _currentMonth = new DateTime(schedulerControl1.Start.Year, schedulerControl1.Start.Month, 1);
+        }
 
         // ===== 視圖切換 =====
         private void btnViewDay_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
@@ -200,6 +244,18 @@ namespace RentProject
         private void btnViewTimeLine_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             schedulerControl1.ActiveViewType = SchedulerViewType.Timeline;
+
+            var tv = schedulerControl1.TimelineView;
+
+            // 清掉預設刻度，自己定義（比較可控）
+            tv.Scales.Clear();
+
+            // 上層刻度（可有可無）
+            tv.Scales.Add(new TimeScaleMonth() { Width = 80 });
+            tv.Scales.Add(new TimeScaleWeek() { Width = 60 });
+
+            // 底層刻度：日，把 Width 調大 = 畫面顯示的天數就變少
+            tv.Scales.Add(new TimeScaleDay() { Width = 120 });
         }
 
         // ===== 上一段 / 下一段 / 今天 =====
@@ -312,7 +368,8 @@ namespace RentProject
                     Subject = $"{ids.Count} 筆",
                     Location = "",
                     IsSummary = true,
-                    RentTimeIds = string.Join(",", ids)
+                    RentTimeIds = string.Join(",", ids),
+                    LabelId = 99
                 });
             }
             return result;
@@ -361,6 +418,33 @@ namespace RentProject
             PopulateBookingNoPicker(appt);
             // 然後直接要求編輯「目前選到的 BookingNo」
             RequestEditSelected();
+        }
+
+        private void schedulerControl1_VisibleIntervalChanged(object sender, EventArgs e)
+        {
+            if (_symcingStart) return;
+
+            // 1.如果你現在是「7天週時間表」（DayView + DayCount=7）
+            //    就把 Start 對齊到「週一」，避免滾輪後跑到週中導致你覺得案件不見
+            if (_isWeek7Mode && schedulerControl1.ActiveViewType == SchedulerViewType.Day && schedulerControl1.DayView.DayCount == 7)
+            {
+                var monday = GetWeekStartMonday(schedulerControl1.Start);
+                if (schedulerControl1.Start.Date != monday.Date)
+                { 
+                    _symcingStart = true;
+                    try { schedulerControl1.Start = monday; }
+                    finally { _symcingStart = false; }
+                }
+            }
+
+            // 2. 如果是月視圖：同步 _currentMonth，避免後面 Prev/Next 或其他邏輯用到舊月份
+            if (schedulerControl1.ActiveViewType == SchedulerViewType.Month)
+            { 
+                _currentMonth = new DateTime(schedulerControl1.Start.Year, schedulerControl1.Start.Month, 1);
+            }
+
+            // 3. 重新套用資料源 + Refresh（解決「日期變了但畫面沒重畫」的感覺）
+            ApplyAppointForCurrentView();
         }
 
         private void schedulerControl1_EditAppointmentFormShowing(object sender, AppointmentFormEventArgs e)
@@ -528,6 +612,159 @@ namespace RentProject
             // 都 OK → 發射事件，把 RentTimeId 傳出去，讓外面（Form1）決定怎麼編輯
             // ?. 只跟 EditRequested 有關 => 有訂閱的人才呼叫；沒訂閱就什麼都不做，也不會爆
             EditRequested?.Invoke(selected[0].RentTimeId.Value);
+        }
+
+        // 在 CalendarViewControl 裡加事件（帶回成功/失敗）
+        public sealed class RentTimeMoveRequest
+        { 
+            public int RentTimeId { get; set; }
+
+            public DateTime NewStart { get; set; }
+
+            public DateTime NewEnd { get; set; }
+
+            public SchedulerViewType ViewType { get; init; }
+        }
+
+        // 加「判斷能不能拖/resize」的小工具
+        private bool IsDraftAndNotSummary(Appointment apt)
+        {
+            var isSummary = apt.CustomFields["IsSummary"] as bool? == true;
+
+            // LabelId 0=草稿, 1=租時中, 2=已完成, 3=已送出, 99=摘要
+            var status = apt.LabelId;
+
+            return status == 0 && !isSummary;
+        }
+
+        private void schedulerControl1_AllowAppointmentDrag(object sender, AppointmentOperationEventArgs e)
+        {
+            e.Allow = IsDraftAndNotSummary(e.Appointment);
+        }
+
+        private void schedulerControl1_AllowAppointmentResize(object sender, AppointmentOperationEventArgs e)
+        {
+            // 規則B：月視圖一律禁止 resize
+            if (schedulerControl1.ActiveViewType == SchedulerViewType.Month)
+            {
+                e.Allow = false;
+                return;
+            }
+
+            e.Allow = IsDraftAndNotSummary(e.Appointment);
+        }
+
+        private void schedulerControl1_AppointmentDrop(object sender, AppointmentDragEventArgs e)
+        {
+            // 預設允許拖拉（等下視情況否決）
+            e.Allow = true;
+
+            // 非 Draft 或 Summary：禁止
+            if (!IsDraftAndNotSummary(e.SourceAppointment))
+            {
+                e.Allow = false;
+                return;
+            }
+
+            // 沒有訂閱者：也禁止（不然 UI 變了但 DB 不會變）
+            if (PeriodChangeRequested == null)
+            {
+                e.Allow = false;
+                XtraMessageBox.Show("PeriodChangeRequested 尚未綁到 Form1", "提示");
+                return;
+            }
+
+            int rentTimeId = Convert.ToInt32(e.SourceAppointment.Id);
+
+            DateTime newStart = e.EditedAppointment.Start;
+            DateTime newEnd = e.EditedAppointment.End;
+
+            // 月視圖：只改日期，時間沿用原本
+            if (schedulerControl1.ActiveViewType == SchedulerViewType.Month)
+            {
+                var srcStart = e.SourceAppointment.Start;
+                var srcEnd = e.SourceAppointment.End;
+
+                var targetDate = newStart.Date;
+
+                newStart = targetDate + srcStart.TimeOfDay;
+                newEnd = targetDate + srcEnd.TimeOfDay;
+
+                // 很重要：把修正後的時間寫回 EditedAppointment
+                e.EditedAppointment.Start = newStart;
+                e.EditedAppointment.End = newEnd;
+            }
+
+            bool ok = PeriodChangeRequested(rentTimeId, newStart, newEnd);
+
+            // DB 不接受（例如狀態不是 Draft 了）→ 彈回
+            if (!ok)
+            {
+                e.Allow = false;
+                return;
+            }
+
+            // ok=true 就保持 e.Allow=true，讓 Scheduler 完成這次拖拉
+        }
+
+        private void schedulerControl1_AppointmentResized(object sender, AppointmentResizeEventArgs e)
+        {
+            // 月視圖：一律禁止 resize（規則B）
+            if (schedulerControl1.ActiveViewType == SchedulerViewType.Month)
+            {
+                e.Allow = false;
+                return;
+            }
+
+            // 非 Draft 或 Summary：禁止
+            if (!IsDraftAndNotSummary(e.SourceAppointment))
+            {
+                e.Allow = false;
+                return;
+            }
+
+            // 沒有訂閱者：禁止
+            if (PeriodChangeRequested == null)
+            {
+                e.Allow = false;
+                XtraMessageBox.Show("PeriodChangeRequested 尚未綁到 Form1", "提示");
+                return;
+            }
+
+            int rentTimeId = Convert.ToInt32(e.SourceAppointment.Id);
+
+            DateTime newStart = e.EditedAppointment.Start;
+            DateTime newEnd = e.EditedAppointment.End;
+
+            bool ok = PeriodChangeRequested(rentTimeId, newStart, newEnd);
+
+            if (!ok)
+            {
+                e.Allow = false;
+                return;
+            }
+
+            // ok=true → 讓 resize 成立
+            e.Allow = true;
+        }
+
+        private void InitStatusLabels()
+        { 
+            schedulerDataStorage1.Labels.Clear();
+
+            void AddLabel(int id, string name, Color color)
+            {
+                var label = schedulerDataStorage1.Appointments.Labels.CreateNewLabel(id, name);
+                label.Color = color;    
+                schedulerDataStorage1.Labels.Add(label);
+            }
+
+            AddLabel(0, "草稿", Color.LightGreen);
+            AddLabel(1, "租時中", Color.LightSkyBlue);
+            AddLabel(2, "已完成", Color.LightGray);
+            AddLabel(3, "已送出給助理", Color.Khaki);
+
+            AddLabel(99, "摘要", Color.Gainsboro);
         }
     }
 }

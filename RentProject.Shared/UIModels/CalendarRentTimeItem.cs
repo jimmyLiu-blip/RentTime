@@ -19,5 +19,9 @@
 
         // 新增：若是摘要，這裡放該日期所有 RentTimeId（用逗號串）
         public string RentTimeIds { get; set; } = "";
+
+        public int Status { get; set; }
+
+        public int LabelId { get; set; }
     }
 }

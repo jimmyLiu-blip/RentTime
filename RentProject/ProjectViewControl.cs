@@ -22,10 +22,14 @@ namespace RentProject
 
         public event Action<int>? EditRequested;
 
+        private int? _selectedRentTimeId = null;
 
         public ProjectViewControl()  //無參數建構子，讓Designer可以正常建立這個UserControl
         {
             InitializeComponent();
+
+            gridView1.RowClick -= gridView1_RowClick;
+            gridView1.RowClick += gridView1_RowClick;
         }
 
         public ProjectViewControl(RentTimeService rentTimeService, ProjectService projectService, JobNoService jobNoService):this() //有參數建構子，注入Service，this()的意思是先跑初始化設定，把畫面元件都建立好後，才把下面那兩行Service填進去
@@ -42,6 +46,8 @@ namespace RentProject
 
         public void LoadData(List<RentTime> list)
         {
+            _selectedRentTimeId = null;
+
             list ??= new List<RentTime>();
 
             gridControl1.DataSource = list; // 表格中的資料來源為參數List
@@ -144,13 +150,19 @@ namespace RentProject
                 gridView1.SortInfo.Clear();
 
                 var groupCol = gridView1.Columns.ColumnByFieldName("BookingGroupNo");
-                var idCol = gridView1.Columns.ColumnByFieldName("RentTimeId"); // 即使隱藏也可以拿來排序
+                var dateCol = gridView1.Columns.ColumnByFieldName("StartDate");      // 可選：讓同批次內跨天更直覺
+                var idCol = gridView1.Columns.ColumnByFieldName("RentTimeId");     // 保底：讓排序穩定
 
                 if (groupCol != null)
                     gridView1.SortInfo.Add(new GridColumnSortInfo(groupCol, DevExpress.Data.ColumnSortOrder.Descending));
 
+                // 下面兩個是「可選但建議」：避免同 seq 時順序跳來跳去
+                if (dateCol != null)
+                    gridView1.SortInfo.Add(new GridColumnSortInfo(dateCol, ColumnSortOrder.Ascending));
+
                 if (idCol != null)
-                    gridView1.SortInfo.Add(new GridColumnSortInfo(idCol, DevExpress.Data.ColumnSortOrder.Descending));
+                    gridView1.SortInfo.Add(new GridColumnSortInfo(idCol, ColumnSortOrder.Ascending));
+
             }
             finally
             {
@@ -215,11 +227,23 @@ namespace RentProject
             EditRequested?.Invoke(row.RentTimeId);
         }
 
+        // 真的點到資料列才記住 Id
+        private void gridView1_RowClick(object sneder, DevExpress.XtraGrid.Views.Grid.RowClickEventArgs e)
+        {
+            if (e.RowHandle < 0)
+            {
+                _selectedRentTimeId = null;
+                return;
+            }
+
+            if(gridView1.GetRow(e.RowHandle) is RentTime rt)
+                _selectedRentTimeId = rt.RentTimeId;
+        }
+
         // 取得選取的列租時單RentTimeId
         public int? GetFousedRentTimeId()
         {
-            var row = gridView1.GetRow(gridView1.FocusedRowHandle) as RentTime;
-            return row?.RentTimeId;
+            return _selectedRentTimeId;
         }
 
         public List<RentTime> GetCheckedRentTime()
@@ -258,5 +282,7 @@ namespace RentProject
                 _ => $"未知({s})"
             };
         }
+
+
     }
 }
