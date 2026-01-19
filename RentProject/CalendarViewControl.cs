@@ -639,6 +639,11 @@ namespace RentProject
 
         private void schedulerControl1_AllowAppointmentDrag(object sender, AppointmentOperationEventArgs e)
         {
+            if (e.Appointment == null)
+            { 
+                e.Allow = false;
+                return;
+            }
             e.Allow = IsDraftAndNotSummary(e.Appointment);
         }
 
@@ -646,6 +651,12 @@ namespace RentProject
         {
             // 規則B：月視圖一律禁止 resize
             if (schedulerControl1.ActiveViewType == SchedulerViewType.Month)
+            {
+                e.Allow = false;
+                return;
+            }
+
+            if (e.Appointment == null)
             {
                 e.Allow = false;
                 return;
@@ -659,22 +670,28 @@ namespace RentProject
             // 預設允許拖拉（等下視情況否決）
             e.Allow = true;
 
+            var src = e.SourceAppointment;
+            var edited = e.EditedAppointment;
+
+            // 核心:避免 NullReferenceException
+            if(src == null || edited == null)
+                return;
+
             // 非 Draft 或 Summary：禁止
             if (!IsDraftAndNotSummary(e.SourceAppointment))
             {
-                e.Allow = false;
                 return;
             }
 
             // 沒有訂閱者：也禁止（不然 UI 變了但 DB 不會變）
             if (PeriodChangeRequested == null)
             {
-                e.Allow = false;
                 XtraMessageBox.Show("PeriodChangeRequested 尚未綁到 Form1", "提示");
                 return;
             }
 
-            int rentTimeId = Convert.ToInt32(e.SourceAppointment.Id);
+            if (src.Id == null || !int.TryParse(src.Id.ToString(), out var rentTimeId))
+                return;
 
             DateTime newStart = e.EditedAppointment.Start;
             DateTime newEnd = e.EditedAppointment.End;
@@ -682,81 +699,87 @@ namespace RentProject
             // 月視圖：只改日期，時間沿用原本
             if (schedulerControl1.ActiveViewType == SchedulerViewType.Month)
             {
-                var srcStart = e.SourceAppointment.Start;
-                var srcEnd = e.SourceAppointment.End;
-
                 var targetDate = newStart.Date;
 
-                newStart = targetDate + srcStart.TimeOfDay;
-                newEnd = targetDate + srcEnd.TimeOfDay;
+                newStart = targetDate + src.Start.TimeOfDay;
+                newEnd = targetDate + src.End.TimeOfDay;
 
                 // 很重要：把修正後的時間寫回 EditedAppointment
-                e.EditedAppointment.Start = newStart;
-                e.EditedAppointment.End = newEnd;
+                edited.Start = newStart;
+                edited.End = newEnd;
             }
 
-            bool ok = PeriodChangeRequested(rentTimeId, newStart, newEnd);
-
-            // DB 不接受（例如狀態不是 Draft 了）→ 彈回
-            if (!ok)
+            bool ok;
+            try
             {
-                e.Allow = false;
-                return;
+                ok = PeriodChangeRequested(rentTimeId, newStart, newEnd);
+            }
+            catch (Exception ex) 
+            { 
+                XtraMessageBox.Show($"更新失敗：{ex.Message}", "錯誤");
+                ok = false;
             }
 
-            // ok=true 就保持 e.Allow=true，讓 Scheduler 完成這次拖拉
+            e.Allow = ok;
         }
 
         private void schedulerControl1_AppointmentResized(object sender, AppointmentResizeEventArgs e)
         {
-            // 月視圖：一律禁止 resize（規則B）
-            if (schedulerControl1.ActiveViewType == SchedulerViewType.Month)
-            {
-                e.Allow = false;
+            e.Allow = false;
+
+            var src = e.SourceAppointment;
+            var edited = e.EditedAppointment;
+
+            if (src == null || edited == null)
                 return;
-            }
+
+            if (schedulerControl1.ActiveViewType == SchedulerViewType.Month)
+                return;
 
             // 非 Draft 或 Summary：禁止
-            if (!IsDraftAndNotSummary(e.SourceAppointment))
+            if (!IsDraftAndNotSummary(src))
             {
-                e.Allow = false;
                 return;
             }
 
             // 沒有訂閱者：禁止
             if (PeriodChangeRequested == null)
             {
-                e.Allow = false;
                 XtraMessageBox.Show("PeriodChangeRequested 尚未綁到 Form1", "提示");
                 return;
             }
 
-            int rentTimeId = Convert.ToInt32(e.SourceAppointment.Id);
-
-            DateTime newStart = e.EditedAppointment.Start;
-            DateTime newEnd = e.EditedAppointment.End;
-
-            bool ok = PeriodChangeRequested(rentTimeId, newStart, newEnd);
-
-            if (!ok)
-            {
-                e.Allow = false;
+            if (src.Id == null || !int.TryParse(src.Id.ToString(), out var rentTimeId))
                 return;
+
+            DateTime newStart = src.Start;
+            DateTime newEnd = edited.End;
+
+            bool ok;
+            try
+            {
+                ok = PeriodChangeRequested(rentTimeId, newStart, newEnd);
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show($"更新失敗：{ex.Message}", "錯誤");
+                ok = false;
             }
 
-            // ok=true → 讓 resize 成立
-            e.Allow = true;
+            e.Allow = ok;
         }
 
         private void InitStatusLabels()
         { 
-            schedulerDataStorage1.Labels.Clear();
+            var labels = schedulerDataStorage1.Appointments.Labels;
+
+            labels.Clear();
 
             void AddLabel(int id, string name, Color color)
             {
-                var label = schedulerDataStorage1.Appointments.Labels.CreateNewLabel(id, name);
-                label.Color = color;    
-                schedulerDataStorage1.Labels.Add(label);
+                var label = labels.CreateNewLabel(id, name);
+                label.Color = color;
+                labels.Add(label);
             }
 
             AddLabel(0, "草稿", Color.LightGreen);
