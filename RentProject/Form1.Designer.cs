@@ -33,6 +33,7 @@
             ribbonPage1 = new DevExpress.XtraBars.Ribbon.RibbonPage();
             ribbonPageGroup1 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             btnAddRentTime = new DevExpress.XtraBars.BarButtonItem();
+            btnEditRentTime = new DevExpress.XtraBars.BarButtonItem();
             btnDelete = new DevExpress.XtraBars.BarButtonItem();
             btnView = new DevExpress.XtraBars.BarButtonItem();
             btnImportExcel = new DevExpress.XtraBars.BarButtonItem();
@@ -81,6 +82,7 @@
             // 
             ribbonPageGroup1.AllowTextClipping = false;
             ribbonPageGroup1.ItemLinks.Add(btnAddRentTime);
+            ribbonPageGroup1.ItemLinks.Add(btnEditRentTime);
             ribbonPageGroup1.ItemLinks.Add(btnDelete);
             ribbonPageGroup1.ItemLinks.Add(btnView);
             ribbonPageGroup1.ItemLinks.Add(btnImportExcel);
@@ -95,6 +97,15 @@
             btnAddRentTime.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnAddRentTime.ImageOptions.LargeImage");
             btnAddRentTime.Name = "btnAddRentTime";
             btnAddRentTime.ItemClick += btnAddRentTime_ItemClick;
+            // 
+            // btnEditRentTime
+            // 
+            btnEditRentTime.Caption = "編輯租時單";
+            btnEditRentTime.Id = 11;
+            btnEditRentTime.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnEditRentTime.ImageOptions.Image");
+            btnEditRentTime.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnEditRentTime.ImageOptions.LargeImage");
+            btnEditRentTime.Name = "btnEditRentTime";
+            btnEditRentTime.ItemClick += btnEditRentTime_ItemClick;
             // 
             // btnDelete
             // 
@@ -196,10 +207,10 @@
             ribbonControl1.AllowMinimizeRibbon = false;
             ribbonControl1.EmptyAreaImageOptions.ImagePadding = new System.Windows.Forms.Padding(50, 51, 50, 51);
             ribbonControl1.ExpandCollapseItem.Id = 0;
-            ribbonControl1.Items.AddRange(new DevExpress.XtraBars.BarItem[] { ribbonControl1.ExpandCollapseItem, btnAddRentTime, btnTestConnection, btnView, btnDelete, btnExportPDF, btnSubmitToAssistant, btnLogout, btnExportExcel, btnImportExcel, btnRefresh });
+            ribbonControl1.Items.AddRange(new DevExpress.XtraBars.BarItem[] { ribbonControl1.ExpandCollapseItem, btnAddRentTime, btnTestConnection, btnView, btnDelete, btnExportPDF, btnSubmitToAssistant, btnLogout, btnExportExcel, btnImportExcel, btnRefresh, btnEditRentTime });
             ribbonControl1.Location = new System.Drawing.Point(0, 0);
             ribbonControl1.Margin = new System.Windows.Forms.Padding(5);
-            ribbonControl1.MaxItemId = 11;
+            ribbonControl1.MaxItemId = 12;
             ribbonControl1.Name = "ribbonControl1";
             ribbonControl1.OptionsMenuMinWidth = 550;
             ribbonControl1.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] { ribbonPage1 });
@@ -404,6 +415,7 @@
         private DevExpress.XtraEditors.LabelControl labelControl2;
         private DevExpress.XtraEditors.LabelControl labelControl1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
+        private DevExpress.XtraBars.BarButtonItem btnEditRentTime;
     }
 }
 

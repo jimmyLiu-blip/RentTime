@@ -20,6 +20,9 @@ namespace RentProject
         private readonly ProjectService _projectService;
         private readonly JobNoService _jobNoService;
 
+        public event Action<int>? EditRequested;
+
+
         public ProjectViewControl()  //無參數建構子，讓Designer可以正常建立這個UserControl
         {
             InitializeComponent();
@@ -209,20 +212,14 @@ namespace RentProject
             
             if (row == null) return;                                // GetRow(handle)：把那一列的資料物件取出來（就是 RentTime）
 
-            var form = new Project(_rentTimeService, _projectService, _jobNoService, row.RentTimeId);
+            EditRequested?.Invoke(row.RentTimeId);
+        }
 
-            // 只要表單內狀態有變（開始/完成/送出）就通知外面刷新
-            Action handler = () => RentTimeSaved?.Invoke();
-            form.RentTimeChanged += handler;
-
-            var dr = form.ShowDialog();
-
-            if (dr == System.Windows.Forms.DialogResult.OK)
-            {
-                RentTimeSaved?.Invoke(); // 原本的：新增/儲存修改/刪除/複製 關單後也刷新
-            }
-
-            form.RentTimeChanged -= handler;
+        // 取得選取的列租時單RentTimeId
+        public int? GetFousedRentTimeId()
+        {
+            var row = gridView1.GetRow(gridView1.FocusedRowHandle) as RentTime;
+            return row?.RentTimeId;
         }
 
         public List<RentTime> GetCheckedRentTime()

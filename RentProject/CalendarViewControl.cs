@@ -25,6 +25,12 @@ namespace RentProject
         private Dictionary<int, CalendarRentTimeDetailItem> _detailById = new();
         private Dictionary<string, CalendarRentTimeDetailItem> _pickByBookingNo = new(StringComparer.OrdinalIgnoreCase);
 
+        // CalendarView 只負責「發出我要編輯哪一筆」
+        // Action<int> 是一種委派（delegate）型別，代表「一個不回傳值的方法」，而且這個方法需要 1 個 int 參數
+        // 只要有人訂閱我，就要提供一個方法；這個方法會吃一個 int（RentTimeId），不用回傳
+        // 外面的人只能訂閱/取消訂閱（+= / -=)；外面的人不能直接觸發（Invoke）事件；只有在這個類別裡面才能 Invoke（發射事件）
+        public event Action<int>? EditRequested;
+        
         // ====== 建構 / 生命週期 ======
         public CalendarViewControl()
         {
@@ -83,8 +89,14 @@ namespace RentProject
             schedulerControl1.MouseDown -= schedulerControl1_MouseDown;
             schedulerControl1.MouseDown += schedulerControl1_MouseDown;
 
+            schedulerControl1.MouseDoubleClick -= schedulerControl1_MouseDoubleClick;
+            schedulerControl1.MouseDoubleClick += schedulerControl1_MouseDoubleClick;
+
             cmbBookingNo.EditValueChanged -= cmbBookingNo_EditValueChanged;
             cmbBookingNo.EditValueChanged += cmbBookingNo_EditValueChanged;
+
+            schedulerControl1.EditAppointmentFormShowing -= schedulerControl1_EditAppointmentFormShowing;
+            schedulerControl1.EditAppointmentFormShowing += schedulerControl1_EditAppointmentFormShowing;
 
             _schedulerInited = true;
         }
@@ -315,6 +327,30 @@ namespace RentProject
             PopulateBookingNoPicker(appt);
         }
 
+        private void schedulerControl1_MouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            var hit = schedulerControl1.ActiveView.ViewInfo.CalcHitInfo(e.Location, false);
+            if (hit.HitTest != SchedulerHitTest.AppointmentContent) return;
+            if (hit.ViewInfo is not AppointmentViewInfo appointmentViewInfo) return;
+
+            var appt = appointmentViewInfo.Appointment;
+            if (appt == null) return;
+
+            // 先用這行測試：確認真的點得到 appointment
+            ShowDetailPanel();
+            PopulateBookingNoPicker(appt);
+            // 然後直接要求編輯「目前選到的 BookingNo」
+            RequestEditSelected();
+        }
+
+        private void schedulerControl1_EditAppointmentFormShowing(object sender, AppointmentFormEventArgs e)
+        {
+            // 直接不讓 DevExpress 跳出內建 Appointment 編輯視窗
+            // Handled = false（預設）：代表「事件沒有被你處理」→ 控制項會繼續跑它的預設行為
+            // Handled = true：代表「我已經自己處理完了」→ 控制項就會停止預設行為
+            e.Handled = true;
+        }
+
         private void PopulateBookingNoPicker(Appointment appt)
         {
             // 1) 取得「這次點擊」要顯示的 BookingNo 清單
@@ -442,8 +478,8 @@ namespace RentProject
             splitContainerControl1.PanelVisibility = DevExpress.XtraEditors.SplitPanelVisibility.Both;
         }
 
-        // 取得目前選取刪除項
-        public List<CalendarRentTimeDetailItem> GetSelectedForDelete()
+        // 取得目前選取編輯、刪除項
+        public List<CalendarRentTimeDetailItem> GetSelectedDetail()
         { 
             var key = cmbBookingNo.EditValue?.ToString()?.Trim();
 
@@ -457,6 +493,22 @@ namespace RentProject
                 return new List<CalendarRentTimeDetailItem>();
 
             return new List<CalendarRentTimeDetailItem> { d };
+        }
+
+        public void RequestEditSelected()
+        {
+            var selected = GetSelectedDetail();
+
+            if (selected.Count == 0 || !selected[0].RentTimeId.HasValue)
+            { 
+                XtraMessageBox.Show("請先選擇右側 BookingNo", "提示");
+                return;
+            }
+
+            // Invoke(...) 就是「呼叫/執行」這個委派（或事件背後訂閱的方法清單）
+            // 都 OK → 發射事件，把 RentTimeId 傳出去，讓外面（Form1）決定怎麼編輯
+            // ?. 只跟 EditRequested 有關 => 有訂閱的人才呼叫；沒訂閱就什麼都不做，也不會爆
+            EditRequested?.Invoke(selected[0].RentTimeId.Value);
         }
     }
 }

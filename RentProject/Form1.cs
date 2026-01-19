@@ -69,14 +69,18 @@ namespace RentProject
             _rentTimeservice = new RentTimeService(_rentTimeRepo);
             _projectRepo = new DapperProjectRepository(connectionString);
             _projectService = new ProjectService(_projectRepo);
-            _jobNoRepo = new DapperJobNoRepository(connectionString);     
-            _jobNoService = new JobNoService(_jobNoRepo, _api); 
+            _jobNoRepo = new DapperJobNoRepository(connectionString);
+            _jobNoService = new JobNoService(_jobNoRepo, _api);
 
             _projectView = new ProjectViewControl(_rentTimeservice, _projectService, _jobNoService) { Dock = DockStyle.Fill };
 
             _projectView.RentTimeSaved += RefreshProjectView; //ProjectViewControl 說「存好了」→ Form1 刷新列表
 
             _calendarView = new CalendarViewControl { Dock = DockStyle.Fill };
+
+            _projectView.EditRequested += OpenEditRentTime;
+            _calendarView.EditRequested += OpenEditRentTime;
+
         }
 
         private void Form1_Load(object sender, System.EventArgs e)
@@ -149,6 +153,36 @@ namespace RentProject
             _isCalendarView = true;
 
             btnView.Caption = "切換到案件";
+        }
+
+        private void OpenEditRentTime(int rentTimedId)
+        {
+            var form = new Project(_rentTimeservice, _projectService, _jobNoService, rentTimedId);
+
+            // 只要表單內狀態有變（開始/完成/送出）就刷新
+            // handler 就代表「刷新並保持畫面」這個動作
+            Action handler = () =>
+            {
+                RefreshProjectView();
+
+                // 刷新後保持你原本的畫面不跳走（可選，但我建議加）
+                if (_isCalendarView) ShowCalendarView();
+                else ShowProjectView();
+            };
+
+            // Project 表單某些操作（開始、完成、送出…）會觸發 RentTimeChanged?.Invoke()
+            // 一旦觸發，就會通知所有有訂閱它的人
+            // 「當 Project 表單說『租時狀態變了！』時，請幫我執行 handler 這個動作」
+            form.RentTimeChanged += handler;
+
+            var dr = form.ShowDialog();
+
+            if (dr == DialogResult.OK)
+            {
+                handler();// 存檔/OK 就刷新
+            }
+
+            form.RentTimeChanged -= handler;
         }
 
         private void btnView_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
@@ -333,8 +367,8 @@ namespace RentProject
 
             if (_isCalendarView)
             {
-                // CalendarView：GetSelectedForDelete() 會回傳 0 或 1 筆（目前設計）
-                var calSelected = _calendarView.GetSelectedForDelete();
+                // CalendarView：GetSelectedDetail() 會回傳 0 或 1 筆（目前設計）
+                var calSelected = _calendarView.GetSelectedDetail();
 
                 selected = calSelected
                     .Where(x => x.RentTimeId.HasValue)
@@ -348,7 +382,7 @@ namespace RentProject
 
                 selected = projectSelected
                     .Select(x => (x.RentTimeId, x.BookingNo ?? "", x.Status))
-                    .ToList();  
+                    .ToList();
             }
 
             if (selected.Count == 0)
@@ -623,9 +657,30 @@ namespace RentProject
             _ => "未知"
         };
 
+        private void btnEditRentTime_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            if (_isCalendarView)
+            {
+                _calendarView.RequestEditSelected();
+                return;
+            }
+
+            var id = _projectView.GetFousedRentTimeId();
+
+            if (!id.HasValue)
+            {
+                XtraMessageBox.Show("請先點擊要編輯的租時單", "提示");
+                return;
+            }
+
+            // 直接沿用你已寫好的流程：開 Project 表單 + 刷新
+            OpenEditRentTime(id.Value);
+        }
+
+
         private void btnImportExcel_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-       
+
             var job = _jobNoRepo.GetJobNoMasterByJobNo("JOB0001");
 
             XtraMessageBox.Show(job == null ? "查不到" : $"查到：{job.JobId} / {job.JobNo}");

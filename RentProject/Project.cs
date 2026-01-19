@@ -70,7 +70,7 @@ namespace RentProject
 
         // 資料讀取時鎖定新增租時單和JobNo控制
         private void SetLoading(bool loading)
-        { 
+        {
             _isLoading = loading;
 
             // 最小規則：Loading時不讓存檔，避免API還沒回來就存
