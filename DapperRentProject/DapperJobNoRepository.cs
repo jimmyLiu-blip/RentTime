@@ -31,19 +31,21 @@ namespace RentProject.Repository
 
         }
 
-        public List<string> GetActiveJobNos()
+        public List<string> GetActiveJobNos(int top = 8)
         {
             using var connection = new SqlConnection(_connectionString);
 
             connection.Open();
 
             var sql = @"
-                SELECT JobNo
+                SELECT TOP (@Top) JobNo
                 FROM dbo.JobNoMaster 
                 WHERE IsActive = 1
-                ORDER BY JobNo DESC;";
+                ORDER BY 
+                    ISNULL(ModifiedAt, CreatedAt) DESC,
+                    JobId DESC;";
 
-            return connection.Query<string>(sql).ToList();
+            return connection.Query<string>(sql, new { Top = top}).ToList();
         }
 
         // 「同一次存檔」要把 JobNoMaster Upsert + RentTimes Insert 放在同一個 tx

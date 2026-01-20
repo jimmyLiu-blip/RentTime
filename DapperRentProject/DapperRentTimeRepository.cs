@@ -398,7 +398,6 @@ namespace RentProject.Repository
                         Area = @Area,
                         CustomerName = @CustomerName,
                         Sales = @Sales,
-                        CreatedBy = @CreatedBy,
                         ContactName = @ContactName,
                         Phone = @Phone,
                         TestInformation = @TestInformation,
@@ -426,8 +425,8 @@ namespace RentProject.Repository
                         ModifiedBy = @ModifiedBy,
                         ModifiedDate = @ModifiedDate,
                         IsHandOver = @IsHandOver,
-                        ActualStartAt = @ActualStartAt,
-                        ActualEndAt = @ActualEndAt
+                        ActualStartAt = COALESCE(@ActualStartAt, ActualStartAt),
+                        ActualEndAt = COALESCE(@ActualEndAt, ActualEndAt)
                         WHERE RentTimeId = @RentTimeId
                         AND Status <> 2;";  // Finished 不允許再被 Update
 

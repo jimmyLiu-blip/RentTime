@@ -51,7 +51,7 @@ namespace RentProject.Service
         }
 
         // 透過編號更新租時單
-        public void UpdateRentTimeById(RentTime model)
+        public void UpdateRentTimeById(RentTime model, string currentUser)
         {
             if (model.RentTimeId <= 0) throw new Exception("RentTimeId 不正確");
 
@@ -75,7 +75,10 @@ namespace RentProject.Service
             ValidateRequired(model);
             CalculateEstimated(model);
 
-            model.ModifiedBy = model.CreatedBy;
+            // 關鍵：CreatedBy 固定沿用 DB（避免 UI 亂改）
+            model.CreatedBy = db.CreatedBy;
+            // 關鍵：ModifiedBy 才是當前操作者
+            model.ModifiedBy = currentUser;
             model.ModifiedDate = DateTime.Now;
 
             var rows = _repo.UpdateRentTime(model);

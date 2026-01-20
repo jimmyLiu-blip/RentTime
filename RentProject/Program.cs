@@ -3,6 +3,7 @@ using RentProject.Repository;
 using RentProject.Service;
 using System;
 using System.Configuration;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace RentProject
@@ -12,18 +13,17 @@ namespace RentProject
         [STAThread]
         static void Main()
         {
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
 
             // 1. 建 DI 容器
             var services = new ServiceCollection();
 
-            // 2.取得連線字串（App.config 內的 <connectionStrings>）
-            var connectionString = 
-                ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            // 23 先檢查 ConnectionStrings 這個集合本身在不在
+            var connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
 
-            // 3.註冊「連線字串」本身（讓 repo/service 需要時可以拿）
-            // Singleton = 全程同一個物件（同一份）
             services.AddSingleton<string>(connectionString);
 
             // 4.註冊 Repositories（Dapper 連 DB）

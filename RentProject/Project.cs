@@ -52,6 +52,8 @@ namespace RentProject
         // 紀錄BookingBatchId
         private long? _bookingBatchId;
 
+        private readonly string _currentUser = "Bob"; // 暫時寫死，之後接登入
+
         // 目前這張單在 UI 上該用哪個狀態顯示
         private enum UiRentStatus { Draft = 0, Started = 1, Finished = 2, SubmittedToAssistant = 3 };
         private UiRentStatus _uiStatus = UiRentStatus.Draft;
@@ -234,11 +236,7 @@ namespace RentProject
 
             // JobNo 下拉
             cmbJobNo.Properties.Items.Clear();
-            cmbJobNo.Properties.Items.AddRange(_jobNoService.GetActiveJobNos());
-
-            // 開表單就只保留前 8 筆
-            while (cmbJobNo.Properties.Items.Count > 8)
-                cmbJobNo.Properties.Items.RemoveAt(cmbJobNo.Properties.Items.Count - 1);
+            cmbJobNo.Properties.Items.AddRange(_jobNoService.GetActiveJobNos(8));
 
             // 清空日期時間
             startDateEdit.EditValue = null;
@@ -342,7 +340,8 @@ namespace RentProject
 
                 if (confirm != DialogResult.Yes) return;
 
-                _rentTimeService.UpdateRentTimeById(model);
+                var user = _currentUser;
+                _rentTimeService.UpdateRentTimeById(model, user);
 
                 this.DialogResult = DialogResult.OK;
                 this.Close();
@@ -360,7 +359,6 @@ namespace RentProject
                 UploadScanCopy();
                 return;
             }
-
             try
             {
                 if (_editRentTimeId == null) return;
@@ -376,10 +374,10 @@ namespace RentProject
                 // (1) 先把 UI 當下內容存回 DB（包含 ActualStartAt / ActualEndAt）
                 var model = BuildModelFormUI();
                 model.RentTimeId = _editRentTimeId.Value;
-                _rentTimeService.UpdateRentTimeById(model);
 
                 // (2) 再把狀態改成 Started（並寫入 ActualStartAt = now）
-                var user = txtCreatedBy.Text.Trim();
+                var user = _currentUser;
+                _rentTimeService.UpdateRentTimeById(model, user);
                 _rentTimeService.StartRentTimeById(_editRentTimeId.Value, user);
 
                 // (3) 重新讀 DB 刷新 UI
@@ -424,14 +422,13 @@ namespace RentProject
                     if (confirmHandOver != DialogResult.Yes) return;
                 }
 
-                var user = txtCreatedBy.Text.Trim();
-
                 // (A) 先把 UI 當下內容存回 DB（包含 ActualStartAt / ActualEndAt）
                 var model = BuildModelFormUI();
                 model.RentTimeId = _editRentTimeId.Value;
-                _rentTimeService.UpdateRentTimeById(model);
 
                 // (B) 再把狀態改成 Finished
+                var user = _currentUser;
+                _rentTimeService.UpdateRentTimeById(model, user);
                 _rentTimeService.FinishRentTimeById(_editRentTimeId.Value, user);
 
                 // (C) 立刻刷新 UI
@@ -443,7 +440,6 @@ namespace RentProject
             {
                 XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", "Error");
             }
-
         }
 
         private void btnRestoreRentTime_Click(object sender, EventArgs e)
@@ -460,7 +456,7 @@ namespace RentProject
 
                 if (confirm != DialogResult.Yes) return;
 
-                var user = txtCreatedBy.Text.Trim();
+                var user = _currentUser;
                 _rentTimeService.RestoreToDraftById(_editRentTimeId.Value, user);
 
                 ReloadRentTimeFromDb(); // 回復後 UI 應該解鎖
@@ -487,7 +483,7 @@ namespace RentProject
 
                 if (confirm != DialogResult.Yes) return;
 
-                var createdBy = txtCreatedBy.Text.Trim();
+                var createdBy = _currentUser;
                 _rentTimeService.DeletedRentTime(_editRentTimeId.Value, createdBy, DateTime.Now);
 
                 this.DialogResult = DialogResult.OK;
@@ -506,7 +502,7 @@ namespace RentProject
             {
                 if (_editRentTimeId == null) return;
 
-                var createdBy = txtCreatedBy.Text.Trim();
+                var createdBy = _currentUser;
 
                 // 真正決定「要走哪一套複製規則」的變數
                 bool continueSeq = false; // 預設：沒交接就開新單
@@ -596,7 +592,7 @@ namespace RentProject
 
             if (confirm != DialogResult.Yes) return;
 
-            var user = txtCreatedBy.Text?.Trim() ?? "";
+            var user = _currentUser ?? "";
 
             if (string.IsNullOrWhiteSpace(user))
             {

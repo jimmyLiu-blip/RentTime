@@ -24,9 +24,9 @@ namespace RentProject.Service
             return _jobNoRepository.GetOrCreateJobId(jobNo.Trim());
         }
 
-        public List<string> GetActiveJobNos()
+        public List<string> GetActiveJobNos(int top = 8)
         {
-            return _jobNoRepository.GetActiveJobNos();
+            return _jobNoRepository.GetActiveJobNos(top);
         }
 
         public JobNoMaster? GetJobNoMasterByJobNo(string jobNo)

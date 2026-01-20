@@ -577,74 +577,48 @@ namespace RentProject
         // XLWorkbook 是 ClosedXML 的「整本 Excel」物件（等於一個 .xlsx 檔）
         private void TestExportExcel()
         {
-            var rows = _projectView.GetCheckedRentTime();
+            // 1. 先只支援 ProjectView 匯出
+            if (_isCalendarView)
+            {
+                XtraMessageBox.Show("請先切換到「案件」畫面再匯出", "提示");
+                return;
+            }
 
-            if (rows.Count == 0)
+            // 2. 檢查是否有勾選（用你在 ProjectViewControl 新增的 GetCheckCount）
+            if (_projectView.GetCheckCount() == 0)
             {
                 XtraMessageBox.Show("請先勾選要匯出的租時單", "提示");
                 return;
             }
 
+            // 3. 選擇匯出路徑
             using var sfd = new SaveFileDialog
             {
                 Title = "匯出 Excel",
                 Filter = "Excel 檔案 (*.xlsx)|*.xlsx",
-                FileName = $"RentTimes_{DateTime.Now:yyyyMMdd_HHmm}.xlsx",
+                FileName = $"RentTimes_{DateTime.Now:yyyyMMdd}.xlsx",
                 AddExtension = true,
                 DefaultExt = "xlsx"
             };
 
             if (sfd.ShowDialog() != DialogResult.OK) return;
 
-            var path = sfd.FileName;
+            // 4. 交給 ProjectViewControl 匯出（會吃目前欄位顯示/欄位順序/顯示文字）
+            _projectView.ExportCheckRowsToXlsx(sfd.FileName);
 
-            using (var wb = new XLWorkbook())
+            XtraMessageBox.Show($"已輸出:{sfd.FileName}", "OK");
+
+            try
             {
-                var ws = wb.Worksheets.Add("RentTimes");
-                ws.Cell(1, 1).Value = "RentTimeId";
-                ws.Cell(1, 2).Value = "BookingNo";
-                ws.Cell(1, 3).Value = "區域";
-                ws.Cell(1, 4).Value = "場地";
-                ws.Cell(1, 5).Value = "客戶名稱";
-                ws.Cell(1, 6).Value = "PE";
-                ws.Cell(1, 7).Value = "開始日期";
-                ws.Cell(1, 8).Value = "結束日期";
-                ws.Cell(1, 9).Value = "Job No.";
-                ws.Cell(1, 10).Value = "ProjectNo";
-                ws.Cell(1, 11).Value = "ProjectName";
-                ws.Cell(1, 12).Value = "狀態";
-
-                int r = 2;
-                foreach (var x in rows)
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(sfd.FileName)
                 {
-                    ws.Cell(r, 1).Value = x.RentTimeId;
-                    ws.Cell(r, 2).Value = x.BookingNo;
-                    ws.Cell(r, 3).Value = x.Area;
-                    ws.Cell(r, 4).Value = x.Location;
-                    ws.Cell(r, 5).Value = x.CustomerName;
-                    ws.Cell(r, 6).Value = x.PE;
-                    ws.Cell(r, 7).Value = x.StartDate;
-                    ws.Cell(r, 8).Value = x.EndDate;
-                    ws.Cell(r, 9).Value = x.JobNo;
-                    ws.Cell(r, 10).Value = x.ProjectNo;
-                    ws.Cell(r, 11).Value = x.ProjectName;
-                    ws.Cell(r, 12).Value = StatusToText(x.Status);
-                    r++;
-                }
-
-                ws.Column(7).Style.DateFormat.Format = "yyyy-mm-dd";
-                ws.Column(8).Style.DateFormat.Format = "yyyy-mm-dd";
-
-                // 3) 讓欄寬自動貼合內容（看起來像報表）
-                ws.Columns().AdjustToContents();
-                ws.Column(5).Width = 18; // E欄(客戶名稱) 手動加寬，數字可自行調大/調小
-
-
-                wb.SaveAs(path);
+                    UseShellExecute = true
+                });
             }
-            ;
-
-            XtraMessageBox.Show($"已輸出:{path}", "OK");
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show($"匯出完成，但自動開啟失敗：{ex.Message}", "提示");
+            }
         }
 
         private void btnExportExcel_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
@@ -836,8 +810,12 @@ namespace RentProject
                     return false;
                 }
 
-                // 3) 成功就重新載入（重畫行事曆＋右側明細）
-                RefreshProjectView();
+                // 關鍵：不要在 Scheduler 的 Drop/Resize 事件「同步」刷新
+                // 不要現在立刻做 RefreshProjectView()，改成等 UI 有空再做
+                this.BeginInvoke(new Action(() =>
+                {
+                    RefreshProjectView();
+                }));
 
                 return true;
             }

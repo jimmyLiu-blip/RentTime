@@ -10,6 +10,10 @@ using System.Collections.Generic;
 using System.Linq;
 using RentProject.Service;
 using RentProject.Shared.UIModels;
+using DevExpress.Export;
+using DevExpress.XtraPrinting;
+using System.Windows.Controls;
+using DevExpress.Utils;
 
 
 namespace RentProject
@@ -283,6 +287,104 @@ namespace RentProject
             };
         }
 
+        public int GetCheckCount()
+        {
+            // 內建 CheckBoxRowSelect：勾選列 = SelectedRows
+            // group row 會是負數 handle，要排除
 
+            return gridView1.GetSelectedRows().Count(h => h >= 0);
+        }
+
+        public void ExportCheckRowsToXlsx(string path)
+        { 
+            var handles = gridView1.GetSelectedRows().Where(h => h >= 0).ToArray();
+            if (handles.Length == 0) return;
+
+            // ===== 1. 備份：避免匯出影響使用者畫面 =====
+            var oldSelOnly = gridView1.OptionsPrint.PrintSelectedRowsOnly;
+            var oldExpand = gridView1.OptionsPrint.ExpandAllGroups;
+            var oldAutoWidth = gridView1.OptionsPrint.AutoWidth;
+
+            var oldMultiSelect = gridView1.OptionsSelection.MultiSelect;
+            var oldMultiMode = gridView1.OptionsSelection.MultiSelectMode;
+            var oldShowGroup = gridView1.OptionsSelection.ShowCheckBoxSelectorInGroupRow;
+            var oldShowHeader = gridView1.OptionsSelection.ShowCheckBoxSelectorInColumnHeader;
+
+            // 備份欄寬（BestFit 會改到畫面）
+            var oldWidths = new Dictionary<GridColumn, int>();
+            foreach (GridColumn c in gridView1.Columns)
+                oldWidths[c] = c.Width;
+
+            // Action 欄不要匯出
+            var actionCol = gridView1.Columns.ColumnByFieldName("Action");
+            DefaultBoolean? oldActionPrintable = null;
+            if (actionCol != null)
+                oldActionPrintable = actionCol.OptionsColumn.Printable;
+
+            try
+            {
+                // ===== 2. 確保只匯出勾選列 =====
+                gridView1.ClearSelection();
+                foreach (var h in handles)
+                    gridView1.SelectRow(h);
+
+                gridView1.OptionsPrint.PrintSelectedRowsOnly = true;
+                gridView1.OptionsPrint.ExpandAllGroups = true;
+
+                // ===== 3. 移除 Check 欄：暫時把 MultiSelectMode 從 CheckBoxRowSelect 改掉 =====
+                // 這樣匯出時就不會多一欄「勾選框欄位」
+                gridView1.OptionsSelection.MultiSelect = true;
+                gridView1.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.RowSelect;
+                gridView1.OptionsSelection.ShowCheckBoxSelectorInGroupRow = DefaultBoolean.False;
+                gridView1.OptionsSelection.ShowCheckBoxSelectorInColumnHeader = DefaultBoolean.False;
+
+                // ===== 4. 移除 Action 欄（只影響匯出/列印）=====
+                if (actionCol != null)
+                    actionCol.OptionsColumn.Printable = DefaultBoolean.False;
+
+                // ===== 5. 欄寬：用 BestFit 讓 Excel 看起來正常 =====
+                // AutoWidth=false：不要硬擠成一頁，避免變超窄
+                gridView1.OptionsPrint.AutoWidth = false;
+
+                // 先 BestFit（會改畫面，所以我們有備份 width，finally 會還原）
+                gridView1.BestFitColumns();
+
+                // ===== 6. 匯出：一定要用 WYSIWYG 才會吃顯示文字（狀態才會是「草稿/租時中」）=====
+                var opt = new XlsxExportOptionsEx
+                {
+                    ExportType = ExportType.WYSIWYG,
+                    SheetName = "RentTimes"
+                };
+
+                using var ps = new PrintingSystem();
+                using var link = new PrintableComponentLink(ps)
+                {
+                    Component = gridControl1
+                };
+
+                link.CreateDocument();
+
+                // 重要：是 ExportToXlsx，不是 ExportToXls
+                link.ExportToXlsx(path, opt);
+            }
+            finally
+            {
+                // ===== 7. 還原畫面設定 =====
+                if (actionCol != null && oldActionPrintable.HasValue)
+                    actionCol.OptionsColumn.Printable = oldActionPrintable.Value;
+
+                foreach (var kv in oldWidths)
+                    kv.Key.Width = kv.Value;
+
+                gridView1.OptionsPrint.PrintSelectedRowsOnly = oldSelOnly;
+                gridView1.OptionsPrint.ExpandAllGroups = oldExpand;
+                gridView1.OptionsPrint.AutoWidth = oldAutoWidth;
+
+                gridView1.OptionsSelection.MultiSelect = oldMultiSelect;
+                gridView1.OptionsSelection.MultiSelectMode = oldMultiMode;
+                gridView1.OptionsSelection.ShowCheckBoxSelectorInGroupRow = oldShowGroup;
+                gridView1.OptionsSelection.ShowCheckBoxSelectorInColumnHeader = oldShowHeader;
+            }
+        }
     }
 }

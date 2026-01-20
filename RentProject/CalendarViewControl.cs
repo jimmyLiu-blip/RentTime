@@ -667,21 +667,16 @@ namespace RentProject
 
         private void schedulerControl1_AppointmentDrop(object sender, AppointmentDragEventArgs e)
         {
-            // 預設允許拖拉（等下視情況否決）
-            e.Allow = true;
+            e.Allow = false; // 預設拒絕：任何提前 return 都不會放行
 
             var src = e.SourceAppointment;
             var edited = e.EditedAppointment;
 
             // 核心:避免 NullReferenceException
-            if(src == null || edited == null)
-                return;
+            if(src == null || edited == null) return;
 
             // 非 Draft 或 Summary：禁止
-            if (!IsDraftAndNotSummary(e.SourceAppointment))
-            {
-                return;
-            }
+            if (!IsDraftAndNotSummary(e.SourceAppointment)) return;
 
             // 沒有訂閱者：也禁止（不然 UI 變了但 DB 不會變）
             if (PeriodChangeRequested == null)
@@ -709,7 +704,7 @@ namespace RentProject
                 edited.End = newEnd;
             }
 
-            bool ok;
+            bool ok = false;
             try
             {
                 ok = PeriodChangeRequested(rentTimeId, newStart, newEnd);
@@ -720,27 +715,22 @@ namespace RentProject
                 ok = false;
             }
 
-            e.Allow = ok;
+            e.Allow = ok;   // 成功才放行，失敗就回彈
         }
 
         private void schedulerControl1_AppointmentResized(object sender, AppointmentResizeEventArgs e)
         {
-            e.Allow = false;
+            e.Allow = false; // 預設拒絕
 
             var src = e.SourceAppointment;
             var edited = e.EditedAppointment;
 
-            if (src == null || edited == null)
-                return;
+            if (src == null || edited == null) return;
 
-            if (schedulerControl1.ActiveViewType == SchedulerViewType.Month)
-                return;
+            if (schedulerControl1.ActiveViewType == SchedulerViewType.Month) return;
 
             // 非 Draft 或 Summary：禁止
-            if (!IsDraftAndNotSummary(src))
-            {
-                return;
-            }
+            if (!IsDraftAndNotSummary(src)) return;
 
             // 沒有訂閱者：禁止
             if (PeriodChangeRequested == null)
@@ -755,7 +745,7 @@ namespace RentProject
             DateTime newStart = src.Start;
             DateTime newEnd = edited.End;
 
-            bool ok;
+            bool ok = false;
             try
             {
                 ok = PeriodChangeRequested(rentTimeId, newStart, newEnd);
