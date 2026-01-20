@@ -626,15 +626,6 @@ namespace RentProject
             TestExportExcel();
         }
 
-        private static string StatusToText(int status) => status switch
-        {
-            0 => "草稿",
-            1 => "租時中",
-            2 => "已完成",
-            3 => "已送出給助理",
-            _ => "未知"
-        };
-
         private void btnEditRentTime_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             if (_isCalendarView)

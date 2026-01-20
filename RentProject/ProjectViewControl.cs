@@ -28,6 +28,7 @@ namespace RentProject
 
         private int? _selectedRentTimeId = null;
 
+        private RepositoryItemImageComboBox? _riStatus;
         public ProjectViewControl()  //無參數建構子，讓Designer可以正常建立這個UserControl
         {
             InitializeComponent();
@@ -56,6 +57,7 @@ namespace RentProject
 
             gridControl1.DataSource = list; // 表格中的資料來源為參數List
             gridView1.PopulateColumns();  // 自動產生欄位
+            EnsureStatusEditor();
 
             var actionCol = gridView1.Columns.ColumnByFieldName("Action"); // 先找看看目前欄位是否存在 Action
             if (actionCol == null)
@@ -98,8 +100,8 @@ namespace RentProject
             btnEdit.ButtonClick -= ActionButton_ButtonClick; // 綁定按鈕點擊事件（避免重複綁定）
             btnEdit.ButtonClick += ActionButton_ButtonClick;
 
-            gridView1.CustomColumnDisplayText -= GridView1_CustomColumnDisplayText;
-            gridView1.CustomColumnDisplayText += GridView1_CustomColumnDisplayText;
+            //gridView1.CustomColumnDisplayText -= GridView1_CustomColumnDisplayText;
+            //gridView1.CustomColumnDisplayText += GridView1_CustomColumnDisplayText;
 
             ApplyProjectViewColumnSetting();
 
@@ -385,6 +387,34 @@ namespace RentProject
                 gridView1.OptionsSelection.ShowCheckBoxSelectorInGroupRow = oldShowGroup;
                 gridView1.OptionsSelection.ShowCheckBoxSelectorInColumnHeader = oldShowHeader;
             }
+        }
+
+        private void EnsureStatusEditor()
+        {
+            var col = gridView1.Columns.ColumnByFieldName("Status");
+            if (col == null) return;
+
+            // Status 可能是 int / int? / enum / enum?
+            var t = Nullable.GetUnderlyingType(col.ColumnType) ?? col.ColumnType;
+
+            object V(int n) => t.IsEnum ? Enum.ToObject(t, n) : n;
+
+            if (_riStatus == null)
+            {
+                _riStatus = new RepositoryItemImageComboBox();
+                _riStatus.Items.Add(new ImageComboBoxItem("草稿", V(0)));
+                _riStatus.Items.Add(new ImageComboBoxItem("租時中", V(1)));
+                _riStatus.Items.Add(new ImageComboBoxItem("已完成", V(2)));
+                _riStatus.Items.Add(new ImageComboBoxItem("已送出給助理", V(3)));
+
+                // 如果你的 Status 有可能是 null，想顯示「—」
+                _riStatus.NullText = "—";
+
+                gridControl1.RepositoryItems.Add(_riStatus);
+            }
+
+            col.ColumnEdit = _riStatus;
+            col.OptionsColumn.AllowEdit = false; // 純顯示
         }
     }
 }
