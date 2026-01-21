@@ -1,5 +1,4 @@
-﻿using ClosedXML.Excel;
-using DevExpress.XtraBars.Ribbon;
+﻿using DevExpress.XtraBars.Ribbon;
 using DevExpress.XtraEditors;
 using RentProject.Domain;
 using RentProject.Repository;
@@ -7,7 +6,6 @@ using RentProject.Service;
 using RentProject.Shared.UIModels;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -18,11 +16,9 @@ namespace RentProject
     {
         private readonly DapperRentTimeRepository _rentTimeRepo;
         private readonly RentTimeService _rentTimeservice;
-        private readonly DapperProjectRepository _projectRepo;
         private readonly ProjectService _projectService;
         private readonly DapperJobNoRepository _jobNoRepo;
         private readonly JobNoService _jobNoService;
-        private readonly IJobNoApiClient _api;
 
         private ProjectViewControl _projectView;
         private CalendarViewControl _calendarView;
@@ -34,53 +30,29 @@ namespace RentProject
         // true = 目前顯示 CalendarView；false = 目前顯示 ProjectView
         private bool _isCalendarView = true;
 
-        public Form1()
+        public Form1(
+            DapperRentTimeRepository rentTimeRepo,
+            RentTimeService rentTimeService,
+            ProjectService projectService,
+            DapperJobNoRepository jobNoRepo,
+            JobNoService jobNoService
+        )
         {
             InitializeComponent();
 
-            var connectionString =
-                ConfigurationManager
-                .ConnectionStrings["DefaultConnection"]
-                .ConnectionString;
-
-            var baseUrl = ConfigurationManager.AppSettings["JobNoApi:BaseUrl"];
-            var path = ConfigurationManager.AppSettings["JobNoApi:Path"];
-            var apiKey = ConfigurationManager.AppSettings["JobNoApi:ApiKey"];
-            var apiKeyHeader = ConfigurationManager.AppSettings["JobNoApi:ApiKeyHeader"];
-
-            var timeoutText = ConfigurationManager.AppSettings["JobNoApi:TimeoutSeconds"];
-            int timeoutSeconds = 10;
-            if (!string.IsNullOrWhiteSpace(timeoutText) && int.TryParse(timeoutText, out var t) && t > 0)
-                timeoutSeconds = t;
-
-            // apiKey 允許空字串 -> 轉成 null
-            apiKey = string.IsNullOrWhiteSpace(apiKey) ? null : apiKey;
-
-            _api = new RealJobNoApiClient(
-                baseUrl: baseUrl,
-                path: path,
-                apiKey: apiKey,
-                apiKeyHeader: apiKeyHeader,
-                timeoutSeconds: timeoutSeconds
-            );
-
-
-            _rentTimeRepo = new DapperRentTimeRepository(connectionString);
-            _rentTimeservice = new RentTimeService(_rentTimeRepo);
-            _projectRepo = new DapperProjectRepository(connectionString);
-            _projectService = new ProjectService(_projectRepo);
-            _jobNoRepo = new DapperJobNoRepository(connectionString);
-            _jobNoService = new JobNoService(_jobNoRepo, _api);
+            _rentTimeRepo = rentTimeRepo;
+            _rentTimeservice = rentTimeService;
+            _projectService = projectService;
+            _jobNoRepo = jobNoRepo;
+            _jobNoService = jobNoService;
 
             _projectView = new ProjectViewControl(_rentTimeservice, _projectService, _jobNoService) { Dock = DockStyle.Fill };
-
-            _projectView.RentTimeSaved += RefreshProjectView; //ProjectViewControl 說「存好了」→ Form1 刷新列表
+            _projectView.RentTimeSaved += RefreshProjectView;
 
             _calendarView = new CalendarViewControl { Dock = DockStyle.Fill };
 
             _projectView.EditRequested += OpenEditRentTime;
             _calendarView.EditRequested += OpenEditRentTime;
-
         }
 
         private void Form1_Load(object sender, System.EventArgs e)
@@ -645,7 +617,6 @@ namespace RentProject
             // 直接沿用你已寫好的流程：開 Project 表單 + 刷新
             OpenEditRentTime(id.Value);
         }
-
 
         private void btnImportExcel_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {

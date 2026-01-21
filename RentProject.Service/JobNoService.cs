@@ -45,16 +45,16 @@ namespace RentProject.Service
 
             jobNo = jobNo.Trim();
 
-            var apiData = await _api.GetJobNoMasterAsync(jobNo, ct);
+            /*var apiData = await _api.GetJobNoMasterAsync(jobNo, ct);
             if (apiData == null) return null;
 
             // 確保 JobNo 格式一致
             apiData.JobNo = jobNo;
 
             // API 當真相：覆蓋式 Upsert
-            _jobNoRepository.UpsertJobNoMasterOverwrite(apiData);
+            _jobNoRepository.UpsertJobNoMasterOverwrite(apiData);*/
 
-            return _jobNoRepository.GetJobNoMasterByJobNo(jobNo);
+            return await _api.GetJobNoMasterAsync(jobNo, ct);
         }
     }
 }

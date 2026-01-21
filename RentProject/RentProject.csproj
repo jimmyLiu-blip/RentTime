@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.105.0" />
     <PackageReference Include="DevExpress.Win.Design" Version="25.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +23,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -34,6 +40,13 @@
 	<ItemGroup>
 		<!-- 先把 Project.*.resx 全部排除（例如 Project.DataSources.resx、Project.DropdownInit.resx） -->
 		<EmbeddedResource Remove="Project.*.resx" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Properties\Settings.settings">
+	    <Generator>SettingsSingleFileGenerator</Generator>
+	    <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+	  </None>
 	</ItemGroup>
 
 </Project>

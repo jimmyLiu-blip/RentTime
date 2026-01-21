@@ -17,9 +17,9 @@ namespace RentProject.Service
         public string? JobNo { get; set; }        // JSON: jobNo
         public string? ProjectNo { get; set; }    // JSON: projectNo
         public string? ProjectName { get; set; }  // JSON: projectName
-        public string? JobPMName { get; set; }           // JSON: jobPMName
+        public string? JobPMName { get; set; }    // JSON: jobPMName
 
-        public string? Applicant { get; set; } // JSON: applicant
+        public string? Applicant { get; set; }    // JSON: applicant
         public string? SalesName { get; set; }    // JSON: salesName
  
         public string? ClientProductName { get; set; }     // JSON: clientProductName
