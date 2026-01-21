@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace RentProject
 {
@@ -75,6 +74,7 @@ namespace RentProject
 
         private void ApplyJobNoMasterToUI(JobNoMaster? m)
         {
+            var prev = _isLoading;     // 記住原本狀態
             _isLoading = true;
             try
             {
@@ -88,7 +88,7 @@ namespace RentProject
                 txtSampleModel.Text = m?.SampleModel ?? "";
                 txtSampleNo.Text = m?.SampleNo ?? "";
             }
-            finally { _isLoading = false; }
+            finally { _isLoading = prev; } // 還原，不要硬改成 false
         }
 
         // 事件處理器（Event Handler） 只能長這樣：void XXX(object sender, EventArgs e)

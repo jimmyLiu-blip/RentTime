@@ -3,9 +3,7 @@ using RentProject.Repository;
 using RentProject.Service;
 using System;
 using System.Configuration;
-using System.Linq;
 using System.Windows.Forms;
-using Microsoft.Extensions.Http;
 using RentProject.Settings;
 
 namespace RentProject
@@ -44,15 +42,7 @@ namespace RentProject
             // 讀外部設定檔（不存在就用 App.config 預設值建立一份 settings.json）
             var ext = ExternalSettingsLoader.LoadOrCreateFromAppConfig();
 
-            MessageBox.Show(
-            "Settings Path:\n" + ExternalSettingsLoader.GetSettingsPath(),
-            "STEP1 - settings.json 路徑");
-
-            MessageBox.Show(
-                $"RentApi.BaseUrl = {ext.RentApi.BaseUrl}\nRentApi.TimeoutSeconds = {ext.RentApi.TimeoutSeconds}",
-                "STEP2 - settings.json 讀到的內容");
             // 取出 RentApi 設定
-
             var rentApiBaseUrl = string.IsNullOrWhiteSpace(ext.RentApi.BaseUrl)
                 ? "https://localhost:7063/"
                 : ext.RentApi.BaseUrl;

@@ -282,9 +282,6 @@ namespace RentProject
             _uiStatus = (UiRentStatus)data.Status;
             ApplyUiStatus();
             ApplyTabByStatus();
-            //btnCreatedRentTime.Text = "儲存修改";
-            //labelEstimatedHours.Text = "實際時間";
-            //this.Text = "修改租時單";
         }
 
         // =========================================================
