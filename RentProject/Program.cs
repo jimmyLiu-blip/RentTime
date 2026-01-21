@@ -5,6 +5,7 @@ using System;
 using System.Configuration;
 using System.Windows.Forms;
 using RentProject.Settings;
+using RentProject.Clients;
 
 namespace RentProject
 {
@@ -13,10 +14,8 @@ namespace RentProject
         [STAThread]
         static void Main()
         {
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
 
             // 1. 建 DI 容器
             var services = new ServiceCollection();
@@ -60,6 +59,12 @@ namespace RentProject
 
             // 6. IJobNoApiClient（給 JobNoService 用）
             services.AddHttpClient<IJobNoApiClient, RentProject.Clients.RentProjectApiJobNoClient>(http =>
+            {
+                http.BaseAddress = new Uri(rentApiBaseUrl, UriKind.Absolute);
+                http.Timeout = TimeSpan.FromSeconds(rentApiTimeoutSeconds);
+            });
+
+            services.AddHttpClient<IRentTimeApiClient, RentProjectApiRentTimeClient>(http =>
             {
                 http.BaseAddress = new Uri(rentApiBaseUrl, UriKind.Absolute);
                 http.Timeout = TimeSpan.FromSeconds(rentApiTimeoutSeconds);

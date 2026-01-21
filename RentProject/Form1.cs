@@ -1,5 +1,6 @@
 ﻿using DevExpress.XtraBars.Ribbon;
 using DevExpress.XtraEditors;
+using RentProject.Clients;
 using RentProject.Domain;
 using RentProject.Repository;
 using RentProject.Service;
@@ -7,6 +8,7 @@ using RentProject.Shared.UIModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
@@ -19,6 +21,7 @@ namespace RentProject
         private readonly ProjectService _projectService;
         private readonly DapperJobNoRepository _jobNoRepo;
         private readonly JobNoService _jobNoService;
+        private readonly IRentTimeApiClient _rentTimeApiClient;
 
         private ProjectViewControl _projectView;
         private CalendarViewControl _calendarView;
@@ -35,7 +38,8 @@ namespace RentProject
             RentTimeService rentTimeService,
             ProjectService projectService,
             DapperJobNoRepository jobNoRepo,
-            JobNoService jobNoService
+            JobNoService jobNoService,
+            IRentTimeApiClient rentTimeApiClient
         )
         {
             InitializeComponent();
@@ -45,9 +49,14 @@ namespace RentProject
             _projectService = projectService;
             _jobNoRepo = jobNoRepo;
             _jobNoService = jobNoService;
+            _rentTimeApiClient = rentTimeApiClient;
 
             _projectView = new ProjectViewControl(_rentTimeservice, _projectService, _jobNoService) { Dock = DockStyle.Fill };
-            _projectView.RentTimeSaved += RefreshProjectView;
+            _projectView.RentTimeSaved += async () =>
+            {
+                try { await RefreshProjectViewAsync(); }
+                catch (Exception ex) { XtraMessageBox.Show(ex.Message, "Error"); }
+            };
 
             _calendarView = new CalendarViewControl { Dock = DockStyle.Fill };
 
@@ -87,7 +96,7 @@ namespace RentProject
 
 
             // 先抓資料 + 塞場地下拉（但不顯示資料）
-            RefreshProjectView();
+            RefreshProjectViewAsync();
 
             // 強制啟動時沒選場地 -> 觸發空白顯示
             cmbLocationFilter.EditValue = null;
@@ -103,7 +112,7 @@ namespace RentProject
 
             if (dr == System.Windows.Forms.DialogResult.OK)
             {
-                RefreshProjectView();
+                RefreshProjectViewAsync();
                 ShowProjectView();
             }
         }
@@ -139,7 +148,7 @@ namespace RentProject
             // handler 就代表「刷新並保持畫面」這個動作
             Action handler = () =>
             {
-                RefreshProjectView();
+                RefreshProjectViewAsync();
 
                 // 刷新後保持你原本的畫面不跳走（可選，但我建議加）
                 if (_isCalendarView) ShowCalendarView();
@@ -171,12 +180,20 @@ namespace RentProject
                 ShowCalendarView();
         }
 
-        private void RefreshProjectView()
+        private async Task RefreshProjectViewAsync()
         {
-            _allRentTimes = _rentTimeservice.GetProjectViewList();
+            _allRentTimes = await _rentTimeApiClient.GetProjectViewListAsync();
+            RefreshLocationFilterItems();
+            ApplyLocationFilterAndRefresh();
+        }
+
+
+        /*private void RefreshProjectView()
+        {
+            _allRentTimes = _rentTimeApiClient.GetProjectViewListAsync().GetAwaiter().GetResult();
             RefreshLocationFilterItems();   // 先把場地選項填進下拉
             ApplyLocationFilterAndRefresh(); // 再用目前選的場地去刷新兩個畫面
-        }
+        }*/
 
         private void ApplyLocationFilterAndRefresh()
         {
@@ -336,7 +353,7 @@ namespace RentProject
         }
 
         // 刪除租時單(可多選)
-        private void btnDelete_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void btnDelete_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             // 0. 先把「選取來源」統一成同一種格式：只保留刪除需要的欄位
             var selected = new List<(int RentTimeId, string BookingNo, int Status)>();
@@ -394,82 +411,93 @@ namespace RentProject
 
             if (confirm != DialogResult.Yes) return;
 
-            // 3) 批次刪除（沿用你原本單張刪除的 service）
+            // 3) 批次刪除（改成走 WebAPI）
+            btnDelete.Enabled = false; // 防止連點（你的按鈕名稱若不同就改掉）
             try
             {
                 // 這裡先用同一個 createdBy（你目前專案是用 CreatedBy 當操作人）
                 // 之後做登入系統，再改成 currentUserName
 
-                var createdBy = "Jimmy";
+                var user = "Jimmy";
 
                 foreach (var rt in selected)
                 {
-                    _rentTimeservice.DeletedRentTime(rt.RentTimeId, createdBy, DateTime.Now);
+                    await _rentTimeApiClient.DeleteAsync(rt.RentTimeId, user);
                 }
 
                 XtraMessageBox.Show($"刪除完成:{selected.Count} 筆", " 完成");
 
                 // 4) 刷新列表
-                RefreshProjectView();
+                await RefreshProjectViewAsync();
             }
             catch (Exception ex)
             {
                 XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", "Error");
+            }
+            finally
+            {
+                btnDelete.Enabled = true;
             }
         }
 
         // 按鈕：送出給助理
-        private void btnSubmitToAssistant_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void btnSubmitToAssistant_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            var selected = _projectView.GetCheckedRentTime();
-
-            if (selected.Count == 0)
-            {
-                XtraMessageBox.Show("請先勾選要送出給助理的租時單", "提示");
-                return;
-            }
-            ;
-
-            var blocked = selected.Where(x => x.Status != 2).ToList();
-            if (blocked.Count > 0)
-            {
-                var preview = string.Join("\n",
-                    blocked.Take(10).Select(x => $"{x.BookingNo}(Id:{x.RentTimeId})"));
-
-                XtraMessageBox.Show(
-                    $"你勾選的資料包含「非已完成(Finished)」狀態，不能送出。\n" +
-                    $"請取消勾選後再刪除。\n\n" +
-                    $"筆數：{blocked.Count}\n" +
-                    $"{preview}",
-                    "禁止送出",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
-            }
-
-            var confirm = XtraMessageBox.Show($"確認要送出 {selected.Count} 筆租時單給助理嗎",
-                "確認送出",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-
-            if (confirm != DialogResult.Yes) return;
+            btnSubmitToAssistant.Enabled = false; // 避免連點
 
             try
             {
+                var selected = _projectView.GetCheckedRentTime();
+
+                if (selected.Count == 0)
+                {
+                    XtraMessageBox.Show("請先勾選要送出給助理的租時單", "提示");
+                    return;
+                };
+
+                var blocked = selected.Where(x => x.Status != 2).ToList();
+                if (blocked.Count > 0)
+                {
+                    var preview = string.Join("\n",
+                        blocked.Take(10).Select(x => $"{x.BookingNo}(Id:{x.RentTimeId})"));
+
+                    XtraMessageBox.Show(
+                        $"你勾選的資料包含「非已完成(Finished)」狀態，不能送出。\n" +
+                        $"請取消勾選後再刪除。\n\n" +
+                        $"筆數：{blocked.Count}\n" +
+                        $"{preview}",
+                        "禁止送出",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
+                var confirm = XtraMessageBox.Show($"確認要送出 {selected.Count} 筆租時單給助理嗎",
+                    "確認送出",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (confirm != DialogResult.Yes) return;
+
                 var user = "Jimmy";
 
                 foreach (var rt in selected)
                 {
-                    _rentTimeservice.SubmitToAssistantById(rt.RentTimeId, user);
+                    await _rentTimeApiClient.SubmitToAssistantAsync(rt.RentTimeId, user);
                 }
 
                 XtraMessageBox.Show($"送出完成：{selected.Count}筆", "完成");
 
-                RefreshProjectView();
+                await RefreshProjectViewAsync();
+
             }
             catch (Exception ex)
             {
                 XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", "Error");
+            }
+            finally
+            {
+                btnSubmitToAssistant.Enabled = true;
             }
         }
 
@@ -538,7 +566,7 @@ namespace RentProject
             cmbStatusFilter.EditValue = "全部";
 
             // 3) 重新抓 DB + 重新套用篩選（此時進階已經是 null）
-            RefreshProjectView();
+            RefreshProjectViewAsync();
 
             if (_isCalendarView) ShowCalendarView();
             else ShowProjectView();
@@ -638,7 +666,10 @@ namespace RentProject
 
                 // 2) 寫回 DB（含跨日拆單）
                 // 建議放在 Service，Form1 不要直接寫 SQL
-                bool ok = _rentTimeservice.ChangeDraftPeriodWithSplit(rentTimeId, newStart, newEnd, user, now);
+                bool ok = _rentTimeApiClient
+                    .ChangeDraftPeriodWithSplitAsync(rentTimeId, newStart, newEnd, user)
+                    .GetAwaiter()
+                    .GetResult();
 
                 if (!ok)
                 {
@@ -649,9 +680,9 @@ namespace RentProject
 
                 // 關鍵：不要在 Scheduler 的 Drop/Resize 事件「同步」刷新
                 // 不要現在立刻做 RefreshProjectView()，改成等 UI 有空再做
-                this.BeginInvoke(new Action(() =>
+                this.BeginInvoke(new Action(async () =>
                 {
-                    RefreshProjectView();
+                    await RefreshProjectViewAsync();
                 }));
 
                 return true;

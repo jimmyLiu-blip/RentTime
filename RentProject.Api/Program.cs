@@ -6,6 +6,7 @@ using RentProject.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ===== JobNo 外部 API 設定 =====
 builder.Services.Configure<JobNoApiOptions>(
     builder.Configuration.GetSection("JobNoApi"));
 
@@ -21,19 +22,23 @@ builder.Services.AddHttpClient<IJobNoApiClient, ProcertJobNoApiClient>((sp, http
     http.Timeout = TimeSpan.FromSeconds(t);
 });
 
+// ===== DB 連線字串 =====
 var cs = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new Exception("找不到 ConnectionStrings:DefaultConnection");
 
-// Repository / Service（先只註冊 JobNo 這條線
+// Repository 
 // Scoped（每次 request 一份）是 WebAPI 常用做法
-builder.Services.AddSingleton(new DapperJobNoRepository(cs));
+builder.Services.AddScoped<DapperRentTimeRepository>(_ => new DapperRentTimeRepository(cs));
+builder.Services.AddScoped<DapperProjectRepository>(_ => new DapperProjectRepository(cs));
+builder.Services.AddScoped<DapperJobNoRepository>(_ => new DapperJobNoRepository(cs));
+
+// services 
+builder.Services.AddScoped<RentTimeService>();
+builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<JobNoService>();
 
-
-// Add services to the container.
-
+// ===== MVC / Swagger =====
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -47,9 +52,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
