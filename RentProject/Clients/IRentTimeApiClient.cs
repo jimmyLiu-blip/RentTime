@@ -30,5 +30,7 @@ namespace RentProject.Clients
         
         Task<CreateRentTimeResult> CopyAsync(int rentTimeId, bool isHandOver, string user, CancellationToken ct = default);
 
+        Task<long> CreateBookingBatchAsync(CancellationToken ct = default);
+
     }
 }

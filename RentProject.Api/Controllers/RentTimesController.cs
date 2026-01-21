@@ -109,5 +109,15 @@ namespace RentProject.Api.Controllers
             var result = _rentTimeService.CopyRentTime(id, req.IsHandOver, req.User);
             return Ok(result);
         }
+
+        // 回傳一個新 BookingBatchId
+        [HttpPost("booking-batch")]
+        public ActionResult<long> CreateBookingBatch()
+        {
+            // 這會呼叫你原本 Dapper 的 CreateBookingBatch()
+            var batchId = _rentTimeService.CreateBookingBatch();
+            return Ok(batchId);
+        }
+
     }
 }

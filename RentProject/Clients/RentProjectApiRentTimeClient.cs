@@ -64,12 +64,23 @@ namespace RentProject.Clients
                 ? $"api/renttimes?bookingBatchId={bookingBatchId.Value}"
                 : "api/renttimes";
 
-            using var resp = await _httpClient.PostAsJsonAsync(url, model, ct).ConfigureAwait(false);
+            /*using var resp = await _httpClient.PostAsJsonAsync(url, model, ct).ConfigureAwait(false);
             resp.EnsureSuccessStatusCode();
 
             var json = await resp.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
             return JsonSerializer.Deserialize<CreateRentTimeResult>(json, _json)
-                ?? throw new Exception("CreateAsync回傳空結果");
+                ?? throw new Exception("CreateAsync回傳空結果");*/
+
+            using var resp = await _httpClient.PostAsJsonAsync(url, model, ct).ConfigureAwait(false);
+            var body = await resp.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
+
+            if (!resp.IsSuccessStatusCode)
+            {
+                throw new Exception($"CreateAsync 失敗：HTTP {(int)resp.StatusCode} {resp.ReasonPhrase}\n{body}");
+            }
+
+            return JsonSerializer.Deserialize<CreateRentTimeResult>(body, _json)
+                   ?? throw new Exception("CreateAsync 回傳空結果");
         }
 
         public async Task UpdateAsync(int rentTimeId, RentTime model, string user, CancellationToken ct = default)
@@ -139,5 +150,18 @@ namespace RentProject.Clients
             return JsonSerializer.Deserialize<CreateRentTimeResult>(json, _json)
                    ?? throw new Exception("CopyAsync 回傳空結果");
         }
+
+        public async Task<long> CreateBookingBatchAsync(CancellationToken ct = default)
+        {
+            const string url = "api/renttimes/booking-batch";
+
+            using var resp = await _httpClient.PostAsync(url, content: null, ct).ConfigureAwait(false);
+            resp.EnsureSuccessStatusCode();
+
+            // 你的後端回傳 Ok(long) => JSON 會是純數字，例如：123
+            var batchId = await resp.Content.ReadFromJsonAsync<long>(cancellationToken: ct).ConfigureAwait(false);
+            return batchId;
+        }
+
     }
 }

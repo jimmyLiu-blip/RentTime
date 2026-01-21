@@ -64,7 +64,7 @@ namespace RentProject
             _calendarView.EditRequested += OpenEditRentTime;
         }
 
-        private void Form1_Load(object sender, System.EventArgs e)
+        private async void Form1_Load(object sender, System.EventArgs e)
         {
             mainPanel.Controls.Add(_projectView);
             mainPanel.Controls.Add(_calendarView);
@@ -96,7 +96,7 @@ namespace RentProject
 
 
             // 先抓資料 + 塞場地下拉（但不顯示資料）
-            RefreshProjectViewAsync();
+            await RefreshProjectViewAsync();
 
             // 強制啟動時沒選場地 -> 觸發空白顯示
             cmbLocationFilter.EditValue = null;
@@ -104,15 +104,15 @@ namespace RentProject
             ShowProjectView();
         }
 
-        private void btnAddRentTime_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void btnAddRentTime_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            var form = new Project(_rentTimeservice, _projectService, _jobNoService);
+            var form = new Project(_rentTimeApiClient, _projectService, _jobNoService);
 
             var dr = form.ShowDialog();
 
             if (dr == System.Windows.Forms.DialogResult.OK)
             {
-                RefreshProjectViewAsync();
+                await RefreshProjectViewAsync();
                 ShowProjectView();
             }
         }
@@ -142,17 +142,13 @@ namespace RentProject
 
         private void OpenEditRentTime(int rentTimedId)
         {
-            var form = new Project(_rentTimeservice, _projectService, _jobNoService, rentTimedId);
+            var form = new Project(_rentTimeApiClient, _projectService, _jobNoService, rentTimedId);
 
             // 只要表單內狀態有變（開始/完成/送出）就刷新
             // handler 就代表「刷新並保持畫面」這個動作
             Action handler = () =>
             {
-                RefreshProjectViewAsync();
-
-                // 刷新後保持你原本的畫面不跳走（可選，但我建議加）
-                if (_isCalendarView) ShowCalendarView();
-                else ShowProjectView();
+                _ = RefreshAndKeepViewAsync();
             };
 
             // Project 表單某些操作（開始、完成、送出…）會觸發 RentTimeChanged?.Invoke()
@@ -186,14 +182,6 @@ namespace RentProject
             RefreshLocationFilterItems();
             ApplyLocationFilterAndRefresh();
         }
-
-
-        /*private void RefreshProjectView()
-        {
-            _allRentTimes = _rentTimeApiClient.GetProjectViewListAsync().GetAwaiter().GetResult();
-            RefreshLocationFilterItems();   // 先把場地選項填進下拉
-            ApplyLocationFilterAndRefresh(); // 再用目前選的場地去刷新兩個畫面
-        }*/
 
         private void ApplyLocationFilterAndRefresh()
         {
@@ -418,7 +406,7 @@ namespace RentProject
                 // 這裡先用同一個 createdBy（你目前專案是用 CreatedBy 當操作人）
                 // 之後做登入系統，再改成 currentUserName
 
-                var user = "Jimmy";
+                var user = GetCurrentUser();
 
                 foreach (var rt in selected)
                 {
@@ -479,7 +467,7 @@ namespace RentProject
 
                 if (confirm != DialogResult.Yes) return;
 
-                var user = "Jimmy";
+                var user = GetCurrentUser();
 
                 foreach (var rt in selected)
                 {
@@ -557,7 +545,7 @@ namespace RentProject
         }
 
         // 重新整理
-        private void btnRefresh_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void btnRefresh_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             // 1. 清掉進階篩選
             _advanceFilter = null;
@@ -566,7 +554,7 @@ namespace RentProject
             cmbStatusFilter.EditValue = "全部";
 
             // 3) 重新抓 DB + 重新套用篩選（此時進階已經是 null）
-            RefreshProjectViewAsync();
+            await RefreshProjectViewAsync();
 
             if (_isCalendarView) ShowCalendarView();
             else ShowProjectView();
@@ -662,7 +650,7 @@ namespace RentProject
                 }
 
                 var now = DateTime.Now;
-                var user = "Jimmy";  // 你自己的登入者名稱變數
+                var user = GetCurrentUser();  // 你自己的登入者名稱變數
 
                 // 2) 寫回 DB（含跨日拆單）
                 // 建議放在 Service，Form1 不要直接寫 SQL
@@ -692,6 +680,17 @@ namespace RentProject
                 XtraMessageBox.Show($"更新失敗：{ex.Message}", "錯誤");
                 return false;
             }
+        }
+
+        private string GetCurrentUser() => "Jimmy"; // 之後接登入系統就改這裡
+
+        private async Task RefreshAndKeepViewAsync()
+        {
+            await RefreshProjectViewAsync();
+
+            // 刷新後保持你原本畫面不跳走
+            if (_isCalendarView) ShowCalendarView();
+            else ShowProjectView();
         }
     }
 }

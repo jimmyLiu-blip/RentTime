@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
+using RentProject.Clients;
+using System.Threading.Tasks;
 
 namespace RentProject
 {
@@ -18,6 +20,12 @@ namespace RentProject
         // A) 服務 / 狀態欄位 (State)
         // =========================================================
         private readonly RentTimeService _rentTimeService;
+        private readonly IRentTimeApiClient? _rentTimeApiClient;
+        private bool UseApi => _rentTimeApiClient != null;
+        private IRentTimeApiClient Api => _rentTimeApiClient ?? throw new InvalidOperationException("RentTimeApiClient 尚未注入");
+        private RentTimeService Svc => _rentTimeService ?? throw new InvalidOperationException("RentTimeService 尚未注入");
+
+
         private readonly ProjectService _projectService;
         private readonly JobNoService _jobNoService;
 
@@ -120,16 +128,16 @@ namespace RentProject
         // =========================================================
         // B) 建構子
         // =========================================================
-        public Project(RentTimeService rentTimeService, ProjectService projectService, JobNoService jobNoService)
+        public Project(IRentTimeApiClient rentTimeApiClient, ProjectService projectService, JobNoService jobNoService)
         {
             InitializeComponent();
-            _rentTimeService = rentTimeService;
+            _rentTimeApiClient = rentTimeApiClient;
             _projectService = projectService;
             _jobNoService = jobNoService;
         }
 
-        public Project(RentTimeService rentTimeService, ProjectService projectService, JobNoService jobNoService, int rentTimeId)
-            : this(rentTimeService, projectService, jobNoService)
+        public Project(IRentTimeApiClient rentTimeApiClient, ProjectService projectService, JobNoService jobNoService, int rentTimeId)
+            : this(rentTimeApiClient, projectService, jobNoService)
         {
             _editRentTimeId = rentTimeId;
         }
@@ -137,7 +145,7 @@ namespace RentProject
         // =========================================================
         // C) Form Load：初始化 UI
         // =========================================================
-        private void Project_Load(object sender, EventArgs e)
+        private async void Project_Load(object sender, EventArgs e)
         {
             _projects = _projectService.GetActiveProjects();
 
@@ -259,11 +267,7 @@ namespace RentProject
             // 新增模式：預設建單人員
             if (_editRentTimeId == null)
             {
-                _bookingBatchId = _rentTimeService.CreateBookingBatch();
-
-                txtBookingNo.Text = $"TMP-{_bookingBatchId.Value:D7}";
-
-                txtBookingSeq.Text = "1";
+                await InitNewBookingNoAsync();
 
                 txtCreatedBy.Text = "Jimmy";
 
@@ -275,7 +279,32 @@ namespace RentProject
             }
 
             // 編輯模式：讀 DB 填回 UI
-            var data = _rentTimeService.GetRentTimeById(_editRentTimeId.Value);
+            RentTime? data;
+
+            if (UseApi)
+            {
+                SetLoading(true);
+                try
+                {
+                    data = await Api.GetByIdAsync(_editRentTimeId.Value);
+                }
+                finally
+                {
+                    SetLoading(false);
+                }
+
+                if (data == null)
+                {
+                    XtraMessageBox.Show("找不到此 RentTime（可能已被刪除）", "提示");
+                    this.DialogResult = DialogResult.Cancel;
+                    this.Close();
+                    return;
+                }
+            }
+            else
+            {
+                data = Svc.GetRentTimeById(_editRentTimeId.Value);
+            }
             _loadedRentTime = data;
             FillUIFromModel(data);
 
@@ -287,7 +316,7 @@ namespace RentProject
         // =========================================================
         // D) 按鈕流程：存檔 / 刪除
         // =========================================================
-        private void btnCreatedRentTime_Click(object sender, EventArgs e)
+        private async void btnCreatedRentTime_Click(object sender, EventArgs e)
         {
             if (_uiStatus == UiRentStatus.Finished)
             {
@@ -312,7 +341,17 @@ namespace RentProject
                 // 新增
                 if (_editRentTimeId == null)
                 {
-                    var result = _rentTimeService.CreateRentTime(model, _bookingBatchId);
+                    CreateRentTimeResult result;
+
+                    if (UseApi)
+                    {
+                        result = await Api.CreateAsync(model, _bookingBatchId);
+                    }
+                    else
+                    {
+                        result = Svc.CreateRentTime(model, _bookingBatchId);
+                    }
+
 
                     _lastCreatedBy = "Jimmy"; // 之後要刪除
                     SetBookingNoToUI(result.BookingNo);
@@ -338,7 +377,14 @@ namespace RentProject
                 if (confirm != DialogResult.Yes) return;
 
                 var user = _currentUser;
-                _rentTimeService.UpdateRentTimeById(model, user);
+                if (UseApi)
+                {
+                    await Api.UpdateAsync(_editRentTimeId.Value, model, user);
+                }
+                else
+                {
+                    Svc.UpdateRentTimeById(model, user);
+                }
 
                 this.DialogResult = DialogResult.OK;
                 this.Close();
@@ -542,7 +588,7 @@ namespace RentProject
                 // 2. 直接打開新單（新 RentTimeId）
                 this.Hide(); // 先把舊表單藏起來，避免畫面跳來跳去 
 
-                using (var f = new Project(_rentTimeService, _projectService, _jobNoService, result.RentTimeId))
+                using (var f = new Project(_rentTimeApiClient, _projectService, _jobNoService, result.RentTimeId))
                 {
                     f.ShowDialog(this); // 用 this 當 owner（可不加，但加了比較穩）
                 }
@@ -609,5 +655,21 @@ namespace RentProject
             if (_isLoading) return; // 你有 _isLoading 就先保護，避免程式塞值時一直連鎖觸發
             RefreshMealAndEstimateUI();
         }
+
+        // 初始化新增單 BookingNo
+        private async Task InitNewBookingNoAsync()
+        {
+            // 已經有就不要重拿
+            if (_bookingBatchId.HasValue) return;
+
+            // 1) 走 API 拿一個新的 batchId（等同你 Dapper 的 CreateBookingBatch）
+            // 你需要有對應 API：POST /api/renttimes/booking-batch  -> 回傳 long
+            _bookingBatchId = await _rentTimeApiClient.CreateBookingBatchAsync();
+
+            // 2) 塞 UI（格式跟你 Dapper 一模一樣）
+            txtBookingNo.Text = $"TMP-{_bookingBatchId.Value:D7}";
+            txtBookingSeq.Text = "1";
+        }
+
     }
 }
