@@ -41,13 +41,14 @@ namespace RentProject
         // 舊JobNo停止查詢，避免浪費資源
         private CancellationTokenSource? _jobNoCts;
 
+        // 這次 JobNo 查詢（WebApi）是否有回值：客戶名稱 / Sales
+        private bool _jobNoApiHasCustomer = false;
+        private bool _jobNoApiHasSales = false;
+
         // 紀錄目前 UI 選到的 JobNo (方便除錯)
         private string? _currentJobNo = null;
 
         private int? _currentJobId = null;
-
-        // 是否處於 JobNo 自動帶入模式 (API 有查到資料時 = true) 
-        private bool _jobNoAutoMode = false;
 
         // 紀錄BookingBatchId
         private long? _bookingBatchId;
@@ -84,9 +85,6 @@ namespace RentProject
 
         private void SetAutoFillMode(bool enabled)
         {
-            // 先記錄現在的模式
-            _jobNoAutoMode = enabled;
-
             // 只要欄位「有值」就鎖；沒有值就開放
             bool HasText(string? s) => !string.IsNullOrWhiteSpace(s);
 
@@ -139,7 +137,6 @@ namespace RentProject
         private async void Project_Load(object sender, EventArgs e)
         {
             // ===== 新增：修正 DateEdit 和 TimeEdit 的 Mask 問題 =====
-
             // 1. 設定 DateEdit（處理日期輸入問題）
             ConfigureDateEdit(startDateEdit);
             ConfigureDateEdit(endDateEdit);
@@ -308,6 +305,9 @@ namespace RentProject
             _loadedRentTime = data;
             FillUIFromModel(data);
 
+            // 讓編輯模式一打開就把旗標同步成正確狀態（不用 JobNo + Tab）
+            SyncJobNoApiFlagsFromLoadedUI();
+
             _uiStatus = (UiRentStatus)data.Status;
             ApplyUiStatus();
             ApplyTabByStatus();
@@ -417,6 +417,7 @@ namespace RentProject
                 // (2) 再把狀態改成 Started（並寫入 ActualStartAt = now）
                 var user = _currentUser;
                 await _rentTimeApiClient.UpdateRentTimeFromApiAsync(_editRentTimeId.Value, model, user);
+
                 await _rentTimeApiClient.StartRentTimeFromApiAsync(_editRentTimeId.Value, user);
 
                 // (3) 重新讀 DB 刷新 UI
@@ -649,6 +650,24 @@ namespace RentProject
         {
             if (_isLoading) return; // 你有 _isLoading 就先保護，避免程式塞值時一直連鎖觸發
             RefreshMealAndEstimateUI();
+        }
+
+        private void SyncJobNoApiFlagsFromLoadedUI()
+        {
+            bool HasText(string? s) => !string.IsNullOrWhiteSpace(s);
+
+            // JobNo 沒值: 一律視為沒查到
+            if (!HasText(cmbJobNo.Text))
+            { 
+                _jobNoApiHasCustomer = false;
+                _jobNoApiHasSales = false;
+                return;
+            }
+            // 用 ProjectNo / ProjectName / PE 當作「API 有回主檔」的證據
+            bool hasMaster = HasText(txtPE.Text) || HasText(txtProjectName.Text) || HasText(txtProjectNo.Text);
+
+            _jobNoApiHasCustomer = hasMaster && HasText(cmbCompany.Text);
+            _jobNoApiHasSales = hasMaster && HasText(txtSales.Text);
         }
     }
 }

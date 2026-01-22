@@ -25,6 +25,9 @@ namespace RentProject
 
                 _loadedRentTime = data;
                 FillUIFromModel(data);
+                // 讓編輯模式一打開就把旗標同步成正確狀態（不用 JobNo + Tab）
+                SyncJobNoApiFlagsFromLoadedUI();
+
                 _uiStatus = (UiRentStatus)data.Status;
                 ApplyUiStatus();
                 ApplyTabByStatus();

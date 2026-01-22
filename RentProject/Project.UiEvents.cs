@@ -55,6 +55,10 @@ namespace RentProject
             // 規則1：使用者正在輸入中，不查 DB、不清欄位
             // 先回手動模式，避免規則打架
             SetAutoFillMode(false);
+
+            // 只要 JobNo 被改，就先視為「API 尚未確認 / 或尚未查到」
+            _jobNoApiHasCustomer = false;
+            _jobNoApiHasSales = false;
         }
 
         // 全部都不是空白才回傳 true，只要有任何一個是空白就回傳 false
@@ -150,6 +154,9 @@ namespace RentProject
                 // 把 ct 往下傳，API/Delay/HTTP 才能真的被取消
                 var m = await _jobNoApiClient.GetJobNoMasterFromApiAndSaveAsync(jobNo, ct);
 
+                _jobNoApiHasCustomer = !string.IsNullOrWhiteSpace(m?.CustomerName);
+                _jobNoApiHasSales = !string.IsNullOrWhiteSpace(m?.Sales);
+
                 ct.ThrowIfCancellationRequested();
 
                 // 使用者又切 JobNo，就丟掉
@@ -158,6 +165,9 @@ namespace RentProject
                 // 2. 查不到：回手動模式
                 if (m == null)
                 {
+                    _jobNoApiHasCustomer = false;
+                    _jobNoApiHasSales = false;
+
                     ApplyJobNoMasterToUI(null);
                     SetAutoFillMode(false);
                     return;

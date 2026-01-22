@@ -86,11 +86,11 @@ namespace RentProject
         {
             cmbLocation.Properties.ReadOnly = !editable;
             cmbJobNo.Properties.ReadOnly = !editable;
-            cmbCompany.Properties.ReadOnly = !editable;
+            cmbCompany.Properties.ReadOnly = !editable || ShouldLockCompanyByJobNo();
 
             txtContactName.Properties.ReadOnly = !editable;
             txtContactPhone.Properties.ReadOnly = !editable;
-            txtSales.Properties.ReadOnly = !editable;
+            txtSales.Properties.ReadOnly = !editable || ShouldLockSalesByJobNo();
             txtSampleModel.Properties.ReadOnly = !editable;
             txtSampleNo.Properties.ReadOnly = !editable;
 
@@ -114,6 +114,24 @@ namespace RentProject
 
             // CreatedBy 通常永遠不可改（可留著鎖）
             txtCreatedBy.Properties.ReadOnly = true;
+        }
+
+        private bool ShouldLockCompanyByJobNo()
+        {
+            // JobNo 沒填：一定不鎖
+            if (string.IsNullOrWhiteSpace(cmbJobNo.Text)) return false;
+
+            // JobNo 有填：只有「API 有回客戶名稱」才鎖
+            return _jobNoApiHasCustomer;
+        }
+
+        private bool ShouldLockSalesByJobNo()
+        {
+            // JobNo 沒填：一定不鎖
+            if (string.IsNullOrWhiteSpace(cmbJobNo.Text)) return false;
+
+            // JobNo 有填：只有「API 有回客戶名稱」才鎖
+            return _jobNoApiHasSales;
         }
 
         private void ApplyUiTextByStatus()
