@@ -105,9 +105,6 @@ namespace RentProject
             // 先判斷「這次輸入」是不是本來就存在下拉裡
             bool existedInList = cmbJobNo.Properties.Items.Contains(jobNo);
 
-            // 不管新舊：先確保 DB 有這個 JobNo
-            _jobNoService.GetOrCreateJobId(jobNo);
-
             // 新的：加進下拉（但不要 return）
             if (!existedInList && !cmbJobNo.Properties.Items.Contains(jobNo))
             {
@@ -140,6 +137,10 @@ namespace RentProject
                 // 讓 UI 有機會先刷新到 Loading 狀態
                 await Task.Yield();
 
+                // 先確保 DB 有 jobId（可取消）
+                _currentJobNo = jobNo;
+                _currentJobId = await _jobNoApiClient.GetOrCreateJobIdAsync(jobNo, ct);
+
                 // 若取消，直接停止
                 ct.ThrowIfCancellationRequested();
 
@@ -147,7 +148,7 @@ namespace RentProject
                 if (seq != _jobLockupSeq) return;
 
                 // 把 ct 往下傳，API/Delay/HTTP 才能真的被取消
-                var m = await _jobNoService.GetJobNoMasterFromApiAndSaveAsync(jobNo, ct);
+                var m = await _jobNoApiClient.GetJobNoMasterFromApiAndSaveAsync(jobNo, ct);
 
                 ct.ThrowIfCancellationRequested();
 

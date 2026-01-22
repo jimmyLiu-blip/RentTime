@@ -1,14 +1,14 @@
-﻿using DevExpress.XtraBars.Docking;
-using DevExpress.XtraEditors;
-using DevExpress.XtraRichEdit.Model;
+﻿using DevExpress.XtraEditors;
 using DevExpress.XtraScheduler;
 using DevExpress.XtraScheduler.Drawing;
+using Microsoft.AspNetCore.Http.HttpResults;
 using RentProject.Domain;
 using RentProject.Shared.UIModels;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace RentProject
 {
@@ -33,7 +33,7 @@ namespace RentProject
         // 外面的人只能訂閱/取消訂閱（+= / -=)；外面的人不能直接觸發（Invoke）事件；只有在這個類別裡面才能 Invoke（發射事件）
         public event Action<int>? EditRequested;
 
-        public event Func<int, DateTime, DateTime, bool>? PeriodChangeRequested;
+        public event Func<int, DateTime, DateTime, Task<bool>>? PeriodChangeRequested;
 
         // 是否為「7天週時間表模式」
         private bool _isWeek7Mode = false;
@@ -153,8 +153,12 @@ namespace RentProject
 
             EnsureSchedulerInit();
 
-            // 先記住使用者目前在看的日期
-            var keepStart = schedulerControl1.Start;
+            // 先同步一次（避免 MonthView 的 Start 落在上個月）
+            SyncCurrentMonthFromScheduler();
+
+            var keepStart = (schedulerControl1.ActiveViewType == SchedulerViewType.Month)
+                ? _currentMonth
+                : schedulerControl1.Start;
 
             // 1) 轉成 Scheduler 要吃的 Appointment DataSource
             var appts = list
@@ -214,7 +218,7 @@ namespace RentProject
 
             // 若你剛好在月視圖，讓 _currentMonth 跟著現在顯示月份一致（避免上下月按鈕邏輯怪）
             if (schedulerControl1.ActiveViewType == SchedulerViewType.Month)
-                _currentMonth = new DateTime(schedulerControl1.Start.Year, schedulerControl1.Start.Month, 1);
+                SyncCurrentMonthFromScheduler();
         }
 
         // ===== 視圖切換 =====
@@ -439,8 +443,8 @@ namespace RentProject
 
             // 2. 如果是月視圖：同步 _currentMonth，避免後面 Prev/Next 或其他邏輯用到舊月份
             if (schedulerControl1.ActiveViewType == SchedulerViewType.Month)
-            { 
-                _currentMonth = new DateTime(schedulerControl1.Start.Year, schedulerControl1.Start.Month, 1);
+            {
+                SyncCurrentMonthFromScheduler();
             }
 
             // 3. 重新套用資料源 + Refresh（解決「日期變了但畫面沒重畫」的感覺）
@@ -704,18 +708,21 @@ namespace RentProject
                 edited.End = newEnd;
             }
 
-            bool ok = false;
-            try
-            {
-                ok = PeriodChangeRequested(rentTimeId, newStart, newEnd);
-            }
-            catch (Exception ex) 
-            { 
-                XtraMessageBox.Show($"更新失敗：{ex.Message}", "錯誤");
-                ok = false;
-            }
+            // 先放行 UI（不要等 API）
+            e.Allow = true;
 
-            e.Allow = ok;   // 成功才放行，失敗就回彈
+            // 事件結束後再去打 API（非同步，不阻塞、不打斷 Scheduler）
+            this.BeginInvoke(new Action(async () =>
+            {
+                try
+                {
+                    await PeriodChangeRequested(rentTimeId, newStart, newEnd);
+                }
+                catch (Exception ex)
+                {
+                    XtraMessageBox.Show($"更新失敗：{ex.Message}", "錯誤");
+                }
+            }));
         }
 
         private void schedulerControl1_AppointmentResized(object sender, AppointmentResizeEventArgs e)
@@ -745,18 +752,21 @@ namespace RentProject
             DateTime newStart = src.Start;
             DateTime newEnd = edited.End;
 
-            bool ok = false;
-            try
-            {
-                ok = PeriodChangeRequested(rentTimeId, newStart, newEnd);
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show($"更新失敗：{ex.Message}", "錯誤");
-                ok = false;
-            }
+            //  先放行 UI
+            e.Allow = true;
 
-            e.Allow = ok;
+            // 事件結束後再打 API
+            this.BeginInvoke(new Action(async () =>
+            {
+                try
+                {
+                    await PeriodChangeRequested(rentTimeId, newStart, newEnd);
+                }
+                catch (Exception ex)
+                {
+                    XtraMessageBox.Show($"更新失敗：{ex.Message}", "錯誤");
+                }
+            }));
         }
 
         private void InitStatusLabels()
@@ -776,8 +786,15 @@ namespace RentProject
             AddLabel(1, "租時中", Color.LightSkyBlue);
             AddLabel(2, "已完成", Color.LightGray);
             AddLabel(3, "已送出給助理", Color.Khaki);
-
             AddLabel(99, "摘要", Color.Gainsboro);
+        }
+
+        private void SyncCurrentMonthFromScheduler()
+        {
+            if (schedulerControl1.ActiveViewType != SchedulerViewType.Month) return;
+
+            var anchor = schedulerControl1.Start.Date.AddDays(15);
+            _currentMonth = new DateTime(anchor.Year, anchor.Month, 1);
         }
     }
 }

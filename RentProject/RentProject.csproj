@@ -13,8 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RentProject.Api\RentProject.Api.csproj" />
     <ProjectReference Include="..\RentProject.Domain\RentProject.Domain.csproj" />
-    <ProjectReference Include="..\RentProject.Service\RentProject.Service.csproj" />
+    <ProjectReference Include="..\RentProject.Shared\RentProject.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

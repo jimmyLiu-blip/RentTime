@@ -6,9 +6,9 @@ namespace RentProject.Service
     public class JobNoService
     {
         private readonly DapperJobNoRepository _jobNoRepository;
-        private readonly IJobNoApiClient _api;
+        private readonly IExternalJobNoClient _api;
 
-        public JobNoService(DapperJobNoRepository jobNoRepository, IJobNoApiClient api)
+        public JobNoService(DapperJobNoRepository jobNoRepository, IExternalJobNoClient api)
         {
             _jobNoRepository = jobNoRepository;
             _api = api;
@@ -24,9 +24,9 @@ namespace RentProject.Service
             return _jobNoRepository.GetOrCreateJobId(jobNo.Trim());
         }
 
-        public List<string> GetActiveJobNos(int top = 8)
+        public Task<List<string>> GetActiveJobNosAsync(int top = 8, CancellationToken ct = default)
         {
-            return _jobNoRepository.GetActiveJobNos(top);
+            return _jobNoRepository.GetActiveJobNosAsync(top, ct);
         }
 
         public JobNoMaster? GetJobNoMasterByJobNo(string jobNo)
@@ -45,16 +45,16 @@ namespace RentProject.Service
 
             jobNo = jobNo.Trim();
 
-            /*var apiData = await _api.GetJobNoMasterAsync(jobNo, ct);
-            if (apiData == null) return null;
+            // 1. 先打外部 API
+            var external =  await _api.GetJobNoMasterAsync(jobNo, ct);
 
-            // 確保 JobNo 格式一致
-            apiData.JobNo = jobNo;
+            if (external == null) return null;
 
-            // API 當真相：覆蓋式 Upsert
-            _jobNoRepository.UpsertJobNoMasterOverwrite(apiData);*/
+            // 2. 存回 DB（Upsert）
+            _jobNoRepository.UpsertJobNoMasterOverwrite(external);
 
-            return await _api.GetJobNoMasterAsync(jobNo, ct);
+            // 3. 回傳 DB 版本（通常包含 JobId / CreatedAt / ModifiedAt 等）
+            return _jobNoRepository.GetJobNoMasterByJobNo(jobNo);
         }
     }
 }

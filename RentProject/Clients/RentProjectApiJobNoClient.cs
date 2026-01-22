@@ -1,12 +1,15 @@
 ﻿using RentProject.Domain;
 using RentProject.Service;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using static System.Net.WebRequestMethods;
+using RentProject.Api.Contracts;
 
 namespace RentProject.Clients
 {
@@ -25,7 +28,7 @@ namespace RentProject.Clients
             _httpClient = httpClient;
         }
 
-        public async Task<JobNoMaster?> GetJobNoMasterAsync(string jobNo, CancellationToken ct = default)
+        public async Task<JobNoMaster?> GetJobNoMasterFromApiAndSaveAsync(string jobNo, CancellationToken ct = default)
         {
             if (string.IsNullOrWhiteSpace(jobNo)) return null;
             jobNo = jobNo.Trim();
@@ -54,6 +57,37 @@ namespace RentProject.Clients
             {
                 return null;
             }
+        }
+
+        public async Task<List<string>> GetActiveJobNoAsync(int top, CancellationToken ct = default)
+        {
+            var url = $"api/jobno/active?top={top}";
+
+            using var resp = await _httpClient.GetAsync(url, ct);
+
+            resp.EnsureSuccessStatusCode();
+
+            var list = await resp.Content.ReadFromJsonAsync<List<string>>(cancellationToken: ct);
+
+            return list ?? new List<string>();
+        }
+
+        public async Task<int> GetOrCreateJobIdAsync(string jobNo, CancellationToken ct = default)
+        { 
+            if(string.IsNullOrWhiteSpace(jobNo))
+                throw new ArgumentNullException(nameof(jobNo));
+
+            using var resp = await _httpClient.PostAsJsonAsync(
+                "api/jobno/id",
+                new JobNoIdRequest(jobNo.Trim()),
+                _json,
+                ct);
+
+            resp.EnsureSuccessStatusCode();
+
+            var json = await resp.Content.ReadAsStringAsync(ct);
+
+            return JsonSerializer.Deserialize<int>(json, _json);
         }
     }
 }

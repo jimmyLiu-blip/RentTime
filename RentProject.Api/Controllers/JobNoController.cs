@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using RentProject.Api.Contracts;
 using RentProject.Service;
 
 namespace RentProject.Api.Controllers
@@ -15,7 +15,7 @@ namespace RentProject.Api.Controllers
             _jobNoService = jobNoService;
         }
 
-        // GET /api/jobno/JOB123
+        // GET /api/jobno/JOB123 (抓外部API + 存DB + 回傳）
         [HttpGet("{jobNo}")]
         public async Task<IActionResult> GetByJobNo(string jobNo, CancellationToken ct)
         {
@@ -29,6 +29,25 @@ namespace RentProject.Api.Controllers
                 return NotFound();
 
             return Ok(data);
+        }
+
+        // GET /api/jobno/active?top=8 （下拉清單）
+        [HttpGet("active")]
+        public async Task<ActionResult<List<string>>> GetActiveJobNo([FromQuery] int top = 8, CancellationToken ct = default)
+        {
+            var list = await _jobNoService.GetActiveJobNosAsync(top, ct);
+
+             return Ok(list);
+        }
+
+        [HttpPost("id")]
+        public ActionResult<int> GetOrCreateJobId([FromBody] JobNoIdRequest req)
+        {
+            if (req == null || string.IsNullOrWhiteSpace(req.JobNo))
+                return BadRequest("jobNo不可為空");
+
+            var id = _jobNoService.GetOrCreateJobId(req.JobNo);
+            return Ok(id);
         }
     }
 }

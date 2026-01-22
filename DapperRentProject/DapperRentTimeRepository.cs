@@ -14,27 +14,6 @@ namespace RentProject.Repository
             _connectionString = connectionString;
         }
 
-        // 連線測試
-        public string TestConnection()
-        {
-            try
-            {
-                using var connection = new SqlConnection(_connectionString);
-
-                connection.Open();
-
-                int result = connection.ExecuteScalar<int>("SELECT 1;");
-
-                return result == 1
-                    ? "OK：連線成功，且可執行 SQL (SELECT 1 回傳1)"
-                    : $"連線成功，但 SELECT 1 回傳非預期值：{result}";
-            }
-            catch (Exception ex)
-            {
-                return $"連線失敗：{ex.GetType().Name} - {ex.Message}";
-            }
-        }
-
         // 新增租時單
         public CreateRentTimeResult CreateRentTime(RentTime model, long? bookingBatchId = null)
         {

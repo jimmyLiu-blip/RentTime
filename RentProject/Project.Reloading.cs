@@ -1,23 +1,39 @@
 ﻿using DevExpress.XtraEditors;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace RentProject
 {
     public partial class Project : XtraForm
     {
-        // 更新後重新讀 DB 並套用 UI 狀態
-        private void ReloadRentTimeFromDb()
+        // 只從 Api 讀回來刷新 UI
+        private async Task ReloadRentTimeFromApiAsync()
         {
             if (_editRentTimeId == null) return;
 
-            var data = _rentTimeService.GetRentTimeById(_editRentTimeId.Value);
+            SetLoading(true);
+            try
+            {
+                var data = await _rentTimeApiClient.GetByIdAsync(_editRentTimeId.Value);
+                if (data == null)
+                {
+                    XtraMessageBox.Show("找不到此 RentTime（可能已被刪除）", "提示");
+                    this.DialogResult = DialogResult.Cancel;
+                    this.Close();
+                    return;
+                }
 
-            _loadedRentTime = data;
-
-            FillUIFromModel(data);
-            _uiStatus = (UiRentStatus)data.Status;
-
-            ApplyUiStatus();
-            ApplyTabByStatus();
+                _loadedRentTime = data;
+                FillUIFromModel(data);
+                _uiStatus = (UiRentStatus)data.Status;
+                ApplyUiStatus();
+                ApplyTabByStatus();
+            }
+            finally
+            {
+                SetLoading(false);
+            }
         }
+
     }
 }

@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<JobNoApiOptions>(
     builder.Configuration.GetSection("JobNoApi"));
 
-builder.Services.AddHttpClient<IJobNoApiClient, ProcertJobNoApiClient>((sp, http) =>
+builder.Services.AddHttpClient<IExternalJobNoClient, ProcertJobNoApiClient>((sp, http) =>
 {
     var opt = sp.GetRequiredService<IOptions<JobNoApiOptions>>().Value;
 
@@ -29,12 +29,11 @@ var cs = builder.Configuration.GetConnectionString("DefaultConnection")
 // Repository 
 // Scoped（每次 request 一份）是 WebAPI 常用做法
 builder.Services.AddScoped<DapperRentTimeRepository>(_ => new DapperRentTimeRepository(cs));
-builder.Services.AddScoped<DapperProjectRepository>(_ => new DapperProjectRepository(cs));
 builder.Services.AddScoped<DapperJobNoRepository>(_ => new DapperJobNoRepository(cs));
+builder.Services.AddScoped<DapperHealthRepository>(_ => new DapperHealthRepository(cs));
 
 // services 
 builder.Services.AddScoped<RentTimeService>();
-builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<JobNoService>();
 
 // ===== MVC / Swagger =====

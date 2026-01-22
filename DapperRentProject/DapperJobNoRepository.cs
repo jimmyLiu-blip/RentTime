@@ -31,11 +31,11 @@ namespace RentProject.Repository
 
         }
 
-        public List<string> GetActiveJobNos(int top = 8)
+        public async Task<List<string>> GetActiveJobNosAsync(int top = 8, CancellationToken ct = default)
         {
-            using var connection = new SqlConnection(_connectionString);
+            await using var connection = new SqlConnection(_connectionString);
 
-            connection.Open();
+            await connection.OpenAsync(ct);
 
             var sql = @"
                 SELECT TOP (@Top) JobNo
@@ -45,7 +45,11 @@ namespace RentProject.Repository
                     ISNULL(ModifiedAt, CreatedAt) DESC,
                     JobId DESC;";
 
-            return connection.Query<string>(sql, new { Top = top}).ToList();
+            var cmd = new CommandDefinition(sql, new { Top = top }, cancellationToken: ct);
+
+            var rows = await connection.QueryAsync<string>(cmd);
+
+            return rows.ToList();
         }
 
         // 「同一次存檔」要把 JobNoMaster Upsert + RentTimes Insert 放在同一個 tx

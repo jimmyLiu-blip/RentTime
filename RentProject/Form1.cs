@@ -1,9 +1,8 @@
 ﻿using DevExpress.XtraBars.Ribbon;
 using DevExpress.XtraEditors;
+using Microsoft.Extensions.DependencyInjection;
 using RentProject.Clients;
 using RentProject.Domain;
-using RentProject.Repository;
-using RentProject.Service;
 using RentProject.Shared.UIModels;
 using System;
 using System.Collections.Generic;
@@ -16,12 +15,9 @@ namespace RentProject
 {
     public partial class Form1 : RibbonForm
     {
-        private readonly DapperRentTimeRepository _rentTimeRepo;
-        private readonly RentTimeService _rentTimeservice;
-        private readonly ProjectService _projectService;
-        private readonly DapperJobNoRepository _jobNoRepo;
-        private readonly JobNoService _jobNoService;
         private readonly IRentTimeApiClient _rentTimeApiClient;
+        private readonly IJobNoApiClient _jobNoApiClient;
+        private readonly IServiceProvider _sp;
 
         private ProjectViewControl _projectView;
         private CalendarViewControl _calendarView;
@@ -33,35 +29,25 @@ namespace RentProject
         // true = 目前顯示 CalendarView；false = 目前顯示 ProjectView
         private bool _isCalendarView = true;
 
-        public Form1(
-            DapperRentTimeRepository rentTimeRepo,
-            RentTimeService rentTimeService,
-            ProjectService projectService,
-            DapperJobNoRepository jobNoRepo,
-            JobNoService jobNoService,
-            IRentTimeApiClient rentTimeApiClient
-        )
+        public Form1(IRentTimeApiClient rentTimeApiClient, IJobNoApiClient jobNoApiClient, IServiceProvider sp)
         {
             InitializeComponent();
 
-            _rentTimeRepo = rentTimeRepo;
-            _rentTimeservice = rentTimeService;
-            _projectService = projectService;
-            _jobNoRepo = jobNoRepo;
-            _jobNoService = jobNoService;
             _rentTimeApiClient = rentTimeApiClient;
+            _jobNoApiClient = jobNoApiClient;
+            _sp = sp;
 
-            _projectView = new ProjectViewControl(_rentTimeservice, _projectService, _jobNoService) { Dock = DockStyle.Fill };
+            _projectView = new ProjectViewControl() { Dock = DockStyle.Fill };
+            _calendarView = new CalendarViewControl { Dock = DockStyle.Fill };
+
+            _projectView.EditRequested += OpenEditRentTime;
+            _calendarView.EditRequested += OpenEditRentTime;
+
             _projectView.RentTimeSaved += async () =>
             {
                 try { await RefreshProjectViewAsync(); }
                 catch (Exception ex) { XtraMessageBox.Show(ex.Message, "Error"); }
             };
-
-            _calendarView = new CalendarViewControl { Dock = DockStyle.Fill };
-
-            _projectView.EditRequested += OpenEditRentTime;
-            _calendarView.EditRequested += OpenEditRentTime;
         }
 
         private async void Form1_Load(object sender, System.EventArgs e)
@@ -91,9 +77,8 @@ namespace RentProject
             btnAdvancedFilter.Click -= btnAdvancedFilter_Click;
             btnAdvancedFilter.Click += btnAdvancedFilter_Click;
 
-            _calendarView.PeriodChangeRequested -= CalendarView_PeriodChangeRequested;
-            _calendarView.PeriodChangeRequested += CalendarView_PeriodChangeRequested;
-
+            _calendarView.PeriodChangeRequested -= CalendarView_PeriodChangeRequestedAsync;
+            _calendarView.PeriodChangeRequested += CalendarView_PeriodChangeRequestedAsync;
 
             // 先抓資料 + 塞場地下拉（但不顯示資料）
             await RefreshProjectViewAsync();
@@ -104,9 +89,26 @@ namespace RentProject
             ShowProjectView();
         }
 
+        private Project CreateProjectForm(int? rentTimeId = null)
+        { 
+            var scope = _sp.CreateScope();  // 每次開表單一個 scope，CreateScope() 是從總容器切出一個「小容器」，專門給「這一次開的表單」使用
+            var sp2 = scope.ServiceProvider;
+
+            // 如果是編輯 → 傳 rentTimeId；如果是新增 → 直接從 DI 拿一個 Project。
+            var form = rentTimeId.HasValue
+                ? ActivatorUtilities.CreateInstance<Project>(sp2, rentTimeId.Value) // 它會用 DI 幫你注入「Project 的所有依賴」，但你也可以額外手動塞一些「不是 DI 服務」的參數（例如 rentTimeId）。
+                : sp2.GetRequiredService<Project>(); // 去 DI 容器要一個 Project，DI 會自動幫你把 Project 建構子需要的東西都塞好
+
+            // 讓Form關閉時，也釋放scope
+            // 表單關閉時，請執行我後面提供的這段程式。
+            // _只是佔位符，不管裡面是甚麼
+            form.FormClosed += (_, __) => scope.Dispose();
+            return form;
+        }
+
         private async void btnAddRentTime_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            var form = new Project(_rentTimeApiClient, _projectService, _jobNoService);
+            using var form = CreateProjectForm(null);
 
             var dr = form.ShowDialog();
 
@@ -117,11 +119,17 @@ namespace RentProject
             }
         }
 
-        private void btnTestConnection_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void btnTestConnection_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            string msg = _rentTimeRepo.TestConnection();
-
-            XtraMessageBox.Show(msg, "TestConnection");
+            try 
+            {
+                var msg = await _rentTimeApiClient.PingDBAsync();
+                XtraMessageBox.Show(msg, "API + DB Health");
+            }
+            catch(Exception ex) 
+            {
+                XtraMessageBox.Show(ex.Message, "API + DB Health Fail");
+            }
         }
 
         private void ShowProjectView()
@@ -142,7 +150,7 @@ namespace RentProject
 
         private void OpenEditRentTime(int rentTimedId)
         {
-            var form = new Project(_rentTimeApiClient, _projectService, _jobNoService, rentTimedId);
+            using var form = CreateProjectForm(rentTimedId);
 
             // 只要表單內狀態有變（開始/完成/送出）就刷新
             // handler 就代表「刷新並保持畫面」這個動作
@@ -410,7 +418,7 @@ namespace RentProject
 
                 foreach (var rt in selected)
                 {
-                    await _rentTimeApiClient.DeleteAsync(rt.RentTimeId, user);
+                    await _rentTimeApiClient.DeleteRentTimeByIdAsync(rt.RentTimeId, user);
                 }
 
                 XtraMessageBox.Show($"刪除完成:{selected.Count} 筆", " 完成");
@@ -471,7 +479,7 @@ namespace RentProject
 
                 foreach (var rt in selected)
                 {
-                    await _rentTimeApiClient.SubmitToAssistantAsync(rt.RentTimeId, user);
+                    await _rentTimeApiClient.SubmitToAssistantByIdAsync(rt.RentTimeId, user);
                 }
 
                 XtraMessageBox.Show($"送出完成：{selected.Count}筆", "完成");
@@ -622,7 +630,7 @@ namespace RentProject
                 return;
             }
 
-            var id = _projectView.GetFousedRentTimeId();
+            var id = _projectView.GetFocusedRentTimeId();
 
             if (!id.HasValue)
             {
@@ -638,46 +646,55 @@ namespace RentProject
         {
         }
 
-        private bool CalendarView_PeriodChangeRequested(int rentTimeId, DateTime newStart, DateTime newEnd)
+        private async Task<bool> CalendarView_PeriodChangeRequestedAsync(int rentTimeId, DateTime newStart, DateTime newEnd)
         {
+            // 1. 基本防呆
+            if (newEnd < newStart)
+            {
+                XtraMessageBox.Show("結束時間不能早於開始時間", "提示");
+                return false;
+            }
+
+            var user = GetCurrentUser();  // 你自己的登入者名稱變數
+
             try
             {
-                // 1) 基本防呆
-                if (newEnd < newStart)
-                {
-                    XtraMessageBox.Show("結束時間不能早於開始時間", "提示");
-                    return false;
-                }
-
-                var now = DateTime.Now;
-                var user = GetCurrentUser();  // 你自己的登入者名稱變數
-
-                // 2) 寫回 DB（含跨日拆單）
-                // 建議放在 Service，Form1 不要直接寫 SQL
-                bool ok = _rentTimeApiClient
-                    .ChangeDraftPeriodWithSplitAsync(rentTimeId, newStart, newEnd, user)
-                    .GetAwaiter()
-                    .GetResult();
+                // 2.真正 async：不要 GetResult()
+                bool ok = await _rentTimeApiClient
+                    .ChangeDraftPeriodWithSplitAsync(rentTimeId, newStart, newEnd, user);
 
                 if (!ok)
                 {
                     // 常見原因：已不是 Draft / 已刪除 / 資料被改過
                     XtraMessageBox.Show("只有 Draft 才能拖拉調整（或資料已更新）", "提示");
-                    return false;
                 }
 
-                // 關鍵：不要在 Scheduler 的 Drop/Resize 事件「同步」刷新
-                // 不要現在立刻做 RefreshProjectView()，改成等 UI 有空再做
+                // 3. 延後刷新：避免在 Scheduler 事件流程中同步刷新造成不穩
                 this.BeginInvoke(new Action(async () =>
                 {
-                    await RefreshProjectViewAsync();
+                    try
+                    {
+                        await RefreshAndKeepViewAsync(); // 比 RefreshProjectViewAsync 更完整（會保持畫面）
+                    }
+                    catch (Exception ex)
+                    {
+                        XtraMessageBox.Show($"刷新失敗：{ex.Message}", "錯誤");
+                    }
                 }));
 
-                return true;
+                return ok;
             }
             catch (Exception ex)
             {
                 XtraMessageBox.Show($"更新失敗：{ex.Message}", "錯誤");
+
+                // 失敗也刷新，讓畫面回到正確狀態
+                this.BeginInvoke(new Action(async () =>
+                {
+                    try { await RefreshAndKeepViewAsync(); }
+                    catch { /* 這裡不再疊訊息，避免一直跳 */ }
+                }));
+
                 return false;
             }
         }

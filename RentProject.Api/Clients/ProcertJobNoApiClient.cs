@@ -27,7 +27,7 @@ namespace RentProject.Api.Clients
         public string? Model { get; set; }             // JSON: model
     }
 
-    public class ProcertJobNoApiClient : IJobNoApiClient
+    public class ProcertJobNoApiClient : IExternalJobNoClient
     { 
         private readonly HttpClient _httpClient;
         private readonly JobNoApiOptions _opt;

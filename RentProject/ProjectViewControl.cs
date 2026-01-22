@@ -8,11 +8,9 @@ using RentProject.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RentProject.Service;
 using RentProject.Shared.UIModels;
 using DevExpress.Export;
 using DevExpress.XtraPrinting;
-using System.Windows.Controls;
 using DevExpress.Utils;
 
 
@@ -20,10 +18,6 @@ namespace RentProject
 {
     public partial class ProjectViewControl : XtraUserControl
     {
-        private readonly RentTimeService _rentTimeService;
-        private readonly ProjectService _projectService;
-        private readonly JobNoService _jobNoService;
-
         public event Action<int>? EditRequested;
 
         private int? _selectedRentTimeId = null;
@@ -35,18 +29,6 @@ namespace RentProject
 
             gridView1.RowClick -= gridView1_RowClick;
             gridView1.RowClick += gridView1_RowClick;
-        }
-
-        public ProjectViewControl(RentTimeService rentTimeService, ProjectService projectService, JobNoService jobNoService):this() //有參數建構子，注入Service，this()的意思是先跑初始化設定，把畫面元件都建立好後，才把下面那兩行Service填進去
-        {
-            _rentTimeService = rentTimeService 
-                ?? throw new ArgumentNullException(nameof(rentTimeService));
-
-            _projectService = projectService 
-                ?? throw new ArgumentNullException(nameof(projectService));
-
-            _jobNoService = jobNoService
-                ?? throw new ArgumentNullException(nameof(jobNoService));
         }
 
         public void LoadData(List<RentTime> list)
@@ -247,7 +229,7 @@ namespace RentProject
         }
 
         // 取得選取的列租時單RentTimeId
-        public int? GetFousedRentTimeId()
+        public int? GetFocusedRentTimeId()
         {
             return _selectedRentTimeId;
         }

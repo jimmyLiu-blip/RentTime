@@ -17,9 +17,9 @@ namespace RentProject
             var jobNo = cmbJobNo.Text?.Trim();
             int? jobId = null;
 
-            if (!string.IsNullOrWhiteSpace(jobNo))
+            if (!string.IsNullOrWhiteSpace(jobNo) && string.Equals(jobNo, _currentJobNo, StringComparison.OrdinalIgnoreCase))
             {
-                jobId = _jobNoService.GetOrCreateJobId(jobNo);
+                jobId = _currentJobId;
             }
 
             var uiStart = GetUiStartDateTime();
@@ -27,6 +27,8 @@ namespace RentProject
 
             var model = new RentTime
             {
+                BookingNo = GetBookingNoFromUI(),   // 補這行
+
                 CreatedBy = txtCreatedBy.Text.Trim(),
                 Area = txtArea.Text.Trim(),
                 CustomerName = cmbCompany.Text.Trim(),
@@ -178,6 +180,20 @@ namespace RentProject
 
             RefreshMealAndEstimateUI();
         }
+
+        private string? GetBookingNoFromUI()
+        {
+            var main = txtBookingNo.Text?.Trim();   // 例如 "TMP-0000123"
+            var seq = txtBookingSeq.Text?.Trim();  // 例如 "1"
+
+            if (string.IsNullOrWhiteSpace(main)) return null;
+
+            // 沒有流水號就只回主號（但你的情況通常會有）
+            if (string.IsNullOrWhiteSpace(seq)) return main;
+
+            return $"{main}-{seq}"; // => "TMP-0000123-1"
+        }
+
 
         private void SetBookingNoToUI(string? bookingNo)
         {

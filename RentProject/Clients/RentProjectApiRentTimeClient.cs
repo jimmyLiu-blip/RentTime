@@ -58,7 +58,7 @@ namespace RentProject.Clients
             return JsonSerializer.Deserialize < RentTime >(json, _json);
         }
 
-        public async Task<CreateRentTimeResult> CreateAsync(RentTime model, long? bookingBatchId = null, CancellationToken ct = default)
+        public async Task<CreateRentTimeResult> CreateRentTimeFromApiAsync(RentTime model, long? bookingBatchId = null, CancellationToken ct = default)
         {
             var url = bookingBatchId.HasValue
                 ? $"api/renttimes?bookingBatchId={bookingBatchId.Value}"
@@ -83,7 +83,7 @@ namespace RentProject.Clients
                    ?? throw new Exception("CreateAsync 回傳空結果");
         }
 
-        public async Task UpdateAsync(int rentTimeId, RentTime model, string user, CancellationToken ct = default)
+        public async Task UpdateRentTimeFromApiAsync(int rentTimeId, RentTime model, string user, CancellationToken ct = default)
         {
             var url = $"api/renttimes/{rentTimeId}?user={Uri.EscapeDataString(user)}";
 
@@ -91,35 +91,35 @@ namespace RentProject.Clients
             resp.EnsureSuccessStatusCode();
         }
 
-        public async Task StartAsync(int rentTimeId, string user, CancellationToken ct = default)
+        public async Task StartRentTimeFromApiAsync(int rentTimeId, string user, CancellationToken ct = default)
         {
             var url = $"api/renttimes/{rentTimeId}/start";
             using var resp = await _httpClient.PostAsJsonAsync(url, new { User = user }, ct).ConfigureAwait(false);
             resp.EnsureSuccessStatusCode();
         }
 
-        public async Task FinishAsync(int rentTimeId, string user, CancellationToken ct = default)
+        public async Task FinishRentTimeFromApiAsync(int rentTimeId, string user, CancellationToken ct = default)
         {
             var url = $"api/renttimes/{rentTimeId}/finish";
             using var resp = await _httpClient.PostAsJsonAsync(url, new { User = user }, ct).ConfigureAwait(false);
             resp.EnsureSuccessStatusCode();
         }
 
-        public async Task RestoreAsync(int rentTimeId, string user, CancellationToken ct = default)
+        public async Task RestoreToDraftByIdAsync(int rentTimeId, string user, CancellationToken ct = default)
         {
             var url = $"api/renttimes/{rentTimeId}/restore";
             using var resp = await _httpClient.PostAsJsonAsync(url, new { User = user }, ct).ConfigureAwait(false);
             resp.EnsureSuccessStatusCode();
         }
 
-        public async Task DeleteAsync(int rentTimeId, string user, CancellationToken ct = default)
+        public async Task DeleteRentTimeByIdAsync(int rentTimeId, string user, CancellationToken ct = default)
         {
             var url = $"api/renttimes/{rentTimeId}?user={Uri.EscapeDataString(user)}";
             using var resp = await _httpClient.DeleteAsync(url, ct).ConfigureAwait(false);
             resp.EnsureSuccessStatusCode();
         }
 
-        public async Task SubmitToAssistantAsync(int rentTimeId, string user, CancellationToken ct = default)
+        public async Task SubmitToAssistantByIdAsync(int rentTimeId, string user, CancellationToken ct = default)
         {
             var url = $"api/renttimes/{rentTimeId}/submit";
             using var resp = await _httpClient.PostAsync(url, JsonContent.Create(new { User = user }), ct).ConfigureAwait(false);
@@ -138,7 +138,7 @@ namespace RentProject.Clients
             return JsonSerializer.Deserialize<bool>(txt, _json);
         }
 
-        public async Task<CreateRentTimeResult> CopyAsync(int rentTimeId, bool isHandOver, string user, CancellationToken ct = default)
+        public async Task<CreateRentTimeResult> CopyRentTimeByIdAsync(int rentTimeId, bool isHandOver, string user, CancellationToken ct = default)
         {
             var url = $"api/renttimes/{rentTimeId}/copy";
             var body = new { IsHandOver = isHandOver, User = user };
@@ -163,5 +163,24 @@ namespace RentProject.Clients
             return batchId;
         }
 
+        public async Task<string> PingDBAsync(CancellationToken ct = default)
+        {
+            // 這支要在 WebAPI 端實作：GET /api/health/db
+            const string url = "api/health/db";
+
+            using var resp = await _httpClient.GetAsync(url, ct).ConfigureAwait(false);
+
+            // 不管成功或失敗，都把 body 讀出來（失敗時 body 才是你要顯示給使用者的原因）
+            var body = await resp.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
+
+            if(resp.IsSuccessStatusCode)
+                return body;
+
+            var msg = string.IsNullOrWhiteSpace(body)
+                ?(resp.ReasonPhrase ?? "Unknown error")
+                : body;
+
+            throw new Exception($"API + DB Health Fail ({(int)resp.StatusCode} {resp.StatusCode}):{msg}");
+        }
     }
 }
