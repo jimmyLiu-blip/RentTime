@@ -24,6 +24,5 @@
         public string? CustomerName { get; set; }
 
         public int? Status { get; set; }
-
     }
 }
