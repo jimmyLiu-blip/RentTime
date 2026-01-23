@@ -6,6 +6,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using RentProject.Shared.Http;
 
 namespace RentProject.Clients
 {
@@ -29,19 +30,12 @@ namespace RentProject.Clients
             // 你的 WebAPI 路由：GET /api/renttimes/project-view
             const string url = "api/renttimes/project-view";
 
-            try
-            {
-                // ConfigureAwait(false) 的意思是：不要強制回 UI 執行緒，回來後在哪個 thread 都可以繼續跑
-                using var resp = await _httpClient.GetAsync(url, ct).ConfigureAwait(false);
-                if (!resp.IsSuccessStatusCode) return new List<RentTime>();
+            // ConfigureAwait(false) 的意思是：不要強制回 UI 執行緒，回來後在哪個 thread 都可以繼續跑
+            using var resp = await _httpClient.GetAsync(url, ct).ConfigureAwait(false);
+            await resp.EnsureSuccessOrThrowApiExceptionAsync(ct);
 
-                var json = await resp.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
-                return JsonSerializer.Deserialize<List<RentTime>>(json, _json) ?? new List<RentTime>();
-            }
-            catch
-            { 
-                return new List<RentTime>();
-            }
+            var json = await resp.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
+            return JsonSerializer.Deserialize<List<RentTime>>(json, _json) ?? new List<RentTime>();
         }
 
         public async Task<RentTime?> GetByIdAsync(int rentTimeId, CancellationToken ct = default)
@@ -52,7 +46,7 @@ namespace RentProject.Clients
 
             if (resp.StatusCode == System.Net.HttpStatusCode.NotFound) return null;
 
-            resp.EnsureSuccessStatusCode();
+            await resp.EnsureSuccessOrThrowApiExceptionAsync(ct);
 
             var json = await resp.Content.ReadAsStringAsync(ct).ConfigureAwait (false);
             return JsonSerializer.Deserialize < RentTime >(json, _json);
@@ -64,20 +58,11 @@ namespace RentProject.Clients
                 ? $"api/renttimes?bookingBatchId={bookingBatchId.Value}"
                 : "api/renttimes";
 
-            /*using var resp = await _httpClient.PostAsJsonAsync(url, model, ct).ConfigureAwait(false);
-            resp.EnsureSuccessStatusCode();
-
-            var json = await resp.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
-            return JsonSerializer.Deserialize<CreateRentTimeResult>(json, _json)
-                ?? throw new Exception("CreateAsync回傳空結果");*/
-
             using var resp = await _httpClient.PostAsJsonAsync(url, model, ct).ConfigureAwait(false);
-            var body = await resp.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
 
-            if (!resp.IsSuccessStatusCode)
-            {
-                throw new Exception($"CreateAsync 失敗：HTTP {(int)resp.StatusCode} {resp.ReasonPhrase}\n{body}");
-            }
+            await resp.EnsureSuccessOrThrowApiExceptionAsync(ct);
+
+            var body = await resp.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
 
             return JsonSerializer.Deserialize<CreateRentTimeResult>(body, _json)
                    ?? throw new Exception("CreateAsync 回傳空結果");
@@ -88,42 +73,43 @@ namespace RentProject.Clients
             var url = $"api/renttimes/{rentTimeId}?user={Uri.EscapeDataString(user)}";
 
             using var resp = await _httpClient.PutAsJsonAsync(url, model, ct).ConfigureAwait (false);
-            resp.EnsureSuccessStatusCode();
+
+            await resp.EnsureSuccessOrThrowApiExceptionAsync(ct);
         }
 
         public async Task StartRentTimeFromApiAsync(int rentTimeId, string user, CancellationToken ct = default)
         {
             var url = $"api/renttimes/{rentTimeId}/start";
             using var resp = await _httpClient.PostAsJsonAsync(url, new { User = user }, ct).ConfigureAwait(false);
-            resp.EnsureSuccessStatusCode();
+            await resp.EnsureSuccessOrThrowApiExceptionAsync(ct);
         }
 
         public async Task FinishRentTimeFromApiAsync(int rentTimeId, string user, CancellationToken ct = default)
         {
             var url = $"api/renttimes/{rentTimeId}/finish";
             using var resp = await _httpClient.PostAsJsonAsync(url, new { User = user }, ct).ConfigureAwait(false);
-            resp.EnsureSuccessStatusCode();
+            await resp.EnsureSuccessOrThrowApiExceptionAsync(ct);
         }
 
         public async Task RestoreToDraftByIdAsync(int rentTimeId, string user, CancellationToken ct = default)
         {
             var url = $"api/renttimes/{rentTimeId}/restore";
             using var resp = await _httpClient.PostAsJsonAsync(url, new { User = user }, ct).ConfigureAwait(false);
-            resp.EnsureSuccessStatusCode();
+            await resp.EnsureSuccessOrThrowApiExceptionAsync(ct);
         }
 
         public async Task DeleteRentTimeByIdAsync(int rentTimeId, string user, CancellationToken ct = default)
         {
             var url = $"api/renttimes/{rentTimeId}?user={Uri.EscapeDataString(user)}";
             using var resp = await _httpClient.DeleteAsync(url, ct).ConfigureAwait(false);
-            resp.EnsureSuccessStatusCode();
+            await resp.EnsureSuccessOrThrowApiExceptionAsync(ct);
         }
 
         public async Task SubmitToAssistantByIdAsync(int rentTimeId, string user, CancellationToken ct = default)
         {
             var url = $"api/renttimes/{rentTimeId}/submit";
             using var resp = await _httpClient.PostAsync(url, JsonContent.Create(new { User = user }), ct).ConfigureAwait(false);
-            resp.EnsureSuccessStatusCode();
+            await resp.EnsureSuccessOrThrowApiExceptionAsync(ct);
         }
 
         public async Task<bool> ChangeDraftPeriodWithSplitAsync(int rentTimeId, DateTime newStart, DateTime newEnd, string user, CancellationToken ct = default)
@@ -132,7 +118,7 @@ namespace RentProject.Clients
             var body = new { NewStart = newStart, NewEnd = newEnd, User = user };
 
             using var resp = await _httpClient.PostAsync(url, JsonContent.Create(body), ct).ConfigureAwait(false);
-            resp.EnsureSuccessStatusCode();
+            await resp.EnsureSuccessOrThrowApiExceptionAsync(ct);
 
             var txt = await resp.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
             return JsonSerializer.Deserialize<bool>(txt, _json);
@@ -144,7 +130,7 @@ namespace RentProject.Clients
             var body = new { IsHandOver = isHandOver, User = user };
 
             using var resp = await _httpClient.PostAsJsonAsync(url, body, ct).ConfigureAwait(false);
-            resp.EnsureSuccessStatusCode();
+            await resp.EnsureSuccessOrThrowApiExceptionAsync(ct);
 
             var json = await resp.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
             return JsonSerializer.Deserialize<CreateRentTimeResult>(json, _json)
@@ -156,7 +142,7 @@ namespace RentProject.Clients
             const string url = "api/renttimes/booking-batch";
 
             using var resp = await _httpClient.PostAsync(url, content: null, ct).ConfigureAwait(false);
-            resp.EnsureSuccessStatusCode();
+            await resp.EnsureSuccessOrThrowApiExceptionAsync(ct);
 
             // 你的後端回傳 Ok(long) => JSON 會是純數字，例如：123
             var batchId = await resp.Content.ReadFromJsonAsync<long>(cancellationToken: ct).ConfigureAwait(false);
@@ -168,19 +154,13 @@ namespace RentProject.Clients
             // 這支要在 WebAPI 端實作：GET /api/health/db
             const string url = "api/health/db";
 
+            // 把回應結果包成一個物件 HttpResponseMessage，存在 resp 裡，裡面有：HTTP 狀態碼（200、500…）、header、body（內容）
             using var resp = await _httpClient.GetAsync(url, ct).ConfigureAwait(false);
 
-            // 不管成功或失敗，都把 body 讀出來（失敗時 body 才是你要顯示給使用者的原因）
-            var body = await resp.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
-
-            if(resp.IsSuccessStatusCode)
-                return body;
-
-            var msg = string.IsNullOrWhiteSpace(body)
-                ?(resp.ReasonPhrase ?? "Unknown error")
-                : body;
-
-            throw new Exception($"API + DB Health Fail ({(int)resp.StatusCode} {resp.StatusCode}):{msg}");
+            await resp.EnsureSuccessOrThrowApiExceptionAsync(ct);
+            // 把 HTTP 回應的 body 讀出來
+            // ConfigureAwait(false) 的意思是：我不要求回到原本的執行緒（UI 執行緒）再繼續跑。讓它在哪個背景執行緒繼續都可以。
+            return await resp.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using RentProject.Domain;
-using RentProject.Service;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -8,8 +7,8 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using static System.Net.WebRequestMethods;
 using RentProject.Api.Contracts;
+using RentProject.Shared.Http;
 
 namespace RentProject.Clients
 {
@@ -65,7 +64,7 @@ namespace RentProject.Clients
 
             using var resp = await _httpClient.GetAsync(url, ct);
 
-            resp.EnsureSuccessStatusCode();
+            await resp.EnsureSuccessOrThrowApiExceptionAsync(ct);
 
             var list = await resp.Content.ReadFromJsonAsync<List<string>>(cancellationToken: ct);
 
@@ -83,7 +82,7 @@ namespace RentProject.Clients
                 _json,
                 ct);
 
-            resp.EnsureSuccessStatusCode();
+            await resp.EnsureSuccessOrThrowApiExceptionAsync(ct);
 
             var json = await resp.Content.ReadAsStringAsync(ct);
 
