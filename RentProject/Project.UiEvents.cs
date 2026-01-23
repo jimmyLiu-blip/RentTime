@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace RentProject
 {
@@ -16,29 +17,63 @@ namespace RentProject
         // 午/晚餐
         private void chkHasLunch_CheckedChanged(object sender, EventArgs e)
         {
-            ApplyLunchUI();
-            UpdateEstimatedUI();
+            SafeRun(() =>
+            {
+                ApplyLunchUI();
+                UpdateEstimatedUI();
+            }, caption: "更新午餐失敗");
         }
 
         private void chkHasDinner_CheckedChanged(object sender, EventArgs e)
         {
-            ApplyDinnerUI();
-            UpdateEstimatedUI();
+            SafeRun(() =>
+            {
+                ApplyDinnerUI();
+                UpdateEstimatedUI();
+            }, caption: "更新晚餐失敗");
         }
 
         // 日期/時間/晚餐分鐘 -> 集中刷新
-        private void startDateEdit_EditValueChanged(object sender, EventArgs e) => RefreshMealAndEstimateUI();
-        private void endDateEdit_EditValueChanged(object sender, EventArgs e) => RefreshMealAndEstimateUI();
-        private void startTimeEdit_EditValueChanged(object sender, EventArgs e) => RefreshMealAndEstimateUI();
-        private void endTimeEdit_EditValueChanged(object sender, EventArgs e) => RefreshMealAndEstimateUI();
-        private void cmbDinnerMinutes_EditValueChanged(object sender, EventArgs e) => RefreshMealAndEstimateUI();
+        private void startDateEdit_EditValueChanged(object sender, EventArgs e)
+        {
+            if (_isLoading) return;
+            SafeRun(() => RefreshMealAndEstimateUI(), caption: "刷新預估時間失敗");
+        } 
+        
+        private void endDateEdit_EditValueChanged(object sender, EventArgs e)
+        {
+            if (_isLoading) return;
+            SafeRun(() => RefreshMealAndEstimateUI(), caption: "刷新預估時間失敗");
+        }
+
+        private void startTimeEdit_EditValueChanged(object sender, EventArgs e)
+        {
+            if (_isLoading) return;
+            SafeRun(() => RefreshMealAndEstimateUI(), caption: "刷新預估時間失敗");
+        }
+
+        private void endTimeEdit_EditValueChanged(object sender, EventArgs e)
+        {
+            if (_isLoading) return;
+            SafeRun(() => RefreshMealAndEstimateUI(), caption: "刷新預估時間失敗");
+        }
+
+        private void cmbDinnerMinutes_EditValueChanged(object sender, EventArgs e)
+        {
+            if (_isLoading) return;
+            SafeRun(() => RefreshMealAndEstimateUI(), caption: "刷新預估時間失敗");
+        }
 
         // Location -> Area
         private void cmbLocation_EditValueChanged(object sender, EventArgs e)
         {
-            var location = cmbLocation.Text?.Trim() ?? "";
-            var item = _locations.FirstOrDefault(x => x.Location == location);
-            txtArea.Text = item?.Area ?? "";
+            if (_isLoading) return;
+            SafeRun(() =>
+            {
+                var location = cmbLocation.Text?.Trim() ?? "";
+                var item = _locations.FirstOrDefault(x => x.Location == location);
+                txtArea.Text = item?.Area ?? "";
+            }, caption: "更新場地/區域失敗");
         }
 
         // JobNo 改變 -> 啟動「查詢流程骨架」（會在這裡補：先查DB、再打API）
@@ -46,19 +81,22 @@ namespace RentProject
         {
             if (_isLoading) return;
 
-            // 只要 JobNo 有變動，就取消上一個查詢，避免舊回來亂改 UI
-            _jobNoCts?.Cancel();
+            SafeRun(() =>
+            {
+                // 只要 JobNo 有變動，就取消上一個查詢，避免舊回來亂改 UI
+                _jobNoCts?.Cancel();
 
-            var jobNo = cmbJobNo.Text?.Trim() ?? "";
-            _currentJobNo = string.IsNullOrWhiteSpace(jobNo) ? null : jobNo;
+                var jobNo = cmbJobNo.Text?.Trim() ?? "";
+                _currentJobNo = string.IsNullOrWhiteSpace(jobNo) ? null : jobNo;
 
-            // 規則1：使用者正在輸入中，不查 DB、不清欄位
-            // 先回手動模式，避免規則打架
-            SetAutoFillMode(false);
+                // 規則1：使用者正在輸入中，不查 DB、不清欄位
+                // 先回手動模式，避免規則打架
+                SetAutoFillMode(false);
 
-            // 只要 JobNo 被改，就先視為「API 尚未確認 / 或尚未查到」
-            _jobNoApiHasCustomer = false;
-            _jobNoApiHasSales = false;
+                // 只要 JobNo 被改，就先視為「API 尚未確認 / 或尚未查到」
+                _jobNoApiHasCustomer = false;
+                _jobNoApiHasSales = false;
+            }, caption: "JobNo 變更處理失敗");
         }
 
         // 全部都不是空白才回傳 true，只要有任何一個是空白就回傳 false
@@ -102,21 +140,24 @@ namespace RentProject
         {
             if (_isLoading) return;
 
-            var jobNo = cmbJobNo.Text?.Trim() ?? "";
-
-            if (string.IsNullOrWhiteSpace(jobNo)) return;
-
-            // 先判斷「這次輸入」是不是本來就存在下拉裡
-            bool existedInList = cmbJobNo.Properties.Items.Contains(jobNo);
-
-            // 新的：加進下拉（但不要 return）
-            if (!existedInList && !cmbJobNo.Properties.Items.Contains(jobNo))
+            await SafeRunAsync(async () =>
             {
-               AddJobNoToRecentList(jobNo, max:8);
-            }
+                var jobNo = cmbJobNo.Text?.Trim() ?? "";
 
-            // 不管新舊：都打 API
-            await LookupJobNoFromAPIAsync(jobNo);
+                if (string.IsNullOrWhiteSpace(jobNo)) return;
+
+                // 先判斷「這次輸入」是不是本來就存在下拉裡
+                bool existedInList = cmbJobNo.Properties.Items.Contains(jobNo);
+
+                // 新的：加進下拉（但不要 return）
+                if (!existedInList && !cmbJobNo.Properties.Items.Contains(jobNo))
+                {
+                   AddJobNoToRecentList(jobNo, max:8);
+                }
+
+                // 不管新舊：都打 API
+                await LookupJobNoFromAPIAsync(jobNo);
+            }, caption: "JobNo 查詢失敗");
         }
 
         // 最核心：取消、丟舊、呼叫 API、回填 UI、鎖欄位。
@@ -186,11 +227,21 @@ namespace RentProject
             catch (OperationCanceledException)
             {
                 // 使用者改了 JobNo，這次查詢被取消是正常狀況，直接結束
-                return;
+            }
+            catch (Exception ex)
+            { 
+                XtraMessageBox.Show($"{ex.GetType().Name}-{ex.Message}","JobNo 查詢失敗",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                ApplyJobNoMasterToUI(null);
+                SetAutoFillMode(false);
+                _jobNoApiHasCustomer = false;
+                _jobNoApiHasSales = false;
             }
             finally //不管 try 中途 return、或發生例外，finally 一定會跑
             {
-                if (seq == _jobLockupSeq && !ct.IsCancellationRequested)
+                // 只允許「最新那次」把 loading 收掉；舊的查詢不要亂關
+                if (seq == _jobLockupSeq)
                 {
                     _isJobLockupLoading = false;
                     SetLoading(false);
@@ -201,8 +252,12 @@ namespace RentProject
         // TestMode -> TestItem
         private void cmbTestMode_EditValueChanged(object sender, EventArgs e)
         {
-            var mode = cmbTestMode.Text?.Trim() ?? "";
-            UpdateTestItem(mode);
+            if (_isLoading) return;
+            SafeRun(() =>
+            {
+                var mode = cmbTestMode.Text?.Trim() ?? "";
+                UpdateTestItem(mode);
+            }, caption: "更新測試項目失敗");
         }
 
         // 限制jobNo下拉呈現數量

@@ -140,7 +140,7 @@ namespace RentProject
 
             if (isFinished)
             {
-                var full = _loadedRentTime?.BookingNo.Trim();
+                var full = _loadedRentTime?.BookingNo?.Trim();
 
                 // full 例：RF-0000123-1  或 TMP-0000123-1
                 // 目標：只留下 RF-0000123 或 TMP-0000123

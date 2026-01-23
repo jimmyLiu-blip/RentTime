@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using RentProject.Clients;
+using System.Threading.Tasks;
 
 namespace RentProject
 {
@@ -83,6 +84,44 @@ namespace RentProject
             this.Cursor = loading ? Cursors.WaitCursor : Cursors.Default;
         }
 
+        // ===== 共用 try/catch 包裝（比照 Form1）=====
+        // Action action：不能 await 它，也不會知道它何時做完
+        private void SafeRun(Action action, string caption = "錯誤", bool useLoading = false)
+        {
+            try
+            {
+                if (useLoading) SetLoading(true);
+                action();
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                if (useLoading) SetLoading(false);
+            }
+        }
+
+        // Func<Task> action：做一件「非同步」的事，不等它做完：action();（等同丟出去）；等它做完：await action();（推薦，能接住錯誤、能控制流
+        private async Task SafeRunAsync(Func<Task> action, string caption = "錯誤", bool useLoading = false)
+        {
+            try
+            {
+                if (useLoading) SetLoading(true);
+
+                await action(); // 執行你傳進來的 async 流程，並接住它丟出的例外
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                if (useLoading) SetLoading(false);
+            }
+        }
+
         private void SetAutoFillMode(bool enabled)
         {
             // 只要欄位「有值」就鎖；沒有值就開放
@@ -138,128 +177,135 @@ namespace RentProject
         {
             // ===== 新增：修正 DateEdit 和 TimeEdit 的 Mask 問題 =====
             // 1. 設定 DateEdit（處理日期輸入問題）
-            ConfigureDateEdit(startDateEdit);
-            ConfigureDateEdit(endDateEdit);
+            SafeRun(() =>
+            {
+                ConfigureDateEdit(startDateEdit);
+                ConfigureDateEdit(endDateEdit);
 
-            // 2. 設定 TimeEdit - 完整設定（關鍵：先設定格式）
-            startTimeEdit.Properties.Mask.MaskType = MaskType.None;
-            startTimeEdit.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard;
-            startTimeEdit.Properties.DisplayFormat.FormatString = "HH:mm";
-            startTimeEdit.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Custom;  // ← 改成 Custom
-            startTimeEdit.Properties.EditFormat.FormatString = "HH:mm";
-            startTimeEdit.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Custom;     // ← 改成 Custom
-            ConfigureTimeEdit(startTimeEdit);
+                // 2. 設定 TimeEdit - 完整設定（關鍵：先設定格式）
+                startTimeEdit.Properties.Mask.MaskType = MaskType.None;
+                startTimeEdit.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard;
+                startTimeEdit.Properties.DisplayFormat.FormatString = "HH:mm";
+                startTimeEdit.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Custom;  // ← 改成 Custom
+                startTimeEdit.Properties.EditFormat.FormatString = "HH:mm";
+                startTimeEdit.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Custom;     // ← 改成 Custom
+                ConfigureTimeEdit(startTimeEdit);
 
-            endTimeEdit.Properties.Mask.MaskType = MaskType.None;
-            endTimeEdit.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard;
-            endTimeEdit.Properties.DisplayFormat.FormatString = "HH:mm";
-            endTimeEdit.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Custom;    // ← 改成 Custom
-            endTimeEdit.Properties.EditFormat.FormatString = "HH:mm";
-            endTimeEdit.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Custom;       // ← 改成 Custom
-            ConfigureTimeEdit(endTimeEdit);
+                endTimeEdit.Properties.Mask.MaskType = MaskType.None;
+                endTimeEdit.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard;
+                endTimeEdit.Properties.DisplayFormat.FormatString = "HH:mm";
+                endTimeEdit.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Custom;    // ← 改成 Custom
+                endTimeEdit.Properties.EditFormat.FormatString = "HH:mm";
+                endTimeEdit.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Custom;       // ← 改成 Custom
+                ConfigureTimeEdit(endTimeEdit);
 
-            cmbJobNo.EditValueChanged -= cmbJobNo_EditValueChanged;
-            cmbJobNo.EditValueChanged += cmbJobNo_EditValueChanged;
+                cmbJobNo.EditValueChanged -= cmbJobNo_EditValueChanged;
+                cmbJobNo.EditValueChanged += cmbJobNo_EditValueChanged;
 
-            // 手動輸入後，自動保存(Validated 事件)
-            cmbJobNo.Validated -= cmbJobNo_Validated;
-            cmbJobNo.Validated += cmbJobNo_Validated;
+                // 手動輸入後，自動保存(Validated 事件)
+                cmbJobNo.Validated -= cmbJobNo_Validated;
+                cmbJobNo.Validated += cmbJobNo_Validated;
 
-            // 場地改變 -> 自動帶入區域
-            cmbLocation.EditValueChanged -= cmbLocation_EditValueChanged;
-            cmbLocation.EditValueChanged += cmbLocation_EditValueChanged;
+                // 場地改變 -> 自動帶入區域
+                cmbLocation.EditValueChanged -= cmbLocation_EditValueChanged;
+                cmbLocation.EditValueChanged += cmbLocation_EditValueChanged;
 
-            // 測試模式改變 -> 自動帶出測試項目
-            cmbTestMode.EditValueChanged -= cmbTestMode_EditValueChanged;
-            cmbTestMode.EditValueChanged += cmbTestMode_EditValueChanged;
+                // 測試模式改變 -> 自動帶出測試項目
+                cmbTestMode.EditValueChanged -= cmbTestMode_EditValueChanged;
+                cmbTestMode.EditValueChanged += cmbTestMode_EditValueChanged;
 
-            // 綁定租時開始、租時完成、回復狀態
-            btnRentTimeStart.Click -= btnRentTimeStart_Click;
-            btnRentTimeStart.Click += btnRentTimeStart_Click;
+                // 綁定租時開始、租時完成、回復狀態
+                btnRentTimeStart.Click -= btnRentTimeStart_Click;
+                btnRentTimeStart.Click += btnRentTimeStart_Click;
 
-            btnRentTimeEnd.Click -= btnRentTimeEnd_Click;
-            btnRentTimeEnd.Click += btnRentTimeEnd_Click;
+                btnRentTimeEnd.Click -= btnRentTimeEnd_Click;
+                btnRentTimeEnd.Click += btnRentTimeEnd_Click;
 
-            btnRestoreRentTime.Click -= btnRestoreRentTime_Click;
-            btnRestoreRentTime.Click += btnRestoreRentTime_Click;
+                btnRestoreRentTime.Click -= btnRestoreRentTime_Click;
+                btnRestoreRentTime.Click += btnRestoreRentTime_Click;
 
-            // 綁定：建立 / 刪除 / 複製
-            btnCreatedRentTime.Click -= btnCreatedRentTime_Click;
-            btnCreatedRentTime.Click += btnCreatedRentTime_Click;
+                // 綁定：建立 / 刪除 / 複製
+                btnCreatedRentTime.Click -= btnCreatedRentTime_Click;
+                btnCreatedRentTime.Click += btnCreatedRentTime_Click;
 
-            btnDeletedRentTime.Click -= btnDeletedRentTime_Click;
-            btnDeletedRentTime.Click += btnDeletedRentTime_Click;
+                btnDeletedRentTime.Click -= btnDeletedRentTime_Click;
+                btnDeletedRentTime.Click += btnDeletedRentTime_Click;
 
-            btnCopyRentTime.Click -= btnCopyRentTime_Click;
-            btnCopyRentTime.Click += btnCopyRentTime_Click;
+                btnCopyRentTime.Click -= btnCopyRentTime_Click;
+                btnCopyRentTime.Click += btnCopyRentTime_Click;
 
-            // 日期/時間改變就刷新午餐晚餐可用性 + 預估時間
-            startDateEdit.EditValueChanged -= AnyTimeOrMealChanged;
-            startDateEdit.EditValueChanged += AnyTimeOrMealChanged;
+                // 日期/時間改變就刷新午餐晚餐可用性 + 預估時間
+                startDateEdit.EditValueChanged -= AnyTimeOrMealChanged;
+                startDateEdit.EditValueChanged += AnyTimeOrMealChanged;
 
-            endDateEdit.EditValueChanged -= AnyTimeOrMealChanged;
-            endDateEdit.EditValueChanged += AnyTimeOrMealChanged;
+                endDateEdit.EditValueChanged -= AnyTimeOrMealChanged;
+                endDateEdit.EditValueChanged += AnyTimeOrMealChanged;
 
-            startTimeEdit.EditValueChanged -= AnyTimeOrMealChanged;
-            startTimeEdit.EditValueChanged += AnyTimeOrMealChanged;
+                startTimeEdit.EditValueChanged -= AnyTimeOrMealChanged;
+                startTimeEdit.EditValueChanged += AnyTimeOrMealChanged;
 
-            endTimeEdit.EditValueChanged -= AnyTimeOrMealChanged;
-            endTimeEdit.EditValueChanged += AnyTimeOrMealChanged;
+                endTimeEdit.EditValueChanged -= AnyTimeOrMealChanged;
+                endTimeEdit.EditValueChanged += AnyTimeOrMealChanged;
 
-            // 勾午餐/晚餐、選晚餐分鐘也要刷新預估時間
-            chkHasLunch.CheckedChanged -= AnyTimeOrMealChanged;
-            chkHasLunch.CheckedChanged += AnyTimeOrMealChanged;
+                // 勾午餐/晚餐、選晚餐分鐘也要刷新預估時間
+                chkHasLunch.CheckedChanged -= AnyTimeOrMealChanged;
+                chkHasLunch.CheckedChanged += AnyTimeOrMealChanged;
 
-            chkHasDinner.CheckedChanged -= AnyTimeOrMealChanged;
-            chkHasDinner.CheckedChanged += AnyTimeOrMealChanged;
+                chkHasDinner.CheckedChanged -= AnyTimeOrMealChanged;
+                chkHasDinner.CheckedChanged += AnyTimeOrMealChanged;
 
-            cmbDinnerMinutes.EditValueChanged -= AnyTimeOrMealChanged;
-            cmbDinnerMinutes.EditValueChanged += AnyTimeOrMealChanged;
+                cmbDinnerMinutes.EditValueChanged -= AnyTimeOrMealChanged;
+                cmbDinnerMinutes.EditValueChanged += AnyTimeOrMealChanged;
 
-            // Init 下拉選單
-            InitTestModeCombo();
-            InitEngineerCombo();
-            InitDinnerMinutesCombo();
+                // Init 下拉選單
+                InitTestModeCombo();
+                InitEngineerCombo();
+                InitDinnerMinutesCombo();
 
-            // 晚餐顯示文字 "xx 分"
-            cmbDinnerMinutes.CustomDisplayText -= cmbDinnerMinutes_CustomDisplayText;
-            cmbDinnerMinutes.CustomDisplayText += cmbDinnerMinutes_CustomDisplayText;
+                // 晚餐顯示文字 "xx 分"
+                cmbDinnerMinutes.CustomDisplayText -= cmbDinnerMinutes_CustomDisplayText;
+                cmbDinnerMinutes.CustomDisplayText += cmbDinnerMinutes_CustomDisplayText;
 
-            // 依 TestMode 更新 TestItem
-            UpdateTestItem(cmbTestMode.Text?.Trim() ?? "");
+                // 依 TestMode 更新 TestItem
+                UpdateTestItem(cmbTestMode.Text?.Trim() ?? "");
+            }, caption: "初始化失敗");
 
             // JobNo 下拉
-            cmbJobNo.Properties.Items.Clear();
-            var jobNos = await _jobNoApiClient.GetActiveJobNoAsync(8, this._jobNoCts?.Token ?? default);
-            cmbJobNo.Properties.Items.AddRange(jobNos.ToArray());
+            await SafeRunAsync(async () =>
+            {
+                cmbJobNo.Properties.Items.Clear();
+                var jobNos = await _jobNoApiClient.GetActiveJobNoAsync(8, this._jobNoCts?.Token ?? default);
+                cmbJobNo.Properties.Items.AddRange(jobNos.ToArray());
+            }, caption: "載入 JobNo 失敗", useLoading: true);
 
-            // 清空日期時間
-            startDateEdit.EditValue = null;
-            endDateEdit.EditValue = null;
-            startTimeEdit.EditValue = null;
-            endTimeEdit.EditValue = null;
+            SafeRun(() =>
+            {
+                // 清空日期時間
+                startDateEdit.EditValue = null;
+                endDateEdit.EditValue = null;
+                startTimeEdit.EditValue = null;
+                endTimeEdit.EditValue = null;
 
-            RefreshMealAndEstimateUI();
+                RefreshMealAndEstimateUI();
 
-            // 編輯模式才顯示的控制項
-            btnDeletedRentTime.Visible = _editRentTimeId != null;
-            btnRestoreRentTime.Visible = _editRentTimeId != null;
-            btnRentTimeEnd.Visible = _editRentTimeId != null;
-            btnRentTimeStart.Visible = _editRentTimeId != null;
-            chkHandover.Visible = _editRentTimeId != null;
-            lblCreatedBy.Visibility = _editRentTimeId != null ? DevExpress.XtraLayout.Utils.LayoutVisibility.Always : DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
-            txtCreatedBy.Visible = _editRentTimeId != null;
-            btnCopyRentTime.Visible = _editRentTimeId != null;
+                // 編輯模式才顯示的控制項
+                btnDeletedRentTime.Visible = _editRentTimeId != null;
+                btnRestoreRentTime.Visible = _editRentTimeId != null;
+                btnRentTimeEnd.Visible = _editRentTimeId != null;
+                btnRentTimeStart.Visible = _editRentTimeId != null;
+                chkHandover.Visible = _editRentTimeId != null;
+                lblCreatedBy.Visibility = _editRentTimeId != null ? DevExpress.XtraLayout.Utils.LayoutVisibility.Always : DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
+                txtCreatedBy.Visible = _editRentTimeId != null;
+                btnCopyRentTime.Visible = _editRentTimeId != null;
+
+            }, caption: "初始化 UI 失敗(後段)");
 
             // 新增模式：預設建單人員
             if (_editRentTimeId == null)
             {
-                SetLoading(true);
-                try
+                await SafeRunAsync(async () =>
                 {
                     _bookingBatchId = await _rentTimeApiClient.CreateBookingBatchAsync();
-
-                    // 用同一個方法一次填滿 txtBookingNo + txtBookingSeq（避免只填一格或被覆蓋）
                     SetBookingNoToUI($"TMP-{_bookingBatchId.Value:D7}-1");
 
                     txtCreatedBy.Text = "Jimmy"; // 或改成 _currentUser
@@ -267,50 +313,44 @@ namespace RentProject
 
                     ApplyUiStatus();
                     ApplyTabByStatus();
-                }
-                catch (Exception ex)
-                {
-                    XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", "CreateBookingBatch 失敗");
-                    // 失敗就別讓使用者繼續亂按存檔
+
+                }, caption: "CreateBookingBatch 失敗", useLoading: true);
+
+                // 若失敗：_bookingBatchId 仍是 null，就比照你原本邏輯把存檔鎖住
+                if (_bookingBatchId == null)
                     btnCreatedRentTime.Enabled = false;
-                }
-                finally
-                {
-                    SetLoading(false);
-                }
 
                 return;
             }
 
-            // 編輯模式：讀 API 填回 UI
-            SetLoading(true);
+            // 編輯模式：先讀 API，再填 UI（拆成兩段：API / 填回）
             RentTime? data = null;
-            try
+
+            await SafeRunAsync(async () =>
             {
                 data = await _rentTimeApiClient.GetByIdAsync(_editRentTimeId.Value);
-            }
-            finally
-            {
-                SetLoading(false);
-            }
+            }, caption: "讀取 RentTime 失敗", useLoading: true);
 
             if (data == null)
             {
                 XtraMessageBox.Show("找不到此 RentTime（可能已被刪除）", "提示");
-                this.DialogResult = DialogResult.Cancel;
-                this.Close();
+                DialogResult = DialogResult.Cancel;
+                Close();
                 return;
             }
 
-            _loadedRentTime = data;
-            FillUIFromModel(data);
+            SafeRun(() =>
+            {
+                _loadedRentTime = data;
+                FillUIFromModel(data);
 
-            // 讓編輯模式一打開就把旗標同步成正確狀態（不用 JobNo + Tab）
-            SyncJobNoApiFlagsFromLoadedUI();
+                SyncJobNoApiFlagsFromLoadedUI();
 
-            _uiStatus = (UiRentStatus)data.Status;
-            ApplyUiStatus();
-            ApplyTabByStatus();
+                _uiStatus = (UiRentStatus)data.Status;
+                ApplyUiStatus();
+                ApplyTabByStatus();
+
+            }, caption: "填回 RentTime 到 UI 失敗");
         }
 
         // =========================================================
@@ -324,7 +364,7 @@ namespace RentProject
                 return;
             }
 
-            try
+            await SafeRunAsync(async () =>
             {
                 dxErrorProvider1.ClearErrors();
 
@@ -384,11 +424,7 @@ namespace RentProject
 
                 this.DialogResult = DialogResult.OK;
                 this.Close();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", "Error");
-            }
+            }, caption: "存檔失敗", useLoading: true);
         }
 
         private async void btnRentTimeStart_Click(object sender, EventArgs e)
@@ -398,7 +434,8 @@ namespace RentProject
                 UploadScanCopy();
                 return;
             }
-            try
+
+            await SafeRunAsync(async () =>
             {
                 if (_editRentTimeId == null) return;
 
@@ -423,11 +460,7 @@ namespace RentProject
                 // (3) 重新讀 DB 刷新 UI
                 await ReloadRentTimeFromApiAsync();
                 NotifyRentTimeChanged(); // 通知外面刷新 ProjectView
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show($"{ex.GetType().Name}-{ex.Message}", "Error");
-            }
+            }, caption: "租時開始失敗", useLoading: true);
         }
 
         private async void btnRentTimeEnd_Click(object sender, EventArgs e)
@@ -438,7 +471,7 @@ namespace RentProject
                 return;
             }
 
-            try
+            await SafeRunAsync(async () =>
             {
                 if (_editRentTimeId == null) return;
 
@@ -474,16 +507,12 @@ namespace RentProject
                 await ReloadRentTimeFromApiAsync(); // 完成後 UI 應該立刻鎖住 + Copy 亮起
 
                 NotifyRentTimeChanged(); // 通知外面刷新 ProjectView
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", "Error");
-            }
+            }, caption: "租時完成失敗", useLoading: true);
         }
 
         private async void btnRestoreRentTime_Click(object sender, EventArgs e)
         {
-            try
+            await SafeRunAsync(async () =>
             {
                 if (_editRentTimeId == null) return;
 
@@ -501,16 +530,12 @@ namespace RentProject
                 await ReloadRentTimeFromApiAsync();  // 回復後 UI 應該解鎖
 
                 NotifyRentTimeChanged(); // 通知外面刷新 ProjectView
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", "Error");
-            }
+            }, caption: "回復租時失敗", useLoading: true);
         }
 
         private async void btnDeletedRentTime_Click(object sender, EventArgs e)
         {
-            try
+            await SafeRunAsync(async () =>
             {
                 if (_editRentTimeId == null) return;
 
@@ -527,17 +552,13 @@ namespace RentProject
 
                 this.DialogResult = DialogResult.OK;
                 this.Close();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", "Error");
-            }
+            }, caption: "刪除租時單失敗", useLoading: true);
         }
 
         // 複製單據
         private async void btnCopyRentTime_Click(object sender, EventArgs e)
         {
-            try
+            await SafeRunAsync(async () =>
             {
                 if (_editRentTimeId == null) return;
 
@@ -592,11 +613,7 @@ namespace RentProject
                 // 3) 新單關掉後：把舊單也關掉，回傳 OK 讓外層刷新列表
                 this.DialogResult = DialogResult.OK;
                 this.Close();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", "Error");
-            }
+            }, caption: "複製租時單失敗", useLoading: true);
         }
 
         // =========================================================
@@ -618,59 +635,69 @@ namespace RentProject
         // 送出給助理空方法
         private async void SubmitToAssistant()
         {
-            if (_editRentTimeId == null) return;
-
-            if (_uiStatus != UiRentStatus.Finished)
+            await SafeRunAsync(async () =>
             {
-                XtraMessageBox.Show("只有「已完成」的租時單才能送出給助理", "提示");
-                return;
-            }
+                if (_editRentTimeId == null) return;
 
-            var confirm = XtraMessageBox.Show(
-                "確認要送出給助理嗎？\n送出後將進入「已送出」狀態", "送出給助理", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (_uiStatus != UiRentStatus.Finished)
+                {
+                    XtraMessageBox.Show("只有「已完成」的租時單才能送出給助理", "提示");
+                    return;
+                }
 
-            if (confirm != DialogResult.Yes) return;
+                var confirm = XtraMessageBox.Show(
+                    "確認要送出給助理嗎？\n送出後將進入「已送出」狀態", "送出給助理", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            var user = _currentUser ?? "";
+                if (confirm != DialogResult.Yes) return;
 
-            if (string.IsNullOrWhiteSpace(user))
-            {
-                XtraMessageBox.Show("找不到操作人（CreatedBy），請先確認表單建單人員欄位", "提示");
-                return;
-            }
+                var user = _currentUser ?? "";
 
-            await _rentTimeApiClient.SubmitToAssistantByIdAsync(_editRentTimeId.Value, user);
+                if (string.IsNullOrWhiteSpace(user))
+                {
+                    XtraMessageBox.Show("找不到操作人（CreatedBy），請先確認表單建單人員欄位", "提示");
+                    return;
+                }
 
-            // 重新讀 DB，讓 _uiStatus 變成 送出給助理
-            await ReloadRentTimeFromApiAsync();
+                await _rentTimeApiClient.SubmitToAssistantByIdAsync(_editRentTimeId.Value, user);
 
-            //通知外面(ProjectView/Form1)刷新
-            NotifyRentTimeChanged();
+                // 重新讀 DB，讓 _uiStatus 變成 送出給助理
+                await ReloadRentTimeFromApiAsync();
+
+                //通知外面(ProjectView/Form1)刷新
+                NotifyRentTimeChanged();
+
+            }, caption: "送出給助理失敗", useLoading: true);
         }
 
         // 午餐/晚餐事件綁定
         private void AnyTimeOrMealChanged(object? sender, EventArgs e)
         {
             if (_isLoading) return; // 你有 _isLoading 就先保護，避免程式塞值時一直連鎖觸發
-            RefreshMealAndEstimateUI();
+            SafeRun(() =>
+            {
+                RefreshMealAndEstimateUI();
+            }, caption:"更新午餐/晚餐與預估時間失敗");
         }
 
         private void SyncJobNoApiFlagsFromLoadedUI()
         {
-            bool HasText(string? s) => !string.IsNullOrWhiteSpace(s);
+            SafeRun(() =>
+            {
+                bool HasText(string? s) => !string.IsNullOrWhiteSpace(s);
 
-            // JobNo 沒值: 一律視為沒查到
-            if (!HasText(cmbJobNo.Text))
-            { 
-                _jobNoApiHasCustomer = false;
-                _jobNoApiHasSales = false;
-                return;
-            }
-            // 用 ProjectNo / ProjectName / PE 當作「API 有回主檔」的證據
-            bool hasMaster = HasText(txtPE.Text) || HasText(txtProjectName.Text) || HasText(txtProjectNo.Text);
+                // JobNo 沒值: 一律視為沒查到
+                if (!HasText(cmbJobNo.Text))
+                {
+                    _jobNoApiHasCustomer = false;
+                    _jobNoApiHasSales = false;
+                    return;
+                }
+                // 用 ProjectNo / ProjectName / PE 當作「API 有回主檔」的證據
+                bool hasMaster = HasText(txtPE.Text) || HasText(txtProjectName.Text) || HasText(txtProjectNo.Text);
 
-            _jobNoApiHasCustomer = hasMaster && HasText(cmbCompany.Text);
-            _jobNoApiHasSales = hasMaster && HasText(txtSales.Text);
+                _jobNoApiHasCustomer = hasMaster && HasText(cmbCompany.Text);
+                _jobNoApiHasSales = hasMaster && HasText(txtSales.Text);
+            }, caption: "同步 JobNo 失敗");
         }
     }
 }

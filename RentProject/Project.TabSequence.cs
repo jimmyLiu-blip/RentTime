@@ -52,76 +52,25 @@ namespace RentProject
 
         private void ApplyTabByStatus()
         {
-            bool isCreate = _editRentTimeId == null;
-
-            // Finished：通常是檢視，不需要填欄位，就把 Tab 都關掉，避免游標亂跑
-            if (_uiStatus == UiRentStatus.Finished)
+            SafeRun(() =>
             {
-                ApplyTabSequence(
-                btnCreatedRentTime,   // 列印
-                btnRentTimeStart,     // 上傳掃描影本
-                btnRentTimeEnd,       // 送出給助理
-                btnCopyRentTime       // 複製
-                 );
-                return;
-            }
+                    bool isCreate = _editRentTimeId == null;
 
-            if (_uiStatus == UiRentStatus.Started)
-            {
-                ApplyTabSequence(
-                cmbLocation,
-                cmbJobNo,
-                txtSales,
-                cmbCompany,
-                txtContactName,
-                txtContactPhone,
-                memoTestInformation,
+                // Finished：通常是檢視，不需要填欄位，就把 Tab 都關掉，避免游標亂跑
+                if (_uiStatus == UiRentStatus.Finished)
+                {
+                    ApplyTabSequence(
+                    btnCreatedRentTime,   // 列印
+                    btnRentTimeStart,     // 上傳掃描影本
+                    btnRentTimeEnd,       // 送出給助理
+                    btnCopyRentTime       // 複製
+                     );
+                    return;
+                }
 
-                startDateEdit,
-                endDateEdit,
-                startTimeEdit,
-                endTimeEdit,
-                chkHasLunch,
-                chkHasDinner,
-                cmbDinnerMinutes,
-
-                txtSampleModel,
-                txtSampleNo,
-
-                cmbTestMode,
-                cmbTestItem,
-                memoNote,
-
-                chkHandover,
-
-                btnCreatedRentTime,  // 儲存修改（或建立）
-                btnRentTimeEnd       // 租時完成
-            );
-                return;
-            }
-
-            // Draft：新增/編輯各自一套（你說你要分開）
-            if (isCreate)
-            {
-                // 新增 Draft
-                ApplyTabSequence(
-                    cmbLocation,
-                    cmbJobNo,
-                    txtSales,
-                    cmbCompany,
-
-                    startDateEdit,
-                    endDateEdit,
-                    startTimeEdit,
-                    endTimeEdit,
-
-                    btnCreatedRentTime // 建立租時單
-                );
-            }
-            else
-            {
-                // 編輯 Draft
-                ApplyTabSequence(
+                if (_uiStatus == UiRentStatus.Started)
+                {
+                    ApplyTabSequence(
                     cmbLocation,
                     cmbJobNo,
                     txtSales,
@@ -130,7 +79,13 @@ namespace RentProject
                     txtContactPhone,
                     memoTestInformation,
 
-                    cmbJobNo,
+                    startDateEdit,
+                    endDateEdit,
+                    startTimeEdit,
+                    endTimeEdit,
+                    chkHasLunch,
+                    chkHasDinner,
+                    cmbDinnerMinutes,
 
                     txtSampleModel,
                     txtSampleNo,
@@ -139,12 +94,60 @@ namespace RentProject
                     cmbTestItem,
                     memoNote,
 
-                    btnCreatedRentTime,  // 儲存修改
-                    btnRentTimeStart,    // 租時開始
-                    btnRestoreRentTime,  // 回復
-                    btnDeletedRentTime  // 刪除
+                    chkHandover,
+
+                    btnCreatedRentTime,  // 儲存修改（或建立）
+                    btnRentTimeEnd       // 租時完成
                 );
-            }
+                    return;
+                }
+
+                // Draft：新增/編輯各自一套（你說你要分開）
+                if (isCreate)
+                {
+                    // 新增 Draft
+                    ApplyTabSequence(
+                        cmbLocation,
+                        cmbJobNo,
+                        txtSales,
+                        cmbCompany,
+
+                        startDateEdit,
+                        endDateEdit,
+                        startTimeEdit,
+                        endTimeEdit,
+
+                        btnCreatedRentTime // 建立租時單
+                    );
+                }
+                else
+                {
+                    // 編輯 Draft
+                    ApplyTabSequence(
+                        cmbLocation,
+                        cmbJobNo,
+                        txtSales,
+                        cmbCompany,
+                        txtContactName,
+                        txtContactPhone,
+                        memoTestInformation,
+
+                        cmbJobNo,
+
+                        txtSampleModel,
+                        txtSampleNo,
+
+                        cmbTestMode,
+                        cmbTestItem,
+                        memoNote,
+
+                        btnCreatedRentTime,  // 儲存修改
+                        btnRentTimeStart,    // 租時開始
+                        btnRestoreRentTime,  // 回復
+                        btnDeletedRentTime  // 刪除
+                    );
+                }
+            }, caption: "套用 Tab 順序失敗");
         }
     }
 }

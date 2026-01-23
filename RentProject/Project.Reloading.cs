@@ -11,8 +11,7 @@ namespace RentProject
         {
             if (_editRentTimeId == null) return;
 
-            SetLoading(true);
-            try
+            await SafeRunAsync(async () =>
             {
                 var data = await _rentTimeApiClient.GetByIdAsync(_editRentTimeId.Value);
                 if (data == null)
@@ -25,18 +24,14 @@ namespace RentProject
 
                 _loadedRentTime = data;
                 FillUIFromModel(data);
+
                 // 讓編輯模式一打開就把旗標同步成正確狀態（不用 JobNo + Tab）
                 SyncJobNoApiFlagsFromLoadedUI();
 
                 _uiStatus = (UiRentStatus)data.Status;
                 ApplyUiStatus();
                 ApplyTabByStatus();
-            }
-            finally
-            {
-                SetLoading(false);
-            }
+            }, caption: "刷新 RentTime 失敗", useLoading: true);
         }
-
     }
 }
