@@ -30,7 +30,7 @@ namespace RentProject
             var timeout = ext.RentApi.TimeoutSeconds <= 0 ? 10 : ext.RentApi.TimeoutSeconds;
 
             // 3. IJobNoApiClient（給 JobNoService 用）
-            services.AddHttpClient<IJobNoApiClient, RentProject.Clients.RentProjectApiJobNoClient>(http =>
+            services.AddHttpClient<IJobNoApiClient, RentProjectApiJobNoClient>(http =>
             {
                 http.BaseAddress = new Uri(BaseUrl, UriKind.Absolute);
                 http.Timeout = TimeSpan.FromSeconds(timeout);

@@ -643,6 +643,9 @@ namespace RentProject
 
             // 重新讀 DB，讓 _uiStatus 變成 送出給助理
             await ReloadRentTimeFromApiAsync();
+
+            //通知外面(ProjectView/Form1)刷新
+            NotifyRentTimeChanged();
         }
 
         // 午餐/晚餐事件綁定

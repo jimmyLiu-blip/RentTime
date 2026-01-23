@@ -52,15 +52,17 @@ namespace RentProject
 
         private async void Form1_Load(object sender, System.EventArgs e)
         {
-            mainPanel.Controls.Add(_projectView);
-            mainPanel.Controls.Add(_calendarView);
-
-            cmbLocationFilter.EditValueChanged -= cmbLocationFilter_EditValueChanged;
-            cmbLocationFilter.EditValueChanged += cmbLocationFilter_EditValueChanged;
-
-            cmbStatusFilter.Properties.Items.Clear();
-            cmbStatusFilter.Properties.Items.AddRange(new[]
+            try
             {
+                mainPanel.Controls.Add(_projectView);
+                mainPanel.Controls.Add(_calendarView);
+
+                cmbLocationFilter.EditValueChanged -= cmbLocationFilter_EditValueChanged;
+                cmbLocationFilter.EditValueChanged += cmbLocationFilter_EditValueChanged;
+
+                cmbStatusFilter.Properties.Items.Clear();
+                cmbStatusFilter.Properties.Items.AddRange(new[]
+                {
                 "全部",
                 "草稿",
                 "租時中",
@@ -68,110 +70,30 @@ namespace RentProject
                 "已送出給助理"
             });
 
-            cmbStatusFilter.EditValue = "全部";
+                cmbStatusFilter.EditValue = "全部";
 
-            // 綁定事件：狀態改變就刷新
-            cmbStatusFilter.EditValueChanged -= cmbStatusFilter_EditValueChanged;
-            cmbStatusFilter.EditValueChanged += cmbStatusFilter_EditValueChanged;
+                // 綁定事件：狀態改變就刷新
+                cmbStatusFilter.EditValueChanged -= cmbStatusFilter_EditValueChanged;
+                cmbStatusFilter.EditValueChanged += cmbStatusFilter_EditValueChanged;
 
-            btnAdvancedFilter.Click -= btnAdvancedFilter_Click;
-            btnAdvancedFilter.Click += btnAdvancedFilter_Click;
+                btnAdvancedFilter.Click -= btnAdvancedFilter_Click;
+                btnAdvancedFilter.Click += btnAdvancedFilter_Click;
 
-            _calendarView.PeriodChangeRequested -= CalendarView_PeriodChangeRequestedAsync;
-            _calendarView.PeriodChangeRequested += CalendarView_PeriodChangeRequestedAsync;
+                _calendarView.PeriodChangeRequested -= CalendarView_PeriodChangeRequestedAsync;
+                _calendarView.PeriodChangeRequested += CalendarView_PeriodChangeRequestedAsync;
 
-            // 先抓資料 + 塞場地下拉（但不顯示資料）
-            await RefreshProjectViewAsync();
-
-            // 強制啟動時沒選場地 -> 觸發空白顯示
-            cmbLocationFilter.EditValue = null;
-
-            ShowProjectView();
-        }
-
-        private Project CreateProjectForm(int? rentTimeId = null)
-        { 
-            var scope = _sp.CreateScope();  // 每次開表單一個 scope，CreateScope() 是從總容器切出一個「小容器」，專門給「這一次開的表單」使用
-            var sp2 = scope.ServiceProvider;
-
-            // 如果是編輯 → 傳 rentTimeId；如果是新增 → 直接從 DI 拿一個 Project。
-            var form = rentTimeId.HasValue
-                ? ActivatorUtilities.CreateInstance<Project>(sp2, rentTimeId.Value) // 它會用 DI 幫你注入「Project 的所有依賴」，但你也可以額外手動塞一些「不是 DI 服務」的參數（例如 rentTimeId）。
-                : sp2.GetRequiredService<Project>(); // 去 DI 容器要一個 Project，DI 會自動幫你把 Project 建構子需要的東西都塞好
-
-            // 讓Form關閉時，也釋放scope
-            // 表單關閉時，請執行我後面提供的這段程式。
-            // _只是佔位符，不管裡面是甚麼
-            form.FormClosed += (_, __) => scope.Dispose();
-            return form;
-        }
-
-        private async void btnAddRentTime_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
-        {
-            using var form = CreateProjectForm(null);
-
-            var dr = form.ShowDialog();
-
-            if (dr == System.Windows.Forms.DialogResult.OK)
-            {
+                // 先抓資料 + 塞場地下拉（但不顯示資料）
                 await RefreshProjectViewAsync();
+
+                // 強制啟動時沒選場地 -> 觸發空白顯示
+                cmbLocationFilter.EditValue = null;
+
                 ShowProjectView();
             }
-        }
-
-        private async void btnTestConnection_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
-        {
-            try 
+            catch (Exception ex)
             {
-                var msg = await _rentTimeApiClient.PingDBAsync();
-                XtraMessageBox.Show(msg, "API + DB Health");
+                XtraMessageBox.Show($"{ex.GetType().Name}-{ex.Message}", "Form1_Load初始化失敗");
             }
-            catch(Exception ex) 
-            {
-                XtraMessageBox.Show(ex.Message, "API + DB Health Fail");
-            }
-        }
-
-        private void ShowProjectView()
-        {
-            _projectView.BringToFront();
-
-            _isCalendarView = false;
-            btnView.Caption = "切換到日曆";
-        }
-
-        private void ShowCalendarView()
-        {
-            _calendarView.BringToFront();
-            _isCalendarView = true;
-
-            btnView.Caption = "切換到案件";
-        }
-
-        private void OpenEditRentTime(int rentTimedId)
-        {
-            using var form = CreateProjectForm(rentTimedId);
-
-            // 只要表單內狀態有變（開始/完成/送出）就刷新
-            // handler 就代表「刷新並保持畫面」這個動作
-            Action handler = () =>
-            {
-                _ = RefreshAndKeepViewAsync();
-            };
-
-            // Project 表單某些操作（開始、完成、送出…）會觸發 RentTimeChanged?.Invoke()
-            // 一旦觸發，就會通知所有有訂閱它的人
-            // 「當 Project 表單說『租時狀態變了！』時，請幫我執行 handler 這個動作」
-            form.RentTimeChanged += handler;
-
-            var dr = form.ShowDialog();
-
-            if (dr == DialogResult.OK)
-            {
-                handler();// 存檔/OK 就刷新
-            }
-
-            form.RentTimeChanged -= handler;
         }
 
         private void btnView_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
@@ -184,11 +106,162 @@ namespace RentProject
                 ShowCalendarView();
         }
 
-        private async Task RefreshProjectViewAsync()
+        private void ShowProjectView()
         {
-            _allRentTimes = await _rentTimeApiClient.GetProjectViewListAsync();
-            RefreshLocationFilterItems();
-            ApplyLocationFilterAndRefresh();
+            if (_projectView == null)
+            {
+                XtraMessageBox.Show("ProjectView 尚未初始化");
+                return;
+            }
+
+            _projectView.BringToFront();
+
+            _isCalendarView = false;
+            btnView.Caption = "切換到日曆";
+        }
+
+        private void ShowCalendarView()
+        {
+            if (_calendarView == null)
+            {
+                XtraMessageBox.Show("CalendarView 尚未初始化");
+                return;
+            }
+
+            _calendarView.BringToFront();
+            _isCalendarView = true;
+
+            btnView.Caption = "切換到案件";
+        }
+
+        private Project CreateProjectForm(int? rentTimeId = null)
+        {
+            var scope = _sp.CreateScope();  // 每次開表單一個 scope，CreateScope() 是從總容器切出一個「小容器」，專門給「這一次開的表單」使用
+            try
+            {
+                var sp2 = scope.ServiceProvider;
+
+                // 如果是編輯 → 傳 rentTimeId；如果是新增 → 直接從 DI 拿一個 Project。
+                var form = rentTimeId.HasValue
+                    ? ActivatorUtilities.CreateInstance<Project>(sp2, rentTimeId.Value) // 它會用 DI 幫你注入「Project 的所有依賴」，但你也可以額外手動塞一些「不是 DI 服務」的參數（例如 rentTimeId）。
+                    : sp2.GetRequiredService<Project>(); // 去 DI 容器要一個 Project，DI 會自動幫你把 Project 建構子需要的東西都塞好
+
+                // 讓Form關閉時，也釋放scope
+                // 表單關閉時，請執行我後面提供的這段程式。
+                // _只是佔位符，不管裡面是甚麼
+                form.FormClosed += (_, __) => scope.Dispose();
+                return form;
+            }
+            catch
+            {
+                scope.Dispose();
+                throw;
+            }
+        }
+
+        private void OpenEditRentTime(int rentTimedId)
+        {
+            Project? form = null;
+
+            try
+            {
+                form = CreateProjectForm(rentTimedId);
+
+                // 只要表單內狀態有變（開始/完成/送出）就刷新，handler 就代表「刷新並保持畫面」這個動作
+                async void handler()
+                {
+                    try
+                    {
+                        await RefreshAndKeepViewAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        XtraMessageBox.Show($"{ex.GetType().Name}-{ex.Message}", "刷新失敗");
+                    }
+                }
+
+                // Project 表單某些操作（開始、完成、送出…）會觸發 RentTimeChanged?.Invoke()
+                // 一旦觸發，就會通知所有有訂閱它的人
+                // 「當 Project 表單說『租時狀態變了！』時，請幫我執行 handler 這個動作」
+                form.RentTimeChanged += handler;
+
+                var dr = form.ShowDialog();
+
+                if (dr == DialogResult.OK)
+                {
+                    handler();// 存檔/OK 就刷新
+                }
+
+                form.RentTimeChanged -= handler;
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show($"{ex.GetType().Name}-{ex.Message}", "開啟編輯失敗");
+            }
+            finally
+            {
+                form?.Dispose();
+            }
+        }
+
+        private async void btnAddRentTime_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                using var form = CreateProjectForm(null);
+
+                var dr = form.ShowDialog();
+
+                if (dr == System.Windows.Forms.DialogResult.OK)
+                {
+                    await RefreshProjectViewAsync();
+                    ShowProjectView();
+                }
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show($"{ex.GetType().Name}-{ex.Message}", "新增租時單失敗");
+            }
+        }
+
+        private void btnEditRentTime_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                if (_isCalendarView)
+                {
+                    _calendarView.RequestEditSelected();
+                    return;
+                }
+
+                var id = _projectView.GetFocusedRentTimeId();
+
+                if (!id.HasValue)
+                {
+                    XtraMessageBox.Show("請先點擊要編輯的租時單", "提示");
+                    return;
+                }
+
+                // 直接沿用你已寫好的流程：開 Project 表單 + 刷新
+                OpenEditRentTime(id.Value);
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show($"{ex.GetType().Name}-{ex.Message}", "開啟編輯失敗");
+            }
+        }
+
+        private async void btnTestConnection_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                var msg = await _rentTimeApiClient.PingDBAsync();
+                XtraMessageBox.Show(msg, "API + DB Health");
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show(ex.Message, "API + DB Health Fail");
+            }
         }
 
         private void ApplyLocationFilterAndRefresh()
@@ -324,6 +397,11 @@ namespace RentProject
             ApplyLocationFilterAndRefresh();
         }
 
+        private void cmbStatusFilter_EditValueChanged(object sender, EventArgs e)
+        {
+            ApplyLocationFilterAndRefresh();
+        }
+
         private void RefreshLocationFilterItems()
         {
             // 取出所有不重複的 Location
@@ -345,6 +423,56 @@ namespace RentProject
             finally
             {
                 cmbLocationFilter.Properties.Items.EndUpdate();
+            }
+        }
+
+        // 進階按鈕
+        private void btnAdvancedFilter_Click(object sender, EventArgs e)
+        {
+            // 1. 沒選場地時不要開
+            var loc = cmbLocationFilter.EditValue?.ToString()?.Trim();
+            if (string.IsNullOrWhiteSpace(loc))
+            {
+                XtraMessageBox.Show("請先選擇場地才能使用進階篩選", "提示");
+                return;
+            }
+
+            // 2-1. 先建立「進階表單下拉要用的資料來源」：套用場地 + 狀態（不套用進階）
+            var baseList = _allRentTimes.AsEnumerable();
+
+            if (loc != "全部")
+                baseList = baseList.Where(x => x.Location == loc);
+
+            var statusText = cmbStatusFilter.EditValue?.ToString()?.Trim() ?? "全部";
+
+            int? status = statusText switch
+            {
+                "草稿" => 0,
+                "租時中" => 1,
+                "已完成" => 2,
+                "已送出給助理" => 3,
+                _ => null
+            };
+
+            if (status.HasValue)
+                baseList = baseList.Where(x => x.Status == status.Value);
+
+            var ListForAdvanced = baseList.ToList();
+
+            // 2-2. 開進階篩選視窗
+            using (var f = new AdvancedFilterForm(ListForAdvanced, _advanceFilter))
+            {
+                f.StartPosition = FormStartPosition.CenterParent;
+
+                var dr = f.ShowDialog();
+
+                if (dr != DialogResult.OK) return;
+
+                // 3. 存起來（之後 ApplyLocationFilterAndRefresh 會用到）
+                _advanceFilter = f.FilterResult;
+
+                // 4. 刷新列表
+                ApplyLocationFilterAndRefresh();
             }
         }
 
@@ -449,7 +577,8 @@ namespace RentProject
                 {
                     XtraMessageBox.Show("請先勾選要送出給助理的租時單", "提示");
                     return;
-                };
+                }
+                ;
 
                 var blocked = selected.Where(x => x.Status != 2).ToList();
                 if (blocked.Count > 0)
@@ -497,75 +626,33 @@ namespace RentProject
             }
         }
 
-        private void cmbStatusFilter_EditValueChanged(object sender, EventArgs e)
-        {
-            ApplyLocationFilterAndRefresh();
-        }
-
-        // 進階按鈕
-        private void btnAdvancedFilter_Click(object sender, EventArgs e)
-        {
-            // 1. 沒選場地時不要開
-            var loc = cmbLocationFilter.EditValue?.ToString()?.Trim();
-            if (string.IsNullOrWhiteSpace(loc))
-            {
-                XtraMessageBox.Show("請先選擇場地才能使用進階篩選", "提示");
-                return;
-            }
-
-            // 2-1. 先建立「進階表單下拉要用的資料來源」：套用場地 + 狀態（不套用進階）
-            var baseList = _allRentTimes.AsEnumerable();
-
-            if (loc != "全部")
-                baseList = baseList.Where(x => x.Location == loc);
-
-            var statusText = cmbStatusFilter.EditValue?.ToString()?.Trim() ?? "全部";
-
-            int? status = statusText switch
-            {
-                "草稿" => 0,
-                "租時中" => 1,
-                "已完成" => 2,
-                "已送出給助理" => 3,
-                _ => null
-            };
-
-            if (status.HasValue)
-                baseList = baseList.Where(x => x.Status == status.Value);
-
-            var ListForAdvanced = baseList.ToList();
-
-            // 2-2. 開進階篩選視窗
-            using (var f = new AdvancedFilterForm(ListForAdvanced, _advanceFilter))
-            {
-                f.StartPosition = FormStartPosition.CenterParent;
-
-                var dr = f.ShowDialog();
-
-                if (dr != DialogResult.OK) return;
-
-                // 3. 存起來（之後 ApplyLocationFilterAndRefresh 會用到）
-                _advanceFilter = f.FilterResult;
-
-                // 4. 刷新列表
-                ApplyLocationFilterAndRefresh();
-            }
-        }
-
         // 重新整理
         private async void btnRefresh_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            // 1. 清掉進階篩選
-            _advanceFilter = null;
+            btnRefresh.Enabled = false;
 
-            // 2. 如果狀態也回到「全部」，把這行打開
-            cmbStatusFilter.EditValue = "全部";
+            try
+            {
+                // 1. 清掉進階篩選
+                _advanceFilter = null;
 
-            // 3) 重新抓 DB + 重新套用篩選（此時進階已經是 null）
-            await RefreshProjectViewAsync();
+                // 2. 如果狀態也回到「全部」，把這行打開
+                cmbStatusFilter.EditValue = "全部";
 
-            if (_isCalendarView) ShowCalendarView();
-            else ShowProjectView();
+                // 3) 重新抓 DB + 重新套用篩選（此時進階已經是 null）
+                await RefreshProjectViewAsync();
+
+                if (_isCalendarView) ShowCalendarView();
+                else ShowProjectView();
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show($"{ex.GetType().Name}-{ex.Message}", "重新整理失敗");
+            }
+            finally
+            {
+                btnRefresh.Enabled = true;
+            }
         }
 
         // SaveFileDialog：Windows 內建的「另存新檔」視窗物件
@@ -619,27 +706,14 @@ namespace RentProject
 
         private void btnExportExcel_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            TestExportExcel();
-        }
-
-        private void btnEditRentTime_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
-        {
-            if (_isCalendarView)
+            try
             {
-                _calendarView.RequestEditSelected();
-                return;
+                TestExportExcel();
             }
-
-            var id = _projectView.GetFocusedRentTimeId();
-
-            if (!id.HasValue)
+            catch (Exception ex)
             {
-                XtraMessageBox.Show("請先點擊要編輯的租時單", "提示");
-                return;
+                XtraMessageBox.Show($"{ex.GetType().Name}-{ex.Message}", "匯出失敗");
             }
-
-            // 直接沿用你已寫好的流程：開 Project 表單 + 刷新
-            OpenEditRentTime(id.Value);
         }
 
         private void btnImportExcel_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
@@ -708,6 +782,13 @@ namespace RentProject
             // 刷新後保持你原本畫面不跳走
             if (_isCalendarView) ShowCalendarView();
             else ShowProjectView();
+        }
+
+        private async Task RefreshProjectViewAsync()
+        {
+            _allRentTimes = await _rentTimeApiClient.GetProjectViewListAsync();
+            RefreshLocationFilterItems();
+            ApplyLocationFilterAndRefresh();
         }
     }
 }

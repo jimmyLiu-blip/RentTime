@@ -48,9 +48,12 @@ namespace RentProject.Api.Controllers
         // 更新：user 用 query 最直覺（也可以改 body，但你現在 UI 比較好接 query）
         [HttpPut("{id:int}")]
         public IActionResult UpdateRentTimeById(int id, [FromBody] RentTime model, [FromQuery] string user)
-        { 
+        {
+            // 以路由 id 為準，強制覆蓋 body 裡的 RentTimeId
             model.RentTimeId = id;
             _rentTimeService.UpdateRentTimeById(model, user);
+
+            // 更新成功，但不回傳任何 body（JSON 內容）
             return NoContent();
         }
 

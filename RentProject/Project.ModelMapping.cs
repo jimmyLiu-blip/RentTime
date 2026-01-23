@@ -1,7 +1,8 @@
-﻿using System;
-using System.Linq;
-using DevExpress.XtraEditors;
+﻿using DevExpress.XtraEditors;
+using DocumentFormat.OpenXml.Bibliography;
 using RentProject.Domain;
+using System;
+using System.Linq;
 
 namespace RentProject
 {
@@ -17,6 +18,13 @@ namespace RentProject
             var jobNo = cmbJobNo.Text?.Trim();
             int? jobId = null;
 
+            // 若編輯狀態下 JobNo 沒變，就沿用 DB 的 JobId
+            if (!string.IsNullOrWhiteSpace(jobNo) && _loadedRentTime != null && string.Equals(jobNo, _loadedRentTime.JobNo, StringComparison.OrdinalIgnoreCase))
+            {
+                jobId = _loadedRentTime.JobId;
+            }
+
+            // 如果這次 JobNo 查詢流程有跑完（_currentJobNo/_currentJobId 有值），就用最新的
             if (!string.IsNullOrWhiteSpace(jobNo) && string.Equals(jobNo, _currentJobNo, StringComparison.OrdinalIgnoreCase))
             {
                 jobId = _currentJobId;
