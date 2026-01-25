@@ -9,11 +9,10 @@ using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraPrinting;
 using RentProject.Domain;
 using RentProject.Shared.UIModels;
+using RentProject.UI;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 
 
 namespace RentProject
@@ -25,6 +24,9 @@ namespace RentProject
         private int? _selectedRentTimeId = null;
 
         private RepositoryItemImageComboBox? _riStatus;
+
+        public Action<bool>? SetLoadingAction { get; set; }
+
         public ProjectViewControl()  //無參數建構子，讓Designer可以正常建立這個UserControl
         {
             InitializeComponent();
@@ -36,58 +38,9 @@ namespace RentProject
         // =========================================================
         // 參考 Project：集中例外處理（UI 邊界用）
         // =========================================================
-        private void SafeRun(Action action, string caption)
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception ex)
-            { 
-                XtraMessageBox.Show(
-                    $"{ex.GetType().Name}-{ex.Message}",
-                    caption,
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
-        }
-
-        // 匯出專用：給更友善的訊息
-        private void SafeRunExport(Action action, string caption)
-        {
-            try
-            {
-                action();
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                XtraMessageBox.Show(
-                    $"沒有權限寫入該路徑-{ex.Message}",
-                    caption,
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
-            catch (IOException ex)
-            {
-                XtraMessageBox.Show(
-                    $"匯出檔案可能正在被開啟或路徑無效-{ex.Message}",
-                    caption,
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show(
-                   $"{ex.GetType().Name}-{ex.Message}",
-                   caption,
-                   MessageBoxButtons.OK,
-                   MessageBoxIcon.Error);
-            }
-        }
-
         public void LoadData(List<RentTime> list)
         {
-            SafeRun(() =>
+            UiSafeRunner.SafeRun(() =>
             {
                 _selectedRentTimeId = null;
 
@@ -265,7 +218,7 @@ namespace RentProject
 
         private void ActionButton_ButtonClick(object sender, ButtonPressedEventArgs e)
         { 
-            SafeRun(() =>
+            UiSafeRunner.SafeRun(() =>
             {
                 var row = gridView1.GetRow(gridView1.FocusedRowHandle) as RentTime; // FocusedRowHandle：目前選到的那一列
 
@@ -342,7 +295,7 @@ namespace RentProject
 
         public void ExportCheckRowsToXlsx(string path)
         {
-            SafeRunExport(() =>
+            UiSafeRunner.SafeRun(() =>
             {
                 var handles = gridView1.GetSelectedRows().Where(h => h >= 0).ToArray();
                 if (handles.Length == 0) return;
@@ -432,7 +385,7 @@ namespace RentProject
                     gridView1.OptionsSelection.ShowCheckBoxSelectorInGroupRow = oldShowGroup;
                     gridView1.OptionsSelection.ShowCheckBoxSelectorInColumnHeader = oldShowHeader;
                 }
-            }, caption: "匯出 Excel 失敗");
+            }, caption: "匯出 Excel 失敗", setLoading: SetLoadingAction);
         }
 
         private void EnsureStatusEditor()

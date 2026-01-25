@@ -1,4 +1,5 @@
 ﻿using DevExpress.XtraEditors;
+using RentProject.UI;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -11,7 +12,7 @@ namespace RentProject
         {
             if (_editRentTimeId == null) return;
 
-            await SafeRunAsync(async () =>
+            await UiSafeRunner.SafeRunAsync(async () =>
             {
                 var data = await _rentTimeApiClient.GetByIdAsync(_editRentTimeId.Value);
                 if (data == null)
@@ -31,7 +32,7 @@ namespace RentProject
                 _uiStatus = (UiRentStatus)data.Status;
                 ApplyUiStatus();
                 ApplyTabByStatus();
-            }, caption: "刷新 RentTime 失敗", useLoading: true);
+            }, caption: "刷新 RentTime 失敗", setLoading: SetLoading);
         }
     }
 }

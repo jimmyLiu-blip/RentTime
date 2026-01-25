@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="DevExpress.Data" Version="25.1.4" />
+  </ItemGroup>
+
 </Project>

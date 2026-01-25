@@ -1,5 +1,6 @@
 ﻿using System;
 using DevExpress.XtraEditors;
+using RentProject.UI;
 
 namespace RentProject
 {
@@ -10,62 +11,51 @@ namespace RentProject
         // =========================================================
         private void ApplyLunchUI()
         {
-            SafeRun(() =>
-            {
-                txtLunchMinutes.Properties.ReadOnly = true;
-                txtLunchMinutes.Text = chkHasLunch.Checked ? "60分" : "0";
-            }, caption: "更新午餐UI失敗");
+            txtLunchMinutes.Properties.ReadOnly = true;
+            txtLunchMinutes.Text = chkHasLunch.Checked ? "60分" : "0";
         }
 
         private void ApplyDinnerUI()
         {
-            SafeRun(() =>
+            cmbDinnerMinutes.Enabled = chkHasDinner.Checked;
+
+            if (!chkHasDinner.Checked)
             {
-                cmbDinnerMinutes.Enabled = chkHasDinner.Checked;
+                cmbDinnerMinutes.EditValue = null;
+                return;
+            }
 
-                if (!chkHasDinner.Checked)
-                {
-                    cmbDinnerMinutes.EditValue = null;
-                    return;
-                }
-
-                if (cmbDinnerMinutes.EditValue is not int)
-                {
-                    cmbDinnerMinutes.EditValue = 60;
-                }
-            }, caption: "更新晚餐UI失敗");
+            if (cmbDinnerMinutes.EditValue is not int)
+                cmbDinnerMinutes.EditValue = 60;
         }
 
         private void ApplyMealEnableByEndTime()
-        {
-            SafeRun(() =>
+        {   
+            var startDate = startDateEdit.EditValue as DateTime?;
+            var startTime = startTimeEdit.EditValue is DateTime t1 ? t1.TimeOfDay : (TimeSpan?)null;
+            var endDate = endDateEdit.EditValue as DateTime?;
+            var endTime = endTimeEdit.EditValue is DateTime t2 ? t2.TimeOfDay : (TimeSpan?)null;
+
+            bool canLunch = false;
+            bool canDinner = false;
+
+            if (startDate is not null && startTime is not null && endDate is not null && endTime is not null)
             {
-                var startDate = startDateEdit.EditValue as DateTime?;
-                var startTime = startTimeEdit.EditValue is DateTime t1 ? t1.TimeOfDay : (TimeSpan?)null;
-                var endDate = endDateEdit.EditValue as DateTime?;
-                var endTime = endTimeEdit.EditValue is DateTime t2 ? t2.TimeOfDay : (TimeSpan?)null;
+                var start = startDate.Value.Date + startTime.Value;
+                var end = endDate.Value.Date + endTime.Value;
 
-                bool canLunch = false;
-                bool canDinner = false;
+                canLunch = end.TimeOfDay >= LunchEnableAt && start.TimeOfDay < LunchEnableAt;
+                canDinner = end.TimeOfDay >= DinnerEnableAt && start.TimeOfDay < DinnerEnableAt;
+            }
 
-                if (startDate is not null && startTime is not null && endDate is not null && endTime is not null)
-                {
-                    var start = startDate.Value.Date + startTime.Value;
-                    var end = endDate.Value.Date + endTime.Value;
+            chkHasLunch.Enabled = canLunch;
+            if (!canLunch) chkHasLunch.Checked = false;
 
-                    canLunch = end.TimeOfDay >= LunchEnableAt && start.TimeOfDay < LunchEnableAt;
-                    canDinner = end.TimeOfDay >= DinnerEnableAt && start.TimeOfDay < DinnerEnableAt;
-                }
+            chkHasDinner.Enabled = canDinner;
+            if (!canDinner) chkHasDinner.Checked = false;
 
-                chkHasLunch.Enabled = canLunch;
-                if (!canLunch) chkHasLunch.Checked = false;
-
-                chkHasDinner.Enabled = canDinner;
-                if (!canDinner) chkHasDinner.Checked = false;
-
-                ApplyLunchUI();
-                ApplyDinnerUI();
-            }, caption: "更新午晚餐啟用條件失敗");
+            ApplyLunchUI();
+            ApplyDinnerUI();       
         }
 
         // =========================================================
@@ -73,7 +63,7 @@ namespace RentProject
         // =========================================================
         private void cmbDinnerMinutes_CustomDisplayText(object sender, DevExpress.XtraEditors.Controls.CustomDisplayTextEventArgs e)
         {
-            SafeRun(() =>
+            UiSafeRunner.SafeRun(() =>
             {
                 if (e.Value is int v)
                 {
@@ -96,43 +86,37 @@ namespace RentProject
         // =========================================================
         private void UpdateEstimatedUI()
         {
-            SafeRun(() =>
-            {
-                var startDate = startDateEdit.EditValue as DateTime?;
-                var endDate = endDateEdit.EditValue as DateTime?;
-                var startTime = startTimeEdit.EditValue is DateTime t1 ? t1.TimeOfDay : (TimeSpan?)null;
-                var endTime = endTimeEdit.EditValue is DateTime t2 ? t2.TimeOfDay : (TimeSpan?)null;
+            var startDate = startDateEdit.EditValue as DateTime?;
+            var endDate = endDateEdit.EditValue as DateTime?;
+            var startTime = startTimeEdit.EditValue is DateTime t1 ? t1.TimeOfDay : (TimeSpan?)null;
+            var endTime = endTimeEdit.EditValue is DateTime t2 ? t2.TimeOfDay : (TimeSpan?)null;
 
-                int dinnerMin = cmbDinnerMinutes.EditValue is int v ? v : 0;
+            int dinnerMin = cmbDinnerMinutes.EditValue is int v ? v : 0;
 
-                if (startDate is null || endDate is null || startTime is null || endTime is null)
-                    return;
+            if (startDate is null || endDate is null || startTime is null || endTime is null)
+                return;
 
-                var start = startDate.Value.Date + startTime.Value;
-                var end = endDate.Value.Date + endTime.Value;
+            var start = startDate.Value.Date + startTime.Value;
+            var end = endDate.Value.Date + endTime.Value;
 
-                if (end < start)
-                    return;
+            if (end < start)
+                return;
 
-                var minutes = (int)(end - start).TotalMinutes;
+            var minutes = (int)(end - start).TotalMinutes;
 
-                if (chkHasLunch.Checked) minutes -= 60;
-                if (chkHasDinner.Checked) minutes -= dinnerMin;
+            if (chkHasLunch.Checked) minutes -= 60;
+            if (chkHasDinner.Checked) minutes -= dinnerMin;
 
-                if (minutes < 0) minutes = 0;
+            if (minutes < 0) minutes = 0;
 
-                var hours = Math.Round(minutes / 60m, 2);
-                txtEstimatedHours.Text = $"{hours}";
-            }, caption: "更新預估時間失敗");
+            var hours = Math.Round(minutes / 60m, 2);
+            txtEstimatedHours.Text = $"{hours}";
         }
 
         private void RefreshMealAndEstimateUI()
         {
-            SafeRun(() =>
-            {
-                ApplyMealEnableByEndTime();
-                UpdateEstimatedUI();
-            }, caption: "刷新午餐/晚餐與預估時間失敗");
+            ApplyMealEnableByEndTime();
+            UpdateEstimatedUI();
         }
     }
 }

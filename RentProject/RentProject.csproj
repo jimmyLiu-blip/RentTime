@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aspose.PDF" Version="26.1.0" />
     <PackageReference Include="ClosedXML" Version="0.105.0" />
     <PackageReference Include="DevExpress.Win.Design" Version="25.1.4" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.2" />

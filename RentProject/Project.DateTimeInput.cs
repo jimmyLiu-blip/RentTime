@@ -1,6 +1,7 @@
 ﻿using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Mask;
+using RentProject.UI;
 using System;
 using System.Windows.Forms;
 
@@ -11,27 +12,24 @@ namespace RentProject
         // 設定 DateEdit：讓日期可以正常連續輸入
         private void ConfigureDateEdit(DateEdit dateEdit)
         {
-            SafeRun(() =>
-            {
-                dateEdit.Properties.Mask.MaskType = MaskType.None;
-                dateEdit.Properties.DisplayFormat.FormatString = "yyyy/M/d";
-                dateEdit.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
-                dateEdit.Properties.EditFormat.FormatString = "yyyy/M/d";
-                dateEdit.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
-                dateEdit.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard;
+            dateEdit.Properties.Mask.MaskType = MaskType.None;
+            dateEdit.Properties.DisplayFormat.FormatString = "yyyy/M/d";
+            dateEdit.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
+            dateEdit.Properties.EditFormat.FormatString = "yyyy/M/d";
+            dateEdit.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
+            dateEdit.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard;
 
-                dateEdit.Leave -= DateEdit_Leave;
-                dateEdit.Leave += DateEdit_Leave;
+            dateEdit.Leave -= DateEdit_Leave;
+            dateEdit.Leave += DateEdit_Leave;
 
-                // 改用 Click 事件（更可靠）
-                dateEdit.Click -= DateTimeEdit_Click;
-                dateEdit.Click += DateTimeEdit_Click;
-            }, caption: "DateEdit 初始化失敗");
+            // 改用 Click 事件（更可靠）
+            dateEdit.Click -= DateTimeEdit_Click;
+            dateEdit.Click += DateTimeEdit_Click;
         }
 
         private void DateEdit_Leave(object sender, EventArgs e)
         {
-            SafeRun(() =>
+            UiSafeRunner.SafeRun(() =>
             {
                 if (sender is not DateEdit dateEdit) return;
 
@@ -79,26 +77,23 @@ namespace RentProject
 
         private void ConfigureTimeEdit(TimeEdit timeEdit)
         {
-            SafeRun(() =>
-            {
-                timeEdit.KeyPress -= TimeEdit_KeyPress;
-                timeEdit.KeyPress += TimeEdit_KeyPress;
+            timeEdit.KeyPress -= TimeEdit_KeyPress;
+            timeEdit.KeyPress += TimeEdit_KeyPress;
 
-                timeEdit.Leave -= TimeEdit_Leave;
-                timeEdit.Leave += TimeEdit_Leave;
+            timeEdit.Leave -= TimeEdit_Leave;
+            timeEdit.Leave += TimeEdit_Leave;
 
-                timeEdit.Properties.Spin -= TimeEdit_Spin;
-                timeEdit.Properties.Spin += TimeEdit_Spin;
+            timeEdit.Properties.Spin -= TimeEdit_Spin;
+            timeEdit.Properties.Spin += TimeEdit_Spin;
 
-                // 改用 Click 事件（更可靠）
-                timeEdit.Click -= DateTimeEdit_Click;
-                timeEdit.Click += DateTimeEdit_Click;
-            }, caption: "TimeEdit 初始化失敗");
+            // 改用 Click 事件（更可靠）
+            timeEdit.Click -= DateTimeEdit_Click;
+            timeEdit.Click += DateTimeEdit_Click;
         }
 
         private void TimeEdit_KeyPress(object sender, KeyPressEventArgs e)
         {
-            SafeRun(() =>
+            UiSafeRunner.SafeRun(() =>
             {
                     // 只允許數字和冒號
                     if (!char.IsDigit(e.KeyChar) && e.KeyChar != ':' && e.KeyChar != '\b')
@@ -110,7 +105,7 @@ namespace RentProject
 
         private void TimeEdit_Leave(object sender, EventArgs e)
         {
-            SafeRun(() =>
+            UiSafeRunner.SafeRun(() =>
             {
                 if (sender is not TimeEdit timeEdit) return;
 
@@ -169,7 +164,7 @@ namespace RentProject
 
         private void TimeEdit_Spin(object sender, SpinEventArgs e)
         {
-            SafeRun(() =>
+            UiSafeRunner.SafeRun(() =>
             {
                 if (sender is not TimeEdit timeEdit) return;
 
@@ -227,7 +222,7 @@ namespace RentProject
         // 改名並改用 Click 事件
         private void DateTimeEdit_Click(object sender, EventArgs e)
         {
-            SafeRun(() =>
+            UiSafeRunner.SafeRun(() =>
             {
                     if (sender is BaseEdit edit)
                 {

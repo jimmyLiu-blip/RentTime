@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
 using DevExpress.XtraEditors;
+using RentProject.UI;
 namespace RentProject
 {
     public partial class Project: XtraForm
@@ -52,7 +53,7 @@ namespace RentProject
 
         private void ApplyTabByStatus()
         {
-            SafeRun(() =>
+            UiSafeRunner.SafeRun(() =>
             {
                     bool isCreate = _editRentTimeId == null;
 
@@ -131,8 +132,6 @@ namespace RentProject
                         txtContactName,
                         txtContactPhone,
                         memoTestInformation,
-
-                        cmbJobNo,
 
                         txtSampleModel,
                         txtSampleNo,

@@ -9,6 +9,7 @@ using System.Threading;
 using System.Windows.Forms;
 using RentProject.Clients;
 using System.Threading.Tasks;
+using RentProject.UI;
 
 namespace RentProject
 {
@@ -85,43 +86,6 @@ namespace RentProject
         }
 
         // ===== 共用 try/catch 包裝（比照 Form1）=====
-        // Action action：不能 await 它，也不會知道它何時做完
-        private void SafeRun(Action action, string caption = "錯誤", bool useLoading = false)
-        {
-            try
-            {
-                if (useLoading) SetLoading(true);
-                action();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                if (useLoading) SetLoading(false);
-            }
-        }
-
-        // Func<Task> action：做一件「非同步」的事，不等它做完：action();（等同丟出去）；等它做完：await action();（推薦，能接住錯誤、能控制流
-        private async Task SafeRunAsync(Func<Task> action, string caption = "錯誤", bool useLoading = false)
-        {
-            try
-            {
-                if (useLoading) SetLoading(true);
-
-                await action(); // 執行你傳進來的 async 流程，並接住它丟出的例外
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                if (useLoading) SetLoading(false);
-            }
-        }
-
         private void SetAutoFillMode(bool enabled)
         {
             // 只要欄位「有值」就鎖；沒有值就開放
@@ -177,7 +141,7 @@ namespace RentProject
         {
             // ===== 新增：修正 DateEdit 和 TimeEdit 的 Mask 問題 =====
             // 1. 設定 DateEdit（處理日期輸入問題）
-            SafeRun(() =>
+            UiSafeRunner.SafeRun(() =>
             {
                 ConfigureDateEdit(startDateEdit);
                 ConfigureDateEdit(endDateEdit);
@@ -271,14 +235,14 @@ namespace RentProject
             }, caption: "初始化失敗");
 
             // JobNo 下拉
-            await SafeRunAsync(async () =>
+            await UiSafeRunner.SafeRunAsync(async () =>
             {
                 cmbJobNo.Properties.Items.Clear();
                 var jobNos = await _jobNoApiClient.GetActiveJobNoAsync(8, this._jobNoCts?.Token ?? default);
                 cmbJobNo.Properties.Items.AddRange(jobNos.ToArray());
-            }, caption: "載入 JobNo 失敗", useLoading: true);
+            }, caption: "載入 JobNo 失敗", setLoading: SetLoading);
 
-            SafeRun(() =>
+            UiSafeRunner.SafeRun(() =>
             {
                 // 清空日期時間
                 startDateEdit.EditValue = null;
@@ -303,7 +267,7 @@ namespace RentProject
             // 新增模式：預設建單人員
             if (_editRentTimeId == null)
             {
-                await SafeRunAsync(async () =>
+                await UiSafeRunner.SafeRunAsync(async () =>
                 {
                     _bookingBatchId = await _rentTimeApiClient.CreateBookingBatchAsync();
                     SetBookingNoToUI($"TMP-{_bookingBatchId.Value:D7}-1");
@@ -314,7 +278,7 @@ namespace RentProject
                     ApplyUiStatus();
                     ApplyTabByStatus();
 
-                }, caption: "CreateBookingBatch 失敗", useLoading: true);
+                }, caption: "CreateBookingBatch 失敗", setLoading: SetLoading);
 
                 // 若失敗：_bookingBatchId 仍是 null，就比照你原本邏輯把存檔鎖住
                 if (_bookingBatchId == null)
@@ -326,10 +290,10 @@ namespace RentProject
             // 編輯模式：先讀 API，再填 UI（拆成兩段：API / 填回）
             RentTime? data = null;
 
-            await SafeRunAsync(async () =>
+            await UiSafeRunner.SafeRunAsync(async () =>
             {
                 data = await _rentTimeApiClient.GetByIdAsync(_editRentTimeId.Value);
-            }, caption: "讀取 RentTime 失敗", useLoading: true);
+            }, caption: "讀取 RentTime 失敗", setLoading: SetLoading);
 
             if (data == null)
             {
@@ -339,7 +303,7 @@ namespace RentProject
                 return;
             }
 
-            SafeRun(() =>
+            UiSafeRunner.SafeRun(() =>
             {
                 _loadedRentTime = data;
                 FillUIFromModel(data);
@@ -364,7 +328,7 @@ namespace RentProject
                 return;
             }
 
-            await SafeRunAsync(async () =>
+            await UiSafeRunner.SafeRunAsync(async () =>
             {
                 dxErrorProvider1.ClearErrors();
 
@@ -424,7 +388,7 @@ namespace RentProject
 
                 this.DialogResult = DialogResult.OK;
                 this.Close();
-            }, caption: "存檔失敗", useLoading: true);
+            }, caption: "存檔失敗", setLoading: SetLoading);
         }
 
         private async void btnRentTimeStart_Click(object sender, EventArgs e)
@@ -435,7 +399,7 @@ namespace RentProject
                 return;
             }
 
-            await SafeRunAsync(async () =>
+            await UiSafeRunner.SafeRunAsync(async () =>
             {
                 if (_editRentTimeId == null) return;
 
@@ -460,7 +424,7 @@ namespace RentProject
                 // (3) 重新讀 DB 刷新 UI
                 await ReloadRentTimeFromApiAsync();
                 NotifyRentTimeChanged(); // 通知外面刷新 ProjectView
-            }, caption: "租時開始失敗", useLoading: true);
+            }, caption: "租時開始失敗", setLoading: SetLoading);
         }
 
         private async void btnRentTimeEnd_Click(object sender, EventArgs e)
@@ -471,7 +435,7 @@ namespace RentProject
                 return;
             }
 
-            await SafeRunAsync(async () =>
+            await UiSafeRunner.SafeRunAsync(async () =>
             {
                 if (_editRentTimeId == null) return;
 
@@ -507,12 +471,12 @@ namespace RentProject
                 await ReloadRentTimeFromApiAsync(); // 完成後 UI 應該立刻鎖住 + Copy 亮起
 
                 NotifyRentTimeChanged(); // 通知外面刷新 ProjectView
-            }, caption: "租時完成失敗", useLoading: true);
+            }, caption: "租時完成失敗", setLoading: SetLoading);
         }
 
         private async void btnRestoreRentTime_Click(object sender, EventArgs e)
         {
-            await SafeRunAsync(async () =>
+            await UiSafeRunner.SafeRunAsync(async () =>
             {
                 if (_editRentTimeId == null) return;
 
@@ -530,12 +494,12 @@ namespace RentProject
                 await ReloadRentTimeFromApiAsync();  // 回復後 UI 應該解鎖
 
                 NotifyRentTimeChanged(); // 通知外面刷新 ProjectView
-            }, caption: "回復租時失敗", useLoading: true);
+            }, caption: "回復租時失敗", setLoading: SetLoading);
         }
 
         private async void btnDeletedRentTime_Click(object sender, EventArgs e)
         {
-            await SafeRunAsync(async () =>
+            await UiSafeRunner.SafeRunAsync(async () =>
             {
                 if (_editRentTimeId == null) return;
 
@@ -552,13 +516,13 @@ namespace RentProject
 
                 this.DialogResult = DialogResult.OK;
                 this.Close();
-            }, caption: "刪除租時單失敗", useLoading: true);
+            }, caption: "刪除租時單失敗", setLoading: SetLoading);
         }
 
         // 複製單據
         private async void btnCopyRentTime_Click(object sender, EventArgs e)
         {
-            await SafeRunAsync(async () =>
+            await UiSafeRunner.SafeRunAsync(async () =>
             {
                 if (_editRentTimeId == null) return;
 
@@ -613,7 +577,7 @@ namespace RentProject
                 // 3) 新單關掉後：把舊單也關掉，回傳 OK 讓外層刷新列表
                 this.DialogResult = DialogResult.OK;
                 this.Close();
-            }, caption: "複製租時單失敗", useLoading: true);
+            }, caption: "複製租時單失敗", setLoading: SetLoading);
         }
 
         // =========================================================
@@ -635,7 +599,7 @@ namespace RentProject
         // 送出給助理空方法
         private async void SubmitToAssistant()
         {
-            await SafeRunAsync(async () =>
+            await UiSafeRunner.SafeRunAsync(async () =>
             {
                 if (_editRentTimeId == null) return;
 
@@ -666,14 +630,14 @@ namespace RentProject
                 //通知外面(ProjectView/Form1)刷新
                 NotifyRentTimeChanged();
 
-            }, caption: "送出給助理失敗", useLoading: true);
+            }, caption: "送出給助理失敗", setLoading: SetLoading);
         }
 
         // 午餐/晚餐事件綁定
         private void AnyTimeOrMealChanged(object? sender, EventArgs e)
         {
             if (_isLoading) return; // 你有 _isLoading 就先保護，避免程式塞值時一直連鎖觸發
-            SafeRun(() =>
+            UiSafeRunner.SafeRun(() =>
             {
                 RefreshMealAndEstimateUI();
             }, caption:"更新午餐/晚餐與預估時間失敗");
@@ -681,7 +645,7 @@ namespace RentProject
 
         private void SyncJobNoApiFlagsFromLoadedUI()
         {
-            SafeRun(() =>
+            UiSafeRunner.SafeRun(() =>
             {
                 bool HasText(string? s) => !string.IsNullOrWhiteSpace(s);
 

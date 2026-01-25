@@ -97,6 +97,7 @@ namespace RentProject
 
         private void FillUIFromModel(RentTime data)
         {
+            var prev = _isLoading;
             _isLoading = true;
             try
             {
@@ -182,7 +183,7 @@ namespace RentProject
             }
             finally
             {
-                _isLoading = false;
+                _isLoading = prev;
             }
 
             RefreshMealAndEstimateUI();

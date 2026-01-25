@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RentProject.Clients;
 using RentProject.Domain;
 using RentProject.Shared.UIModels;
+using RentProject.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,30 @@ namespace RentProject
         // true = 目前顯示 CalendarView；false = 目前顯示 ProjectView
         private bool _isCalendarView = true;
 
+        private int _loadingCount = 0;
+
+        private void SetMainLoading(bool loading)
+        {
+            if (loading) _loadingCount++;
+            else _loadingCount = Math.Max(0, _loadingCount - 1);
+
+            var isLoading = _loadingCount > 0;
+
+            // 要鎖哪些按鈕放這裡
+            btnAddRentTime.Enabled = !isLoading;
+            btnEditRentTime.Enabled = !isLoading;
+            btnDelete.Enabled = !isLoading;
+            btnSubmitToAssistant.Enabled = !isLoading;
+            btnExportExcel.Enabled = !isLoading;
+            btnRefresh.Enabled = !isLoading;
+            btnTestConnection.Enabled = !isLoading;
+            btnView.Enabled = !isLoading;
+            btnAdvancedFilter.Enabled = !isLoading;
+
+            // 視覺回饋
+            this.Cursor = isLoading ? Cursors.WaitCursor : Cursors.Default;
+        }
+
         public Form1(IRentTimeApiClient rentTimeApiClient, IJobNoApiClient jobNoApiClient, IServiceProvider sp)
         {
             InitializeComponent();
@@ -40,19 +65,23 @@ namespace RentProject
             _projectView = new ProjectViewControl() { Dock = DockStyle.Fill };
             _calendarView = new CalendarViewControl { Dock = DockStyle.Fill };
 
+            _projectView.SetLoadingAction = SetMainLoading;
+
             _projectView.EditRequested += OpenEditRentTime;
             _calendarView.EditRequested += OpenEditRentTime;
 
             _projectView.RentTimeSaved += async () =>
             {
-                try { await RefreshProjectViewAsync(); }
-                catch (Exception ex) { XtraMessageBox.Show(ex.Message, "Error"); }
+                _ = UiSafeRunner.SafeRunAsync(async () =>
+                {
+                    await RefreshProjectViewAsync();
+                }, caption: "刷新失敗", setLoading: SetMainLoading);
             };
         }
 
         private async void Form1_Load(object sender, System.EventArgs e)
         {
-            try
+            await UiSafeRunner.SafeRunAsync(async () =>
             {
                 mainPanel.Controls.Add(_projectView);
                 mainPanel.Controls.Add(_calendarView);
@@ -68,7 +97,7 @@ namespace RentProject
                 "租時中",
                 "已完成",
                 "已送出給助理"
-            });
+                });
 
                 cmbStatusFilter.EditValue = "全部";
 
@@ -89,11 +118,7 @@ namespace RentProject
                 cmbLocationFilter.EditValue = null;
 
                 ShowProjectView();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show($"{ex.GetType().Name}-{ex.Message}", "Form1_Load初始化失敗");
-            }
+            }, caption: "Form1_Load 初始化失敗", setLoading: SetMainLoading);
         }
 
         private void btnView_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
@@ -206,7 +231,7 @@ namespace RentProject
 
         private async void btnAddRentTime_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            try
+            await UiSafeRunner.SafeRunAsync(async () =>
             {
                 using var form = CreateProjectForm(null);
 
@@ -217,11 +242,8 @@ namespace RentProject
                     await RefreshProjectViewAsync();
                     ShowProjectView();
                 }
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show($"{ex.GetType().Name}-{ex.Message}", "新增租時單失敗");
-            }
+            }, caption: "新增租時單失敗", setLoading: SetMainLoading);
+
         }
 
         private void btnEditRentTime_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)

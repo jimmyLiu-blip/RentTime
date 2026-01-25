@@ -1,5 +1,6 @@
 ﻿using DevExpress.XtraEditors;
 using RentProject.Domain;
+using RentProject.UI;
 using System;
 using System.Linq;
 using System.Threading;
@@ -17,7 +18,7 @@ namespace RentProject
         // 午/晚餐
         private void chkHasLunch_CheckedChanged(object sender, EventArgs e)
         {
-            SafeRun(() =>
+            UiSafeRunner.SafeRun(() =>
             {
                 ApplyLunchUI();
                 UpdateEstimatedUI();
@@ -26,7 +27,7 @@ namespace RentProject
 
         private void chkHasDinner_CheckedChanged(object sender, EventArgs e)
         {
-            SafeRun(() =>
+            UiSafeRunner.SafeRun(() =>
             {
                 ApplyDinnerUI();
                 UpdateEstimatedUI();
@@ -37,38 +38,38 @@ namespace RentProject
         private void startDateEdit_EditValueChanged(object sender, EventArgs e)
         {
             if (_isLoading) return;
-            SafeRun(() => RefreshMealAndEstimateUI(), caption: "刷新預估時間失敗");
+            UiSafeRunner.SafeRun(() => RefreshMealAndEstimateUI(), caption: "刷新預估時間失敗");
         } 
         
         private void endDateEdit_EditValueChanged(object sender, EventArgs e)
         {
             if (_isLoading) return;
-            SafeRun(() => RefreshMealAndEstimateUI(), caption: "刷新預估時間失敗");
+            UiSafeRunner.SafeRun(() => RefreshMealAndEstimateUI(), caption: "刷新預估時間失敗");
         }
 
         private void startTimeEdit_EditValueChanged(object sender, EventArgs e)
         {
             if (_isLoading) return;
-            SafeRun(() => RefreshMealAndEstimateUI(), caption: "刷新預估時間失敗");
+            UiSafeRunner.SafeRun(() => RefreshMealAndEstimateUI(), caption: "刷新預估時間失敗");
         }
 
         private void endTimeEdit_EditValueChanged(object sender, EventArgs e)
         {
             if (_isLoading) return;
-            SafeRun(() => RefreshMealAndEstimateUI(), caption: "刷新預估時間失敗");
+            UiSafeRunner.SafeRun(() => RefreshMealAndEstimateUI(), caption: "刷新預估時間失敗");
         }
 
         private void cmbDinnerMinutes_EditValueChanged(object sender, EventArgs e)
         {
             if (_isLoading) return;
-            SafeRun(() => RefreshMealAndEstimateUI(), caption: "刷新預估時間失敗");
+            UiSafeRunner.SafeRun(() => RefreshMealAndEstimateUI(), caption: "刷新預估時間失敗");
         }
 
         // Location -> Area
         private void cmbLocation_EditValueChanged(object sender, EventArgs e)
         {
             if (_isLoading) return;
-            SafeRun(() =>
+            UiSafeRunner.SafeRun(() =>
             {
                 var location = cmbLocation.Text?.Trim() ?? "";
                 var item = _locations.FirstOrDefault(x => x.Location == location);
@@ -81,7 +82,7 @@ namespace RentProject
         {
             if (_isLoading) return;
 
-            SafeRun(() =>
+            UiSafeRunner.SafeRun(() =>
             {
                 // 只要 JobNo 有變動，就取消上一個查詢，避免舊回來亂改 UI
                 _jobNoCts?.Cancel();
@@ -140,7 +141,7 @@ namespace RentProject
         {
             if (_isLoading) return;
 
-            await SafeRunAsync(async () =>
+            await UiSafeRunner.SafeRunAsync(async () =>
             {
                 var jobNo = cmbJobNo.Text?.Trim() ?? "";
 
@@ -253,7 +254,7 @@ namespace RentProject
         private void cmbTestMode_EditValueChanged(object sender, EventArgs e)
         {
             if (_isLoading) return;
-            SafeRun(() =>
+            UiSafeRunner.SafeRun(() =>
             {
                 var mode = cmbTestMode.Text?.Trim() ?? "";
                 UpdateTestItem(mode);

@@ -1,0 +1,210 @@
+專案需依照以下規則執行
+1. 專案需分層依照Winform => WebApi => Service => Repository => Domain
+2. 設定參數變數命名名稱需統一，不可四處散落在各層。
+3. 會重複使用的方法應抽出成獨立工具，避免重複撰寫。
+4. 設計專案時要有日誌紀錄。
+5. 專案會多人同時使用
+6. WebAPI & DB會布置在伺服器，Winform會安裝在工程師的個人電腦
+7. 哪些方法留 UI、哪些搬到 Service、要新增哪些 DTO/Result
+
+
+目前租時單完成許多UI功能，目前缺乏 
+1. jwt，帳號登入，使用AD帳號或一般帳號登入的功能 
+2. 權限分配，目前都尚未定義有哪些權限，之後要根據腳色的不同開放權限 
+3. DB，目前資料庫定義的很亂，需要補齊整理 
+4. 尚未使用Di注入 
+5. C#程式碼很雜亂，功能沒有切開 
+6. 尚未完全使用介面 
+7. 需要增加匯出填值到EXCEL並轉成PDF的功能 
+8. 需要增加上傳掃描影本的功能
+
+
+以上8 點缺口都成立，而且從程式碼看出來「確實會卡」：
+
+Repository / Service 仍是 concrete class 居多（DapperRentTimeRepository 直接被 service 吃）
+
+SQL 與規則散落在多處（UI + Service + Repo）
+
+Domain Model（RentTime）欄位很多，且 DB 欄位命名/語意疑似不一致（下面我會點出具體風險）
+
+未導入 DI（會讓 HttpClient、Repo、Service 的生命週期與測試很難控）
+
+C. 用「完成度」給你一個比較精準的分數（方便你掌握現況）
+
+我會拆兩個維度：
+
+功能完成度（使用者能不能用）：大約 70%～80%
+
+因為核心流程（建/改/開始/完成/送出/跨日拆單/查詢顯示）都在了
+
+工程化完成度（能不能長期維護擴充）：大約 25%～35%
+
+因為 DB 結構、DI、切層、權限登入、附件、匯出套版都還沒落地
+
+2) 難度評估（真正會花最多腦力的地方在哪）
+
+我用「難度 × 影響範圍」排序（越上面越該先處理）：
+
+高難度 / 高風險
+
+DB 重整（資料模型與約束）
+
+你已經有 BookingBatch、RentTimes、JobNoMaster、Projects 的關聯雛形
+
+但目前 BookingNo 的解析排序、TMP→RF、跨日拆單、交接流水都高度依賴字串規則
+
+只要 DB 沒補上「可被索引的 Batch/Seq」或約束，後面會一直補洞
+
+權限系統（角色→權限→UI/Service/資料範圍）
+
+權限不是只關按鈕，還要擋 Service 行為、限制資料可見範圍
+
+一旦你開始做，會牽動很多地方，所以要先定「權限矩陣」
+
+切層 + DI（讓程式可維護、可測）
+
+你現在功能越來越多，若不切層，會變成每加一個功能就改一堆事件
+
+中難度 / 中風險
+
+匯出 Excel 套版 + 轉 PDF
+
+不是單純匯出表格，而是「像單據」那種固定格式通常才會需要 PDF
+
+會遇到：模板、合併儲存格、頁首頁尾、列印範圍、字型、簽核欄位
+
+上傳掃描影本（附件系統）
+
+真正難的是：檔案存哪、命名、版本、權限、刪除策略、下載稽核
+
+UI 選檔反而是最簡單的一小段
+
+低難度 / 低風險（但很值得先順手修）
+
+狀態顯示 mapping、例外處理統一、命名整理、重複驗證邏輯整理等
+
+3) 除了你列的 8 點外，從程式碼還看出哪些「一定要解」的問題？
+
+這些是你沒列，但之後一定會踩到的坑，我用「原因 → 後果 → 建議」講清楚。
+
+(1) RentTime 內的 Status 是 int，但你已經有 enum
+
+原因：RentTime.Status 用 int，UI 顯示又用 switch (int)
+
+後果：魔法數字會散落（0/1/2/3 到處出現），長期很難維護
+
+建議：C# 端改成 public RentTimeStatus Status { get; set; }，DB 照存 int 沒問題（Dapper 可以自動轉）
+
+(2) UpdateRentTime 把 CreatedBy 也更新了（語意很危險）
+
+你 SQL 有：CreatedBy = @CreatedBy
+
+原因：CreatedBy（建立者）理論上建立後不該被改
+
+後果：資料稽核會壞掉（誰建立的變成可被覆蓋）
+
+建議：Update 時只更新 ModifiedBy/ModifiedDate，不要再動 CreatedBy
+
+(3) BookingNo 用字串解析排序，長期效能與一致性風險很高
+
+你現在 ORDER BY 用 SUBSTRING/CHARINDEX/TRY_CONVERT 去拆 BookingNo
+
+後果：資料多時排序會慢、索引很難幫忙、格式一變就爆
+
+建議（DB 方向）：把「BatchId」與「Seq」存成欄位（例如 BookingBatchId、BookingSeqInt），BookingNo 只是顯示用
+
+這會大幅簡化 Copy / Split / 排序 / 唯一性約束
+
+(4) 產生下一個 Seq 的 GetNextSeqForBatch 有競爭條件
+
+原因：兩個人同時新增/複製，可能同時算出相同 MAX(seq)+1
+
+後果：撞號（同一 batch 出現相同 seq）
+
+建議：要嘛用 DB 約束 + 重試，要嘛改成「Seq 在 DB 用 identity/sequence 或用交易鎖」來保證唯一
+
+(5) RealJobNoApiClient 的 HttpClient 生命週期要小心
+
+你現在 RealJobNoApiClient : IDisposable，如果它被頻繁 new/Dispose，可能會造成連線資源問題
+
+建議：讓它在 DI 裡是 Singleton（或至少長生命週期），不要每次查詢就 new 一個
+
+(6) Domain Model 太「肥」，UI 專用欄位與 DB 欄位混在一起
+
+例如 BookingGroupNo 是計算屬性（偏 UI/排序/群組用），但放在 Domain RentTime
+
+後果：Domain 越來越像 ViewModel，責任不清
+
+建議：
+
+Domain 保留純資料（對應 DB）
+
+UI 需要的計算欄位放在 ProjectViewItem / RentTimeDto 這種 DTO
+
+(7) 缺少「並發更新」策略（兩人同時編輯同一單會互蓋）
+
+你現在 Update 是直接覆蓋
+
+後果：A 改完 B 再存，A 的修改消失
+
+建議：DB 加 rowversion（或 ModifiedDate 比對），做 optimistic concurrency（提示使用者資料已被更新）
+
+(8) 稽核紀錄不足（Audit Log）
+
+你有 ModifiedBy/ModifiedDate，但沒有「事件紀錄」
+
+後果：未來問「誰何時送出/完成/刪除」只能靠最後修改者推測
+
+建議：新增 RentTimeLogs（RentTimeId、Action、By、At、Note）
+
+4) 建議依序整理後列出（最少重工的路線）
+
+我建議用「先打地基 → 再做登入權限 → 再做附件/報表」：
+
+第 0 步（先修幾個會越寫越痛的小洞）
+
+RentTime.Status 改 enum 化（至少在 C# 端）
+
+UpdateRentTime 不要更新 CreatedBy
+
+把 BookingNo 解析排序那段先包成「可替換」的方法（避免散落）
+
+第 1 步（讓程式開始變乾淨：DI + 切層 + 介面）
+
+導入 DI：Form1 / Service / Repository 全走注入
+
+Repository 介面化：IRentTimeRepository / IJobNoRepository / IProjectRepository
+
+UI 只留「收集輸入/顯示」，規則全部進 Service（例如刪除/送出/狀態檢查）
+
+第 2 步（DB 重整，讓資料不再靠字串規則撐著）
+
+RentTimes 新增：BookingBatchId、BookingSeqInt（或至少能索引的欄位）
+
+補 FK/Index/Unique/Check constraint
+
+把 TMP→RF 的規則與狀態轉換，寫成一致的資料規則（避免到處 CASE）
+
+第 3 步（登入：先選「你真正需要的」）
+
+若是公司內部 WinForms：優先評估 AD 整合登入（Windows 身份）
+
+JWT 通常是「有後端 API」才需要（WinForms 當 client 去打 API）
+
+也就是：你要不要 JWT，取決於你未來架構是不是 client-server。
+
+第 4 步（權限矩陣落地）
+
+定義角色（例如：主管/工程師/助理/管理員）
+
+定義權限（建立、編輯、開始、完成、送出、刪除、匯出、上傳附件…）
+
+兩層都要擋：UI（按鈕灰掉）+ Service（就算繞 UI 也不能做）
+
+第 5 步（匯出與附件）
+
+Excel 套版：用模板檔（固定格式）再填值
+
+PDF：選擇轉換路線（Excel→PDF 或報表工具）
+
+附件：Attachments 表 + 檔案儲存策略 + 權限 + 版本
