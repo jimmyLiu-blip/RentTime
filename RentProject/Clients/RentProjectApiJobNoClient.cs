@@ -7,7 +7,6 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using RentProject.Api.Contracts;
 using RentProject.Shared.Http;
 
 namespace RentProject.Clients

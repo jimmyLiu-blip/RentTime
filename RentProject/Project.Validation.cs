@@ -1,4 +1,5 @@
 ﻿using DevExpress.XtraEditors;
+using System.Windows.Forms;
 
 namespace RentProject
 {
@@ -13,7 +14,7 @@ namespace RentProject
             {
                 dxErrorProvider1.SetError(cmbLocation, "場地名稱必填");
 
-                cmbLocation.Focus();
+                // cmbLocation.Focus();
 
                 return false;
             }
@@ -34,7 +35,7 @@ namespace RentProject
                 dxErrorProvider1.SetError(cmbCompany, "客戶名稱必填");
 
                 // 2. 直接跳到欄位
-                cmbCompany.Focus();
+                // cmbCompany.Focus();
 
                 return false;
             }
@@ -52,7 +53,7 @@ namespace RentProject
             {
                 dxErrorProvider1.SetError(txtSales, "業務必填");
 
-                txtSales.Focus();
+                // txtSales.Focus();
 
                 return false;
             }
@@ -70,7 +71,7 @@ namespace RentProject
             {
                 dxErrorProvider1.SetError(startDateEdit, "開始日期必填");
 
-                startDateEdit.Focus();
+                // startDateEdit.Focus();
 
                 return false;
             }
@@ -88,7 +89,7 @@ namespace RentProject
             {
                 dxErrorProvider1.SetError(endDateEdit, "結束日期必填");
 
-                endDateEdit.Focus();
+                // endDateEdit.Focus();
 
                 return false;
             }
@@ -106,7 +107,7 @@ namespace RentProject
             {
                 dxErrorProvider1.SetError(startTimeEdit, "開始時間必填");
 
-                startTimeEdit.Focus();
+                //startTimeEdit.Focus();
 
                 return false;
             }
@@ -124,7 +125,7 @@ namespace RentProject
             {
                 dxErrorProvider1.SetError(endTimeEdit, "結束時間必填");
 
-                endTimeEdit.Focus();
+                //endTimeEdit.Focus();
 
                 return false;
             }
@@ -132,6 +133,22 @@ namespace RentProject
             dxErrorProvider1.SetError(endTimeEdit, "");
 
             return true;
+        }
+
+        private bool ValidateAllRequiredUI(out Control? firstInvalid)
+        {
+            firstInvalid = null;
+            bool ok = true;
+
+            if (!ValidateLocationUI()) { ok = false; firstInvalid ??= cmbLocation; }
+            if (!ValidateCompanyUI()) { ok = false; firstInvalid ??= cmbCompany; }
+            if (!ValidateSalesUI()) { ok = false; firstInvalid ??= txtSales; }
+            if (!ValidateStartDateUI()) { ok = false; firstInvalid ??= startDateEdit; }
+            if (!ValidateEndDateUI()) { ok = false; firstInvalid ??= endDateEdit; }
+            if (!ValidateStartTimeUI()) { ok = false; firstInvalid ??= startTimeEdit; }
+            if (!ValidateEndTimeUI()) { ok = false; firstInvalid ??= endTimeEdit; }
+
+            return ok;
         }
     }
 }

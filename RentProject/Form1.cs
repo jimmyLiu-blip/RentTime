@@ -66,6 +66,7 @@ namespace RentProject
             _calendarView = new CalendarViewControl { Dock = DockStyle.Fill };
 
             _projectView.SetLoadingAction = SetMainLoading;
+            _calendarView.SetLoadingAction = SetMainLoading;
 
             _projectView.EditRequested += OpenEditRentTime;
             _calendarView.EditRequested += OpenEditRentTime;
@@ -246,9 +247,9 @@ namespace RentProject
 
         }
 
-        private void btnEditRentTime_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void btnEditRentTime_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            try
+            await UiSafeRunner.SafeRunAsync(async () =>
             {
                 if (_isCalendarView)
                 {
@@ -266,24 +267,16 @@ namespace RentProject
 
                 // 直接沿用你已寫好的流程：開 Project 表單 + 刷新
                 OpenEditRentTime(id.Value);
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show($"{ex.GetType().Name}-{ex.Message}", "開啟編輯失敗");
-            }
+            }, caption: "開啟編輯失敗", setLoading: SetMainLoading);
         }
 
         private async void btnTestConnection_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            try
+            await UiSafeRunner.SafeRunAsync(async () =>
             {
                 var msg = await _rentTimeApiClient.PingDBAsync();
                 XtraMessageBox.Show(msg, "API + DB Health");
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show(ex.Message, "API + DB Health Fail");
-            }
+            }, caption: "API + DB Health Fail", setLoading: SetMainLoading);
         }
 
         private void ApplyLocationFilterAndRefresh()
@@ -501,97 +494,98 @@ namespace RentProject
         // 刪除租時單(可多選)
         private async void btnDelete_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            // 0. 先把「選取來源」統一成同一種格式：只保留刪除需要的欄位
-            var selected = new List<(int RentTimeId, string BookingNo, int Status)>();
-
-            if (_isCalendarView)
+            await UiSafeRunner.SafeRunAsync(async () =>
             {
-                // CalendarView：GetSelectedDetail() 會回傳 0 或 1 筆（目前設計）
-                var calSelected = _calendarView.GetSelectedDetail();
+                    // 0. 先把「選取來源」統一成同一種格式：只保留刪除需要的欄位
+                    var selected = new List<(int RentTimeId, string BookingNo, int Status)>();
 
-                selected = calSelected
-                    .Where(x => x.RentTimeId.HasValue)
-                    .Select(x => (x.RentTimeId!.Value, x.BookingNo ?? "", x.Status))
-                    .ToList();
-            }
-            else
-            {
-                // ProjectView：原本就是可多選
-                var projectSelected = _projectView.GetCheckedRentTime();
-
-                selected = projectSelected
-                    .Select(x => (x.RentTimeId, x.BookingNo ?? "", x.Status))
-                    .ToList();
-            }
-
-            if (selected.Count == 0)
-            {
-                XtraMessageBox.Show(
-                    _isCalendarView ? "請先點選日曆上的案件並選擇右側 BookingNo 再刪除" : "請先勾選要刪除的租時單",
-            "提示");
-                return;
-            }
-
-            // 1-2) 擋 Finished、Submit 不能刪
-            var blocked = selected.Where(x => x.Status == 2 || x.Status == 3).ToList();
-            if (blocked.Count > 0)
-            {
-                var preview = string.Join("\n",
-                    blocked.Take(10).Select(x => $"{x.BookingNo}(Id:{x.RentTimeId})"));
-
-                XtraMessageBox.Show(
-                    $"你勾選的資料包含「已完成/已送出」狀態，不能刪除。\n" +
-                    $"請取消選取後再刪除。\n\n" +
-                    $"筆數：{blocked.Count}\n" +
-                    $"{preview}",
-                    "禁止刪除",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
-            }
-
-            // 2) 確認視窗
-
-            var confirm = XtraMessageBox.Show(
-                $"確認要刪除 {selected.Count} 筆租時單嗎?\n（刪除後會從清單移除）", "確認刪除", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-
-            if (confirm != DialogResult.Yes) return;
-
-            // 3) 批次刪除（改成走 WebAPI）
-            btnDelete.Enabled = false; // 防止連點（你的按鈕名稱若不同就改掉）
-            try
-            {
-                // 這裡先用同一個 createdBy（你目前專案是用 CreatedBy 當操作人）
-                // 之後做登入系統，再改成 currentUserName
-
-                var user = GetCurrentUser();
-
-                foreach (var rt in selected)
+                if (_isCalendarView)
                 {
-                    await _rentTimeApiClient.DeleteRentTimeByIdAsync(rt.RentTimeId, user);
+                    // CalendarView：GetSelectedDetail() 會回傳 0 或 1 筆（目前設計）
+                    var calSelected = _calendarView.GetSelectedDetail();
+
+                    selected = calSelected
+                        .Where(x => x.RentTimeId.HasValue)
+                        .Select(x => (x.RentTimeId!.Value, x.BookingNo ?? "", x.Status))
+                        .ToList();
+                }
+                else
+                {
+                    // ProjectView：原本就是可多選
+                    var projectSelected = _projectView.GetCheckedRentTime();
+
+                    selected = projectSelected
+                        .Select(x => (x.RentTimeId, x.BookingNo ?? "", x.Status))
+                        .ToList();
                 }
 
-                XtraMessageBox.Show($"刪除完成:{selected.Count} 筆", " 完成");
+                if (selected.Count == 0)
+                {
+                    XtraMessageBox.Show(
+                        _isCalendarView ? "請先點選日曆上的案件並選擇右側 BookingNo 再刪除" : "請先勾選要刪除的租時單",
+                "提示");
+                    return;
+                }
 
-                // 4) 刷新列表
-                await RefreshProjectViewAsync();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", "Error");
-            }
-            finally
-            {
-                btnDelete.Enabled = true;
-            }
+                // 1-2) 擋 Finished、Submit 不能刪
+                var blocked = selected.Where(x => x.Status == 2 || x.Status == 3).ToList();
+                if (blocked.Count > 0)
+                {
+                    var preview = string.Join("\n",
+                        blocked.Take(10).Select(x => $"{x.BookingNo}(Id:{x.RentTimeId})"));
+
+                    XtraMessageBox.Show(
+                        $"你勾選的資料包含「已完成/已送出」狀態，不能刪除。\n" +
+                        $"請取消選取後再刪除。\n\n" +
+                        $"筆數：{blocked.Count}\n" +
+                        $"{preview}",
+                        "禁止刪除",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // 2) 確認視窗
+
+                var confirm = XtraMessageBox.Show(
+                    $"確認要刪除 {selected.Count} 筆租時單嗎?\n（刪除後會從清單移除）", "確認刪除", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                if (confirm != DialogResult.Yes) return;
+
+                // 3) 批次刪除（改成走 WebAPI）
+                btnDelete.Enabled = false; // 防止連點（你的按鈕名稱若不同就改掉）
+                try
+                {
+                    // 這裡先用同一個 createdBy（你目前專案是用 CreatedBy 當操作人）
+                    // 之後做登入系統，再改成 currentUserName
+
+                    var user = GetCurrentUser();
+
+                    foreach (var rt in selected)
+                    {
+                        await _rentTimeApiClient.DeleteRentTimeByIdAsync(rt.RentTimeId, user);
+                    }
+
+                    XtraMessageBox.Show($"刪除完成:{selected.Count} 筆", " 完成");
+
+                    // 4) 刷新列表
+                    await RefreshProjectViewAsync();
+                }
+                catch (Exception ex)
+                {
+                    XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", "Error");
+                }
+                finally
+                {
+                    btnDelete.Enabled = true;
+                }
+            }, caption: "刪除租時單失敗", setLoading: SetMainLoading);
         }
 
         // 按鈕：送出給助理
         private async void btnSubmitToAssistant_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            btnSubmitToAssistant.Enabled = false; // 避免連點
-
-            try
+            await UiSafeRunner.SafeRunAsync(async () =>
             {
                 var selected = _projectView.GetCheckedRentTime();
 
@@ -636,24 +630,13 @@ namespace RentProject
                 XtraMessageBox.Show($"送出完成：{selected.Count}筆", "完成");
 
                 await RefreshProjectViewAsync();
-
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show($"{ex.GetType().Name} - {ex.Message}", "Error");
-            }
-            finally
-            {
-                btnSubmitToAssistant.Enabled = true;
-            }
+            }, caption: "送出給助理失敗", setLoading: SetMainLoading);
         }
 
         // 重新整理
         private async void btnRefresh_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            btnRefresh.Enabled = false;
-
-            try
+            await UiSafeRunner.SafeRunAsync(async () =>
             {
                 // 1. 清掉進階篩選
                 _advanceFilter = null;
@@ -666,15 +649,7 @@ namespace RentProject
 
                 if (_isCalendarView) ShowCalendarView();
                 else ShowProjectView();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show($"{ex.GetType().Name}-{ex.Message}", "重新整理失敗");
-            }
-            finally
-            {
-                btnRefresh.Enabled = true;
-            }
+            }, caption: "重新整理失敗", setLoading: SetMainLoading);
         }
 
         // SaveFileDialog：Windows 內建的「另存新檔」視窗物件
@@ -726,16 +701,13 @@ namespace RentProject
             }
         }
 
-        private void btnExportExcel_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private async void btnExportExcel_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            try
+            await UiSafeRunner.SafeRunAsync(() =>
             {
                 TestExportExcel();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show($"{ex.GetType().Name}-{ex.Message}", "匯出失敗");
-            }
+                return Task.CompletedTask;
+            }, caption: "匯出失敗", setLoading: SetMainLoading);
         }
 
         private void btnImportExcel_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
@@ -744,55 +716,38 @@ namespace RentProject
 
         private async Task<bool> CalendarView_PeriodChangeRequestedAsync(int rentTimeId, DateTime newStart, DateTime newEnd)
         {
-            // 1. 基本防呆
-            if (newEnd < newStart)
-            {
-                XtraMessageBox.Show("結束時間不能早於開始時間", "提示");
-                return false;
-            }
+            bool ok = false;
 
-            var user = GetCurrentUser();  // 你自己的登入者名稱變數
-
-            try
+            await UiSafeRunner.SafeRunAsync(async () =>
             {
-                // 2.真正 async：不要 GetResult()
-                bool ok = await _rentTimeApiClient
-                    .ChangeDraftPeriodWithSplitAsync(rentTimeId, newStart, newEnd, user);
+                if (newEnd < newStart)
+                {
+                    XtraMessageBox.Show("結束時間不能早於開始時間", "提示");
+                    ok = false;
+                    return;
+                }
+
+                var user = GetCurrentUser();
+
+                ok = await _rentTimeApiClient.ChangeDraftPeriodWithSplitAsync(rentTimeId, newStart, newEnd, user);
 
                 if (!ok)
                 {
-                    // 常見原因：已不是 Draft / 已刪除 / 資料被改過
                     XtraMessageBox.Show("只有 Draft 才能拖拉調整（或資料已更新）", "提示");
                 }
 
-                // 3. 延後刷新：避免在 Scheduler 事件流程中同步刷新造成不穩
-                this.BeginInvoke(new Action(async () =>
-                {
-                    try
-                    {
-                        await RefreshAndKeepViewAsync(); // 比 RefreshProjectViewAsync 更完整（會保持畫面）
-                    }
-                    catch (Exception ex)
-                    {
-                        XtraMessageBox.Show($"刷新失敗：{ex.Message}", "錯誤");
-                    }
-                }));
+            }, caption: "更新失敗", setLoading: SetMainLoading);
 
-                return ok;
-            }
-            catch (Exception ex)
+            // 不論成功失敗，都延後刷新（避免 Scheduler 事件中同步刷新不穩）
+            this.BeginInvoke(new Action(() =>
             {
-                XtraMessageBox.Show($"更新失敗：{ex.Message}", "錯誤");
-
-                // 失敗也刷新，讓畫面回到正確狀態
-                this.BeginInvoke(new Action(async () =>
+                _ = UiSafeRunner.SafeRunAsync(async () =>
                 {
-                    try { await RefreshAndKeepViewAsync(); }
-                    catch { /* 這裡不再疊訊息，避免一直跳 */ }
-                }));
+                    await RefreshAndKeepViewAsync();
+                }, caption: "刷新失敗", setLoading: SetMainLoading);
+            }));
 
-                return false;
-            }
+            return ok;
         }
 
         private string GetCurrentUser() => "Jimmy"; // 之後接登入系統就改這裡

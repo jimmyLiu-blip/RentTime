@@ -4,6 +4,7 @@ namespace RentProject.Shared.Http
 {
     public static class HttpResponseExtensions
     {
+        // 讓 JSON 欄位名稱大小寫不一致也能對得起來
         private static readonly JsonSerializerOptions _jsonOpt = new()
         {
             PropertyNameCaseInsensitive = true,

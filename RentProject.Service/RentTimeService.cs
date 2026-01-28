@@ -185,14 +185,14 @@ namespace RentProject.Service
             var start = model.StartDate.Value.Date + model.StartTime.Value;
             var end = model.EndDate.Value.Date + model.EndTime.Value;
 
-            if (end < start) throw new Exception("結束時間不可早於開始時間");
+            if (end < start) throw new InvalidOperationException("結束時間不可早於開始時間");
 
             var minutes = (int)(end - start).TotalMinutes; // 轉換成總分鐘
 
             if (model.HasLunch) minutes -= model.LunchMinutes;
             if (model.HasDinner) minutes -= model.DinnerMinutes;
 
-            if (minutes < 0) throw new Exception("扣除午餐/晚餐後，預估時間變成負數，請檢查時間與晚餐分配");
+            if (minutes < 0) throw new InvalidOperationException("扣除午餐/晚餐後，預估時間變成負數，請檢查時間與晚餐分配");
 
             model.EstimatedMinutes = minutes;
             model.EstimatedHours = Math.Round(minutes/60m, 2);
@@ -211,7 +211,7 @@ namespace RentProject.Service
         {
             if (start is null || end is null) return; 
             if (end.Value < start.Value)
-                throw new Exception($"{label}：結束時間不可早於開始時間");
+                throw new InvalidOperationException($"{label}：結束時間不可早於開始時間");
         }
     }
 }

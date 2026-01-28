@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
-using static DevExpress.Xpo.Helpers.AssociatedCollectionCriteriaHelper;
+using RentProject.UI;
 
 namespace RentProject
 {
@@ -32,6 +32,29 @@ namespace RentProject
 
         public event Func<int, DateTime, DateTime, Task<bool>>? PeriodChangeRequested;
 
+        // 讓 Form1 可以把 SetMainLoading 傳進來
+        public Action<bool>? SetLoadingAction { get; set; }
+
+        // 統一入口：async
+        private Task SafeRunAsync(Func<Task> action, string caption)
+            => UiSafeRunner.SafeRunAsync(action, caption: caption, setLoading: SetLoadingAction);
+
+        // 統一入口：sync action 也能用
+        private Task SafeRunAsync(Action action, string caption)
+            => UiSafeRunner.SafeRunAsync(() => { action(); return Task.CompletedTask; },
+                                         caption: caption,
+                                         setLoading: SetLoadingAction);
+
+        // 給「不能 async」的方法用（LoadData / GetSelectedDetail 這種）
+        private void SafeRunSync(Action action, string caption)
+            => SafeRunAsync(action, caption).GetAwaiter().GetResult();
+
+        // BeginInvoke 也走 UiSafeRunner（避免你到處 try/catch）
+        private void SafeBeginInvoke(Func<Task> action, string caption)
+        {
+            this.BeginInvoke(new Action(() => _ = SafeRunAsync(action, caption)));
+        }
+
         // 是否為「7天週時間表模式」
         private bool _isWeek7Mode = false;
 
@@ -44,19 +67,15 @@ namespace RentProject
             InitializeComponent();
         }
 
-        private void CalendarViewControl_Load(object sender, EventArgs e)
+        private async void CalendarViewControl_Load(object sender, EventArgs e)
         {
-            try
+            await SafeRunAsync(() =>
             {
                 EnsureSchedulerInit();
 
                 HideDetailPanel();
                 ClearDetailPanel();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show($"{ex.GetType().Name}-{ex.Message}", "CalendarView初始化失敗");
-            }
+            }, "CalendarView 初始化失敗");
         }
 
         // ====== Scheduler 初始化（只做一次） ======
@@ -534,9 +553,9 @@ namespace RentProject
         }
 
         // ===== 行事曆互動事件（點擊/切換/阻止內建表單）=====
-        private void schedulerControl1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+        private async void schedulerControl1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-            try
+            await SafeRunAsync(() =>
             {
                 var hit = schedulerControl1.ActiveView.ViewInfo.CalcHitInfo(e.Location, false);
 
@@ -553,23 +572,12 @@ namespace RentProject
 
                 ShowDetailPanel();
                 PopulateBookingNoPicker(appt);
-            }
-            catch (Exception ex)
-            {
-                try
-                {
-                    HideDetailPanel();
-                    ClearDetailPanel();
-                }
-                catch { }
-
-                XtraMessageBox.Show($"{ex.GetType().Name}-{ex.Message}", "點選日曆失敗");
-            }
+            }, "點選日曆失敗");
         }
 
-        private void schedulerControl1_MouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        private async void schedulerControl1_MouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-            try
+            await SafeRunAsync(() =>
             {
                 var hit = schedulerControl1.ActiveView.ViewInfo.CalcHitInfo(e.Location, false);
                 if (hit.HitTest != SchedulerHitTest.AppointmentContent) return;
@@ -581,11 +589,7 @@ namespace RentProject
                 ShowDetailPanel();
                 PopulateBookingNoPicker(appt);
                 RequestEditSelected();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show($"{ex.GetType().Name}-{ex.Message}", "雙擊開啟編輯失敗");
-            }
+            }, "雙擊開啟編輯失敗");
         }
 
         private void schedulerControl1_VisibleIntervalChanged(object sender, EventArgs e)
@@ -858,17 +862,11 @@ namespace RentProject
 
                 e.Allow = true;
 
-                this.BeginInvoke(new Action(async () =>
+                SafeBeginInvoke(async () =>
                 {
-                    try
-                    {
-                        await PeriodChangeRequested(rentTimeId, newStart, newEnd);
-                    }
-                    catch (Exception ex)
-                    {
-                        XtraMessageBox.Show($"更新失敗：{ex.Message}", "錯誤");
-                    }
-                }));
+                    // 這裡會回到 Form1 的 CalendarView_PeriodChangeRequestedAsync
+                    await PeriodChangeRequested(rentTimeId, newStart, newEnd);
+                }, "拖曳更新失敗");
             }
             catch (Exception ex)
             {
@@ -906,17 +904,10 @@ namespace RentProject
 
                 e.Allow = true;
 
-                this.BeginInvoke(new Action(async () =>
+                SafeBeginInvoke(async () =>
                 {
-                    try
-                    {
-                        await PeriodChangeRequested(rentTimeId, newStart, newEnd);
-                    }
-                    catch (Exception ex)
-                    {
-                        XtraMessageBox.Show($"更新失敗：{ex.Message}", "錯誤");
-                    }
-                }));
+                    await PeriodChangeRequested(rentTimeId, newStart, newEnd);
+                }, "調整時間更新失敗");
             }
             catch (Exception ex)
             {

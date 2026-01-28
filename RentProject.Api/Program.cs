@@ -1,8 +1,9 @@
 using Microsoft.Extensions.Options;
+using RentProject.Api;
 using RentProject.Api.Clients;
 using RentProject.Api.Options;
-using RentProject.Service;
 using RentProject.Repository;
+using RentProject.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +50,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// 放在 MapControllers 前面
+app.UseMiddleware<ApiExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

@@ -1,8 +1,9 @@
-﻿using System;
+﻿using DevExpress.XtraEditors;
+using RentProject.Shared.Http;
+using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
-using DevExpress.XtraEditors;
-using RentProject.Shared.Http;
 
 namespace RentProject.UI
 {
@@ -12,6 +13,7 @@ namespace RentProject.UI
         {
             try
             {
+                using var _ = RentProject.Shared.Http.CorrelationIdContext.BeginNew();
                 // 如果呼叫端有提供 setLoading，就先把 loading 打開
                 setLoading?.Invoke(true);
                 action();
@@ -46,6 +48,8 @@ namespace RentProject.UI
         {
             try
             {
+                using var _ = RentProject.Shared.Http.CorrelationIdContext.BeginNew();
+
                 setLoading?.Invoke(true);
                 await action(); // 不要 ConfigureAwait(false)，讓回到 UI 執行緒更穩
             }
@@ -77,20 +81,15 @@ namespace RentProject.UI
 
         private static void ShowApiError(ApiException ex, string caption)
         {
-            string msg;
+            // 只有在你自己 F5 / 有掛 Debugger 時才顯示 TraceId
+            bool showTrace = Debugger.IsAttached;
 
-            if (ex.StatusCode >= 500)
-            {
-                msg = "系統忙碌或發生錯誤，請稍後再試。";
-                if (!string.IsNullOrWhiteSpace(ex.TraceId))
-                    msg += $"\n\nTraceId: {ex.TraceId}";
-            }
-            else
-            {
-                msg = ex.Message;
-                if (!string.IsNullOrWhiteSpace(ex.TraceId) && !msg.Contains(ex.TraceId))
-                    msg += $"\n\nTraceId: {ex.TraceId}";
-            }
+            string msg = ex.StatusCode >= 500
+                ? "系統忙碌或發生錯誤，請稍後再試。"
+                : ex.Message;
+
+            if (showTrace && !string.IsNullOrWhiteSpace(ex.TraceId))
+                msg += $"\n\nTraceId: {ex.TraceId}";
 
             XtraMessageBox.Show(msg, caption);
         }

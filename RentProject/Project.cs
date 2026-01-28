@@ -332,13 +332,12 @@ namespace RentProject
             {
                 dxErrorProvider1.ClearErrors();
 
-                if (!ValidateLocationUI()) return;
-                if (!ValidateCompanyUI()) return;
-                if (!ValidateSalesUI()) return;
-                if (!ValidateStartDateUI()) return;
-                if (!ValidateEndDateUI()) return;
-                if (!ValidateStartTimeUI()) return;
-                if (!ValidateEndTimeUI()) return;
+                if (!ValidateAllRequiredUI(out var firstInvalid))
+                {
+                    XtraMessageBox.Show("請先補齊必填欄位（紅色 X 標示處）", "提示");
+                    firstInvalid?.Focus();
+                    return;
+                }
 
                 var model = BuildModelFormUI();
 
