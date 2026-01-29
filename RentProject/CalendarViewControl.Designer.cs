@@ -231,7 +231,7 @@
             // 
             // btnViewDay
             // 
-            btnViewDay.Hint = "顯示日視圖";
+            btnViewDay.Hint = "Switch to Day View";
             btnViewDay.Id = 1;
             btnViewDay.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnViewDay.ImageOptions.Image");
             btnViewDay.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnViewDay.ImageOptions.LargeImage");
@@ -240,7 +240,7 @@
             // 
             // btnViewWeek
             // 
-            btnViewWeek.Hint = "顯示週視圖";
+            btnViewWeek.Hint = "Switch to Week View";
             btnViewWeek.Id = 2;
             btnViewWeek.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnViewWeek.ImageOptions.Image");
             btnViewWeek.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnViewWeek.ImageOptions.LargeImage");
@@ -249,7 +249,7 @@
             // 
             // btnViewMonth
             // 
-            btnViewMonth.Hint = "顯示月視圖";
+            btnViewMonth.Hint = "Switch to Month View";
             btnViewMonth.Id = 3;
             btnViewMonth.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnViewMonth.ImageOptions.Image");
             btnViewMonth.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnViewMonth.ImageOptions.LargeImage");
@@ -258,7 +258,7 @@
             // 
             // btnViewTimeLine
             // 
-            btnViewTimeLine.Hint = "橫向的時間軸";
+            btnViewTimeLine.Hint = "Switch to Timeline View";
             btnViewTimeLine.Id = 4;
             btnViewTimeLine.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnViewTimeLine.ImageOptions.Image");
             btnViewTimeLine.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnViewTimeLine.ImageOptions.LargeImage");
@@ -267,7 +267,7 @@
             // 
             // btnPrevDay
             // 
-            btnPrevDay.Hint = "上一個";
+            btnPrevDay.Hint = "Go to the previous period";
             btnPrevDay.Id = 8;
             btnPrevDay.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnPrevDay.ImageOptions.Image");
             btnPrevDay.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnPrevDay.ImageOptions.LargeImage");
@@ -276,7 +276,7 @@
             // 
             // btnNextDay
             // 
-            btnNextDay.Hint = "下一個";
+            btnNextDay.Hint = "Go to the next period";
             btnNextDay.Id = 9;
             btnNextDay.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnNextDay.ImageOptions.Image");
             btnNextDay.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnNextDay.ImageOptions.LargeImage");
@@ -285,7 +285,7 @@
             // 
             // btnToday
             // 
-            btnToday.Hint = "回到今日";
+            btnToday.Hint = "Go to today";
             btnToday.Id = 10;
             btnToday.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnToday.ImageOptions.Image");
             btnToday.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnToday.ImageOptions.LargeImage");
@@ -506,6 +506,7 @@
             cmbBookingNo.Name = "cmbBookingNo";
             cmbBookingNo.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             cmbBookingNo.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
+            cmbBookingNo.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             cmbBookingNo.Size = new System.Drawing.Size(362, 28);
             cmbBookingNo.StyleController = layoutControl1;
             cmbBookingNo.TabIndex = 0;

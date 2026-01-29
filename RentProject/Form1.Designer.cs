@@ -314,6 +314,7 @@
             btnAdvancedFilter.Size = new System.Drawing.Size(78, 32);
             btnAdvancedFilter.TabIndex = 2;
             btnAdvancedFilter.Text = "進階";
+            btnAdvancedFilter.ToolTip = "Open advanced filters to refine the results";
             // 
             // labelControl2
             // 

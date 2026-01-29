@@ -9,7 +9,9 @@ using RentProject.Shared.UIModels;
 using RentProject.UI;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -453,7 +455,7 @@ namespace RentProject
         // 進階按鈕
         private void btnAdvancedFilter_Click(object sender, EventArgs e)
         {
-            // 1. 沒選場地時不要開
+            // 1. 檢查場地
             var loc = cmbLocationFilter.EditValue?.ToString()?.Trim();
             if (string.IsNullOrWhiteSpace(loc))
             {
@@ -461,14 +463,14 @@ namespace RentProject
                 return;
             }
 
-            // 2-1. 先建立「進階表單下拉要用的資料來源」：套用場地 + 狀態（不套用進階）
+            // 2. 建立 baseList（場地 + 狀態）
+            // AsEnumerable()提醒閱讀者：接下來會用 LINQ 串接過濾（概念用途）
             var baseList = _allRentTimes.AsEnumerable();
 
             if (loc != "全部")
                 baseList = baseList.Where(x => x.Location == loc);
 
             var statusText = cmbStatusFilter.EditValue?.ToString()?.Trim() ?? "全部";
-
             int? status = statusText switch
             {
                 "草稿" => 0,
@@ -481,46 +483,44 @@ namespace RentProject
             if (status.HasValue)
                 baseList = baseList.Where(x => x.Status == status.Value);
 
-            var ListForAdvanced = baseList.ToList();
-
-            // 2-2. 開進階篩選視窗
-            /*using (var f = new AdvancedFilterForm(ListForAdvanced, _advanceFilter))
-            {
-                f.StartPosition = FormStartPosition.CenterParent;
-
-                var dr = f.ShowDialog(this);
-
-                if (dr != DialogResult.OK) return;
-
-                // 3. 存起來（之後 ApplyLocationFilterAndRefresh 會用到）
-                _advanceFilter = f.FilterResult;
-
-                // 4. 刷新列表
-                ApplyLocationFilterAndRefresh();
-            }*/
-            var listForAdvanced = ListForAdvanced;
+            var listForAdvanced = baseList.ToList();
             var currentFilter = _advanceFilter;
 
-            // 2-2. 開進階篩選視窗（改成 Idle 後再開）
-            void OpenAdvanced()
+            // A) 如果已經有一個 AdvancedFilterForm 開著（但你看不到），先把它拉出來
+            var exist = Application.OpenForms.OfType<AdvancedFilterForm>().FirstOrDefault();
+            if (exist != null)
             {
-                Application.Idle -= OnIdle; // 只跑一次
-
-                using var f = new AdvancedFilterForm(ListForAdvanced, _advanceFilter);
-                f.StartPosition = FormStartPosition.CenterParent;
-                f.ShowInTaskbar = false;
-
-                var dr = f.ShowDialog(this);
-                if (dr != DialogResult.OK) return;
-
-                _advanceFilter = f.FilterResult;
-                ApplyLocationFilterAndRefresh();
+                exist.WindowState = FormWindowState.Normal;
+                exist.ShowInTaskbar = true;
+                exist.StartPosition = FormStartPosition.CenterScreen;
+                exist.Activate();
+                exist.BringToFront();
+                return;
             }
 
-            void OnIdle(object? s, EventArgs e2) => OpenAdvanced();
+            // B) 強制用 Manual 把視窗放在主視窗所在螢幕的中央（避免跑到螢幕外）
+            using var f = new AdvancedFilterForm(listForAdvanced, currentFilter);
+            f.ShowInTaskbar = true; // 先打開方便看
+            f.StartPosition = FormStartPosition.Manual;
 
-            Application.Idle += OnIdle;
+            var wa = Screen.FromControl(this).WorkingArea;
+            f.Location = new System.Drawing.Point(
+                wa.Left + (wa.Width - f.Width) / 2,
+                wa.Top + (wa.Height - f.Height) / 2
+            );
 
+            f.Shown += (_, __) =>
+            {
+                f.WindowState = FormWindowState.Normal;
+                f.Activate();
+                f.BringToFront();
+            };
+
+            var dr = f.ShowDialog(this);
+            if (dr != DialogResult.OK) return;
+
+            _advanceFilter = f.FilterResult;
+            ApplyLocationFilterAndRefresh();
         }
 
         // 刪除租時單(可多選)
@@ -833,6 +833,5 @@ namespace RentProject
             SetHintOnly(btnEditRentTime, "Edit the selected rent time entry.");
             SetHintOnly(btnAddRentTime, "Create a new rent time entry.");
         }
-
     }
 }
