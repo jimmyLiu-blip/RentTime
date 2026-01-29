@@ -92,6 +92,7 @@
             // btnAddRentTime
             // 
             btnAddRentTime.Caption = "新增租時單";
+            btnAddRentTime.Hint = "Create a new rent time entry";
             btnAddRentTime.Id = 1;
             btnAddRentTime.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnAddRentTime.ImageOptions.Image");
             btnAddRentTime.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnAddRentTime.ImageOptions.LargeImage");
@@ -101,6 +102,7 @@
             // btnEditRentTime
             // 
             btnEditRentTime.Caption = "編輯租時單";
+            btnEditRentTime.Hint = "Edit the selected rent time entry";
             btnEditRentTime.Id = 11;
             btnEditRentTime.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnEditRentTime.ImageOptions.Image");
             btnEditRentTime.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnEditRentTime.ImageOptions.LargeImage");
@@ -110,6 +112,7 @@
             // btnDelete
             // 
             btnDelete.Caption = "刪除租時單";
+            btnDelete.Hint = "Delete the selected rent time entry";
             btnDelete.Id = 4;
             btnDelete.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnDelete.ImageOptions.Image");
             btnDelete.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnDelete.ImageOptions.LargeImage");
@@ -119,6 +122,7 @@
             // btnView
             // 
             btnView.Caption = "切換檢視模式";
+            btnView.Hint = "Switch between available view modes";
             btnView.Id = 3;
             btnView.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnView.ImageOptions.Image");
             btnView.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnView.ImageOptions.LargeImage");
@@ -128,6 +132,7 @@
             // btnImportExcel
             // 
             btnImportExcel.Caption = "Excel匯入新增";
+            btnImportExcel.Hint = "Import rent time entries from an Excel file to create new records";
             btnImportExcel.Id = 9;
             btnImportExcel.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnImportExcel.ImageOptions.Image");
             btnImportExcel.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnImportExcel.ImageOptions.LargeImage");
@@ -145,14 +150,17 @@
             // btnExportPDF
             // 
             btnExportPDF.Caption = "匯出PDF";
+            btnExportPDF.Hint = "Export the selected rent time entry as a PDF file";
             btnExportPDF.Id = 5;
             btnExportPDF.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnExportPDF.ImageOptions.Image");
             btnExportPDF.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnExportPDF.ImageOptions.LargeImage");
             btnExportPDF.Name = "btnExportPDF";
+            btnExportPDF.ItemClick += btnExportPDF_ItemClick;
             // 
             // btnExportExcel
             // 
             btnExportExcel.Caption = "匯出Excel清單";
+            btnExportExcel.Hint = "Export the ProjectView list to an Excel file";
             btnExportExcel.Id = 8;
             btnExportExcel.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnExportExcel.ImageOptions.Image");
             btnExportExcel.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnExportExcel.ImageOptions.LargeImage");
@@ -162,6 +170,7 @@
             // btnSubmitToAssistant
             // 
             btnSubmitToAssistant.Caption = "送出給助理";
+            btnSubmitToAssistant.Hint = "Submit completed rent time entries to the assistant for processing";
             btnSubmitToAssistant.Id = 6;
             btnSubmitToAssistant.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnSubmitToAssistant.ImageOptions.Image");
             btnSubmitToAssistant.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnSubmitToAssistant.ImageOptions.LargeImage");
@@ -179,6 +188,7 @@
             // btnRefresh
             // 
             btnRefresh.Caption = "重新整理";
+            btnRefresh.Hint = "Refresh the data and update the current view";
             btnRefresh.Id = 10;
             btnRefresh.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnRefresh.ImageOptions.Image");
             btnRefresh.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnRefresh.ImageOptions.LargeImage");
@@ -188,6 +198,7 @@
             // btnTestConnection
             // 
             btnTestConnection.Caption = "連線測試";
+            btnTestConnection.Hint = "Test the connection to the server";
             btnTestConnection.Id = 2;
             btnTestConnection.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnTestConnection.ImageOptions.Image");
             btnTestConnection.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnTestConnection.ImageOptions.LargeImage");
@@ -197,10 +208,12 @@
             // btnLogout
             // 
             btnLogout.Caption = "登出";
+            btnLogout.Hint = "Sign out of your account";
             btnLogout.Id = 7;
             btnLogout.ImageOptions.Image = (System.Drawing.Image)resources.GetObject("btnLogout.ImageOptions.Image");
             btnLogout.ImageOptions.LargeImage = (System.Drawing.Image)resources.GetObject("btnLogout.ImageOptions.LargeImage");
             btnLogout.Name = "btnLogout";
+            btnLogout.ItemClick += btnLogout_ItemClick;
             // 
             // ribbonControl1
             // 
@@ -287,7 +300,7 @@
             // 
             // cmbLocationFilter
             // 
-            cmbLocationFilter.Location = new System.Drawing.Point(116, 11);
+            cmbLocationFilter.Location = new System.Drawing.Point(131, 11);
             cmbLocationFilter.MenuManager = ribbonControl1;
             cmbLocationFilter.Name = "cmbLocationFilter";
             cmbLocationFilter.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
@@ -296,7 +309,7 @@
             // 
             // btnAdvancedFilter
             // 
-            btnAdvancedFilter.Location = new System.Drawing.Point(616, 8);
+            btnAdvancedFilter.Location = new System.Drawing.Point(638, 8);
             btnAdvancedFilter.Name = "btnAdvancedFilter";
             btnAdvancedFilter.Size = new System.Drawing.Size(78, 32);
             btnAdvancedFilter.TabIndex = 2;
@@ -306,7 +319,7 @@
             // 
             labelControl2.Appearance.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
             labelControl2.Appearance.Options.UseFont = true;
-            labelControl2.Location = new System.Drawing.Point(321, 8);
+            labelControl2.Location = new System.Drawing.Point(332, 8);
             labelControl2.Name = "labelControl2";
             labelControl2.Size = new System.Drawing.Size(75, 29);
             labelControl2.TabIndex = 1;
@@ -314,7 +327,7 @@
             // 
             // cmbStatusFilter
             // 
-            cmbStatusFilter.Location = new System.Drawing.Point(402, 11);
+            cmbStatusFilter.Location = new System.Drawing.Point(428, 11);
             cmbStatusFilter.MenuManager = ribbonControl1;
             cmbStatusFilter.Name = "cmbStatusFilter";
             cmbStatusFilter.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });

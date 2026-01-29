@@ -1,4 +1,6 @@
-﻿using DevExpress.XtraBars.Ribbon;
+﻿using DevExpress.Utils;
+using DevExpress.XtraBars;
+using DevExpress.XtraBars.Ribbon;
 using DevExpress.XtraEditors;
 using Microsoft.Extensions.DependencyInjection;
 using RentProject.Clients;
@@ -32,6 +34,8 @@ namespace RentProject
 
         private int _loadingCount = 0;
 
+        private string GetCurrentUser() => "Jimmy"; // 之後接登入系統就改這裡
+
         private void SetMainLoading(bool loading)
         {
             if (loading) _loadingCount++;
@@ -49,6 +53,9 @@ namespace RentProject
             btnTestConnection.Enabled = !isLoading;
             btnView.Enabled = !isLoading;
             btnAdvancedFilter.Enabled = !isLoading;
+            btnImportExcel.Enabled = !isLoading;
+            btnExportPDF.Enabled = !isLoading;
+            btnLogout.Enabled = !isLoading;
 
             // 視覺回饋
             this.Cursor = isLoading ? Cursors.WaitCursor : Cursors.Default;
@@ -86,6 +93,8 @@ namespace RentProject
             {
                 mainPanel.Controls.Add(_projectView);
                 mainPanel.Controls.Add(_calendarView);
+
+                InitRibbonHints();
 
                 cmbLocationFilter.EditValueChanged -= cmbLocationFilter_EditValueChanged;
                 cmbLocationFilter.EditValueChanged += cmbLocationFilter_EditValueChanged;
@@ -475,11 +484,11 @@ namespace RentProject
             var ListForAdvanced = baseList.ToList();
 
             // 2-2. 開進階篩選視窗
-            using (var f = new AdvancedFilterForm(ListForAdvanced, _advanceFilter))
+            /*using (var f = new AdvancedFilterForm(ListForAdvanced, _advanceFilter))
             {
                 f.StartPosition = FormStartPosition.CenterParent;
 
-                var dr = f.ShowDialog();
+                var dr = f.ShowDialog(this);
 
                 if (dr != DialogResult.OK) return;
 
@@ -488,7 +497,30 @@ namespace RentProject
 
                 // 4. 刷新列表
                 ApplyLocationFilterAndRefresh();
+            }*/
+            var listForAdvanced = ListForAdvanced;
+            var currentFilter = _advanceFilter;
+
+            // 2-2. 開進階篩選視窗（改成 Idle 後再開）
+            void OpenAdvanced()
+            {
+                Application.Idle -= OnIdle; // 只跑一次
+
+                using var f = new AdvancedFilterForm(ListForAdvanced, _advanceFilter);
+                f.StartPosition = FormStartPosition.CenterParent;
+                f.ShowInTaskbar = false;
+
+                var dr = f.ShowDialog(this);
+                if (dr != DialogResult.OK) return;
+
+                _advanceFilter = f.FilterResult;
+                ApplyLocationFilterAndRefresh();
             }
+
+            void OnIdle(object? s, EventArgs e2) => OpenAdvanced();
+
+            Application.Idle += OnIdle;
+
         }
 
         // 刪除租時單(可多選)
@@ -496,8 +528,8 @@ namespace RentProject
         {
             await UiSafeRunner.SafeRunAsync(async () =>
             {
-                    // 0. 先把「選取來源」統一成同一種格式：只保留刪除需要的欄位
-                    var selected = new List<(int RentTimeId, string BookingNo, int Status)>();
+                // 0. 先把「選取來源」統一成同一種格式：只保留刪除需要的欄位
+                var selected = new List<(int RentTimeId, string BookingNo, int Status)>();
 
                 if (_isCalendarView)
                 {
@@ -710,10 +742,6 @@ namespace RentProject
             }, caption: "匯出失敗", setLoading: SetMainLoading);
         }
 
-        private void btnImportExcel_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
-        {
-        }
-
         private async Task<bool> CalendarView_PeriodChangeRequestedAsync(int rentTimeId, DateTime newStart, DateTime newEnd)
         {
             bool ok = false;
@@ -750,8 +778,6 @@ namespace RentProject
             return ok;
         }
 
-        private string GetCurrentUser() => "Jimmy"; // 之後接登入系統就改這裡
-
         private async Task RefreshAndKeepViewAsync()
         {
             await RefreshProjectViewAsync();
@@ -767,5 +793,46 @@ namespace RentProject
             RefreshLocationFilterItems();
             ApplyLocationFilterAndRefresh();
         }
+
+        private void btnLogout_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void btnExportPDF_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            XtraMessageBox.Show("匯出PDF尚未實作，待後續版本更新", "提示");
+        }
+
+        private void btnImportExcel_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            XtraMessageBox.Show("匯入Excel新增尚未實作，待後續版本更新", "提示");
+        }
+
+        private static void SetHintOnly(BarItem item, string text)
+        {
+            item.Hint = "";
+            var tip = new SuperToolTip();
+            tip.Items.Add(new ToolTipItem { Text = text });
+            item.SuperTip = tip;
+        }
+
+        private void InitRibbonHints()
+        {
+            SetHintOnly(btnLogout, "Sign out of your account.");
+            SetHintOnly(btnTestConnection, "Test the connection to the server.");
+            SetHintOnly(btnRefresh, "Refresh the data and update the current view.");
+            SetHintOnly(btnSubmitToAssistant, "Submit completed rent time entries to the assistant for processing.");
+
+            SetHintOnly(btnExportExcel, "Export the ProjectView list to an Excel file.");
+            SetHintOnly(btnExportPDF, "Export the selected rent time entry as a PDF file.");
+            SetHintOnly(btnImportExcel, "Import rent time entries from an Excel file to create new records.");
+
+            SetHintOnly(btnView, "Switch between available view modes.");
+            SetHintOnly(btnDelete, "Delete the selected rent time entry.");
+            SetHintOnly(btnEditRentTime, "Edit the selected rent time entry.");
+            SetHintOnly(btnAddRentTime, "Create a new rent time entry.");
+        }
+
     }
 }

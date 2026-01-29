@@ -125,6 +125,9 @@ namespace RentProject
         {
             InitializeComponent();
 
+            // 統一把紅叉放到右邊 + padding，避免擠壓文字
+            SetupErrorIconLayout();
+
             _rentTimeApiClient = rentTimeApiClient;
             _jobNoApiClient = jobNoApiClient;
         }
@@ -586,13 +589,13 @@ namespace RentProject
         // 列印空方法
         private void PrintRentTime()
         {
-            XtraMessageBox.Show("列印功能尚未實作", "列印");
+            XtraMessageBox.Show("列印功能尚未實作，待後續版本更新", "提示");
         }
 
         // 上傳掃描影本空方法
         private void UploadScanCopy()
         {
-            XtraMessageBox.Show("上傳掃描影本尚未實作", "上傳掃描影本");
+            XtraMessageBox.Show("上傳掃描影本尚未實作，待後續版本更新", "提示");
         }
 
         // 送出給助理空方法
@@ -661,6 +664,30 @@ namespace RentProject
                 _jobNoApiHasCustomer = hasMaster && HasText(cmbCompany.Text);
                 _jobNoApiHasSales = hasMaster && HasText(txtSales.Text);
             }, caption: "同步 JobNo 失敗");
+        }
+
+        private void SetupErrorIconLayout()
+        {
+            // 有用 dxErrorProvider1.SetError 的必填欄位都放進來
+            ApplyErrorIcon(cmbLocation);
+            ApplyErrorIcon(cmbCompany);
+            ApplyErrorIcon(txtSales);
+
+            ApplyErrorIcon(startDateEdit);
+            ApplyErrorIcon(endDateEdit);
+            ApplyErrorIcon(startTimeEdit);
+            ApplyErrorIcon(endTimeEdit);
+
+            // 保底：避免欄位再怎麼被擠也小到看不到文字（數值可自行微調）
+            startDateEdit.MinimumSize = new System.Drawing.Size(120, 0);
+            endDateEdit.MinimumSize = new System.Drawing.Size(120, 0);
+            startTimeEdit.MinimumSize = new System.Drawing.Size(100, 0);
+            endTimeEdit.MinimumSize = new System.Drawing.Size(100, 0);
+        }
+
+        private void ApplyErrorIcon(Control c)
+        {
+            dxErrorProvider1.SetIconAlignment(c, ErrorIconAlignment.MiddleRight);
         }
     }
 }

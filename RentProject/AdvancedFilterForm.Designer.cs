@@ -395,6 +395,7 @@
             IconOptions.ShowIcon = false;
             Name = "AdvancedFilterForm";
             Text = "租時單管理 - 進階篩選";
+            TopMost = true;
             WindowState = System.Windows.Forms.FormWindowState.Minimized;
             ((System.ComponentModel.ISupportInitialize)layoutControl1).EndInit();
             layoutControl1.ResumeLayout(false);

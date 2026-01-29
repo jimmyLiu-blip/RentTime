@@ -10,9 +10,7 @@
     <PackageReference Include="ClosedXML" Version="0.105.0" />
 	  <PackageReference Include="DevExpress.Win" Version="25.1.4" />
 	  <PackageReference Include="DevExpress.Win.Scheduler" Version="25.1.4" />
-	  <PackageReference Include="DevExpress.Win.Design" Version="25.1.4"
-						PrivateAssets="all"
-						ExcludeAssets="runtime" />
+	  <PackageReference Include="DevExpress.Win.Design" Version="25.1.4" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.2" />
   </ItemGroup>
 
