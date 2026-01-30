@@ -64,12 +64,20 @@
             dxErrorProvider1 = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(components);
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             panelControl2 = new DevExpress.XtraEditors.PanelControl();
+            tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            btnCreatedRentTime = new DevExpress.XtraEditors.SimpleButton();
+            btnRentTimeEnd = new DevExpress.XtraEditors.SimpleButton();
+            btnRentTimeStart = new DevExpress.XtraEditors.SimpleButton();
             btnRestoreRentTime = new DevExpress.XtraEditors.SimpleButton();
             chkHandover = new DevExpress.XtraEditors.CheckEdit();
-            btnRentTimeStart = new DevExpress.XtraEditors.SimpleButton();
-            btnRentTimeEnd = new DevExpress.XtraEditors.SimpleButton();
             btnDeletedRentTime = new DevExpress.XtraEditors.SimpleButton();
-            btnCreatedRentTime = new DevExpress.XtraEditors.SimpleButton();
+            panelHeader = new DevExpress.XtraEditors.PanelControl();
+            btnCopyRentTime = new DevExpress.XtraEditors.SimpleButton();
+            txtBookingSeq = new DevExpress.XtraEditors.TextEdit();
+            label1 = new System.Windows.Forms.Label();
+            txtBookingNo = new DevExpress.XtraEditors.TextEdit();
+            labelControl1 = new DevExpress.XtraEditors.LabelControl();
             layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
             panelControl4 = new DevExpress.XtraEditors.PanelControl();
             labelControl26 = new DevExpress.XtraEditors.LabelControl();
@@ -134,12 +142,6 @@
             layoutControlItem8 = new DevExpress.XtraLayout.LayoutControlItem();
             layoutControlItem9 = new DevExpress.XtraLayout.LayoutControlItem();
             layoutControlItem10 = new DevExpress.XtraLayout.LayoutControlItem();
-            panelHeader = new DevExpress.XtraEditors.PanelControl();
-            btnCopyRentTime = new DevExpress.XtraEditors.SimpleButton();
-            txtBookingSeq = new DevExpress.XtraEditors.TextEdit();
-            label1 = new System.Windows.Forms.Label();
-            txtBookingNo = new DevExpress.XtraEditors.TextEdit();
-            labelControl1 = new DevExpress.XtraEditors.LabelControl();
             emptySpaceItem1 = new DevExpress.XtraLayout.EmptySpaceItem();
             lblNote = new DevExpress.XtraLayout.LayoutControlItem();
             lblTestItem = new DevExpress.XtraLayout.LayoutControlItem();
@@ -156,7 +158,13 @@
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)panelControl2).BeginInit();
             panelControl2.SuspendLayout();
+            tableLayoutPanel2.SuspendLayout();
+            flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)chkHandover.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)panelHeader).BeginInit();
+            panelHeader.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)txtBookingSeq.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)txtBookingNo.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)layoutControl1).BeginInit();
             layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)panelControl4).BeginInit();
@@ -226,10 +234,6 @@
             ((System.ComponentModel.ISupportInitialize)layoutControlItem8).BeginInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlItem9).BeginInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlItem10).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)panelHeader).BeginInit();
-            panelHeader.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)txtBookingSeq.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)txtBookingNo.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)emptySpaceItem1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)lblNote).BeginInit();
             ((System.ComponentModel.ISupportInitialize)lblTestItem).BeginInit();
@@ -252,83 +256,168 @@
             // 
             tableLayoutPanel1.ColumnCount = 1;
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tableLayoutPanel1.Controls.Add(panelControl2, 0, 3);
+            tableLayoutPanel1.Controls.Add(panelControl2, 0, 2);
             tableLayoutPanel1.Controls.Add(panelHeader, 0, 0);
             tableLayoutPanel1.Controls.Add(layoutControl1, 0, 1);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 4;
-            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 6.609808F));
-            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 85.18124F));
-            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 0.7738607F));
-            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7.56929636F));
-            tableLayoutPanel1.Size = new System.Drawing.Size(844, 938);
+            tableLayoutPanel1.RowCount = 3;
+            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 75F));
+            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 75F));
+            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            tableLayoutPanel1.Size = new System.Drawing.Size(844, 913);
             tableLayoutPanel1.TabIndex = 290;
             // 
             // panelControl2
             // 
             panelControl2.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-            panelControl2.Controls.Add(btnRestoreRentTime);
-            panelControl2.Controls.Add(chkHandover);
-            panelControl2.Controls.Add(btnRentTimeStart);
-            panelControl2.Controls.Add(btnRentTimeEnd);
-            panelControl2.Controls.Add(btnDeletedRentTime);
-            panelControl2.Controls.Add(btnCreatedRentTime);
+            panelControl2.Controls.Add(tableLayoutPanel2);
             panelControl2.Dock = System.Windows.Forms.DockStyle.Fill;
-            panelControl2.Location = new System.Drawing.Point(3, 868);
+            panelControl2.Location = new System.Drawing.Point(3, 841);
             panelControl2.Name = "panelControl2";
-            panelControl2.Padding = new System.Windows.Forms.Padding(0, 8, 0, 8);
-            panelControl2.Size = new System.Drawing.Size(838, 67);
+            panelControl2.Size = new System.Drawing.Size(838, 69);
             panelControl2.TabIndex = 3;
+            // 
+            // tableLayoutPanel2
+            // 
+            tableLayoutPanel2.ColumnCount = 1;
+            tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tableLayoutPanel2.Controls.Add(flowLayoutPanel1, 0, 0);
+            tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
+            tableLayoutPanel2.Name = "tableLayoutPanel2";
+            tableLayoutPanel2.RowCount = 1;
+            tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tableLayoutPanel2.Size = new System.Drawing.Size(838, 69);
+            tableLayoutPanel2.TabIndex = 254;
+            // 
+            // flowLayoutPanel1
+            // 
+            flowLayoutPanel1.Controls.Add(btnCreatedRentTime);
+            flowLayoutPanel1.Controls.Add(btnRentTimeEnd);
+            flowLayoutPanel1.Controls.Add(btnRentTimeStart);
+            flowLayoutPanel1.Controls.Add(btnRestoreRentTime);
+            flowLayoutPanel1.Controls.Add(chkHandover);
+            flowLayoutPanel1.Controls.Add(btnDeletedRentTime);
+            flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            flowLayoutPanel1.Location = new System.Drawing.Point(3, 3);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
+            flowLayoutPanel1.Size = new System.Drawing.Size(832, 63);
+            flowLayoutPanel1.TabIndex = 0;
+            flowLayoutPanel1.WrapContents = false;
+            // 
+            // btnCreatedRentTime
+            // 
+            btnCreatedRentTime.Location = new System.Drawing.Point(688, 3);
+            btnCreatedRentTime.Margin = new System.Windows.Forms.Padding(3, 3, 25, 3);
+            btnCreatedRentTime.Name = "btnCreatedRentTime";
+            btnCreatedRentTime.Size = new System.Drawing.Size(113, 42);
+            btnCreatedRentTime.TabIndex = 253;
+            btnCreatedRentTime.Text = "建立租時單";
+            // 
+            // btnRentTimeEnd
+            // 
+            btnRentTimeEnd.Location = new System.Drawing.Point(547, 3);
+            btnRentTimeEnd.Margin = new System.Windows.Forms.Padding(3, 3, 25, 3);
+            btnRentTimeEnd.Name = "btnRentTimeEnd";
+            btnRentTimeEnd.Size = new System.Drawing.Size(113, 42);
+            btnRentTimeEnd.TabIndex = 247;
+            btnRentTimeEnd.Text = "租時完成";
+            // 
+            // btnRentTimeStart
+            // 
+            btnRentTimeStart.Location = new System.Drawing.Point(406, 3);
+            btnRentTimeStart.Margin = new System.Windows.Forms.Padding(3, 3, 25, 3);
+            btnRentTimeStart.Name = "btnRentTimeStart";
+            btnRentTimeStart.Size = new System.Drawing.Size(113, 42);
+            btnRentTimeStart.TabIndex = 248;
+            btnRentTimeStart.Text = "租時開始";
             // 
             // btnRestoreRentTime
             // 
-            btnRestoreRentTime.Location = new System.Drawing.Point(170, 0);
+            btnRestoreRentTime.Location = new System.Drawing.Point(265, 3);
+            btnRestoreRentTime.Margin = new System.Windows.Forms.Padding(3, 3, 25, 3);
             btnRestoreRentTime.Name = "btnRestoreRentTime";
-            btnRestoreRentTime.Size = new System.Drawing.Size(113, 53);
+            btnRestoreRentTime.Size = new System.Drawing.Size(113, 42);
             btnRestoreRentTime.TabIndex = 251;
             btnRestoreRentTime.Text = "回復狀態";
             // 
             // chkHandover
             // 
-            chkHandover.Location = new System.Drawing.Point(316, 14);
+            chkHandover.Location = new System.Drawing.Point(170, 3);
+            chkHandover.Margin = new System.Windows.Forms.Padding(3, 3, 25, 3);
             chkHandover.Name = "chkHandover";
             chkHandover.Properties.Caption = "交接";
             chkHandover.Size = new System.Drawing.Size(67, 27);
             chkHandover.TabIndex = 252;
             // 
-            // btnRentTimeStart
-            // 
-            btnRentTimeStart.Location = new System.Drawing.Point(426, 0);
-            btnRentTimeStart.Name = "btnRentTimeStart";
-            btnRentTimeStart.Size = new System.Drawing.Size(113, 53);
-            btnRentTimeStart.TabIndex = 248;
-            btnRentTimeStart.Text = "租時開始";
-            // 
-            // btnRentTimeEnd
-            // 
-            btnRentTimeEnd.Location = new System.Drawing.Point(562, 0);
-            btnRentTimeEnd.Name = "btnRentTimeEnd";
-            btnRentTimeEnd.Size = new System.Drawing.Size(113, 53);
-            btnRentTimeEnd.TabIndex = 247;
-            btnRentTimeEnd.Text = "租時完成";
-            // 
             // btnDeletedRentTime
             // 
-            btnDeletedRentTime.Location = new System.Drawing.Point(33, 0);
+            btnDeletedRentTime.Location = new System.Drawing.Point(29, 3);
+            btnDeletedRentTime.Margin = new System.Windows.Forms.Padding(3, 3, 25, 3);
             btnDeletedRentTime.Name = "btnDeletedRentTime";
-            btnDeletedRentTime.Size = new System.Drawing.Size(113, 53);
+            btnDeletedRentTime.Size = new System.Drawing.Size(113, 42);
             btnDeletedRentTime.TabIndex = 242;
             btnDeletedRentTime.Text = "刪除租時";
             // 
-            // btnCreatedRentTime
+            // panelHeader
             // 
-            btnCreatedRentTime.Location = new System.Drawing.Point(696, 0);
-            btnCreatedRentTime.Name = "btnCreatedRentTime";
-            btnCreatedRentTime.Size = new System.Drawing.Size(113, 53);
-            btnCreatedRentTime.TabIndex = 253;
-            btnCreatedRentTime.Text = "建立租時單";
+            panelHeader.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            panelHeader.Controls.Add(btnCopyRentTime);
+            panelHeader.Controls.Add(txtBookingSeq);
+            panelHeader.Controls.Add(label1);
+            panelHeader.Controls.Add(txtBookingNo);
+            panelHeader.Controls.Add(labelControl1);
+            panelHeader.Dock = System.Windows.Forms.DockStyle.Fill;
+            panelHeader.Location = new System.Drawing.Point(3, 3);
+            panelHeader.Name = "panelHeader";
+            panelHeader.Size = new System.Drawing.Size(838, 69);
+            panelHeader.TabIndex = 4;
+            // 
+            // btnCopyRentTime
+            // 
+            btnCopyRentTime.Location = new System.Drawing.Point(696, 0);
+            btnCopyRentTime.Name = "btnCopyRentTime";
+            btnCopyRentTime.Size = new System.Drawing.Size(113, 53);
+            btnCopyRentTime.TabIndex = 219;
+            btnCopyRentTime.Text = "複製單據";
+            // 
+            // txtBookingSeq
+            // 
+            txtBookingSeq.Location = new System.Drawing.Point(587, 19);
+            txtBookingSeq.Name = "txtBookingSeq";
+            txtBookingSeq.Properties.ReadOnly = true;
+            txtBookingSeq.Size = new System.Drawing.Size(67, 28);
+            txtBookingSeq.TabIndex = 218;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(562, 25);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(17, 22);
+            label1.TabIndex = 217;
+            label1.Text = "-";
+            // 
+            // txtBookingNo
+            // 
+            txtBookingNo.Location = new System.Drawing.Point(181, 19);
+            txtBookingNo.Name = "txtBookingNo";
+            txtBookingNo.Properties.ReadOnly = true;
+            txtBookingNo.Size = new System.Drawing.Size(368, 28);
+            txtBookingNo.TabIndex = 212;
+            // 
+            // labelControl1
+            // 
+            labelControl1.Location = new System.Drawing.Point(33, 21);
+            labelControl1.Name = "labelControl1";
+            labelControl1.Size = new System.Drawing.Size(97, 22);
+            labelControl1.TabIndex = 189;
+            labelControl1.Text = "Booking No.";
             // 
             // layoutControl1
             // 
@@ -361,11 +450,11 @@
             layoutControl1.Controls.Add(cmbLocation);
             layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             layoutControl1.HiddenItems.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] { tabbedControlGroup1 });
-            layoutControl1.Location = new System.Drawing.Point(3, 64);
+            layoutControl1.Location = new System.Drawing.Point(3, 78);
             layoutControl1.Name = "layoutControl1";
             layoutControl1.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(3532, 612, 975, 600);
             layoutControl1.Root = Root;
-            layoutControl1.Size = new System.Drawing.Size(838, 791);
+            layoutControl1.Size = new System.Drawing.Size(838, 757);
             layoutControl1.TabIndex = 0;
             layoutControl1.Text = "layoutBasic";
             // 
@@ -373,9 +462,9 @@
             // 
             panelControl4.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             panelControl4.Controls.Add(labelControl26);
-            panelControl4.Location = new System.Drawing.Point(608, 457);
+            panelControl4.Location = new System.Drawing.Point(608, 444);
             panelControl4.Name = "panelControl4";
-            panelControl4.Size = new System.Drawing.Size(25, 31);
+            panelControl4.Size = new System.Drawing.Size(25, 29);
             panelControl4.TabIndex = 300;
             // 
             // labelControl26
@@ -388,7 +477,7 @@
             // 
             // txtPE
             // 
-            txtPE.Location = new System.Drawing.Point(587, 172);
+            txtPE.Location = new System.Drawing.Point(587, 169);
             txtPE.Name = "txtPE";
             txtPE.Properties.ReadOnly = true;
             txtPE.Size = new System.Drawing.Size(216, 28);
@@ -397,15 +486,15 @@
             // 
             // memoNote
             // 
-            memoNote.Location = new System.Drawing.Point(181, 700);
+            memoNote.Location = new System.Drawing.Point(181, 681);
             memoNote.Name = "memoNote";
-            memoNote.Size = new System.Drawing.Size(622, 56);
+            memoNote.Size = new System.Drawing.Size(622, 52);
             memoNote.StyleController = layoutControl1;
             memoNote.TabIndex = 294;
             // 
             // txtEstimatedHours
             // 
-            txtEstimatedHours.Location = new System.Drawing.Point(483, 457);
+            txtEstimatedHours.Location = new System.Drawing.Point(483, 444);
             txtEstimatedHours.Name = "txtEstimatedHours";
             txtEstimatedHours.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 8.5F);
             txtEstimatedHours.Properties.Appearance.Options.UseFont = true;
@@ -416,7 +505,7 @@
             // 
             // cmbTestItem
             // 
-            cmbTestItem.Location = new System.Drawing.Point(181, 665);
+            cmbTestItem.Location = new System.Drawing.Point(181, 647);
             cmbTestItem.Name = "cmbTestItem";
             cmbTestItem.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             cmbTestItem.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
@@ -426,7 +515,7 @@
             // 
             // cmbTestMode
             // 
-            cmbTestMode.Location = new System.Drawing.Point(181, 630);
+            cmbTestMode.Location = new System.Drawing.Point(181, 613);
             cmbTestMode.Name = "cmbTestMode";
             cmbTestMode.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             cmbTestMode.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
@@ -439,9 +528,9 @@
             panelControl3.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             panelControl3.Controls.Add(cmbDinnerMinutes);
             panelControl3.Controls.Add(chkHasDinner);
-            panelControl3.Location = new System.Drawing.Point(639, 421);
+            panelControl3.Location = new System.Drawing.Point(639, 410);
             panelControl3.Name = "panelControl3";
-            panelControl3.Size = new System.Drawing.Size(164, 30);
+            panelControl3.Size = new System.Drawing.Size(164, 28);
             panelControl3.TabIndex = 298;
             // 
             // cmbDinnerMinutes
@@ -465,7 +554,7 @@
             // 
             // txtSampleNo
             // 
-            txtSampleNo.Location = new System.Drawing.Point(181, 595);
+            txtSampleNo.Location = new System.Drawing.Point(181, 579);
             txtSampleNo.Name = "txtSampleNo";
             txtSampleNo.Size = new System.Drawing.Size(215, 28);
             txtSampleNo.StyleController = layoutControl1;
@@ -473,7 +562,7 @@
             // 
             // txtSampleModel
             // 
-            txtSampleModel.Location = new System.Drawing.Point(587, 595);
+            txtSampleModel.Location = new System.Drawing.Point(587, 579);
             txtSampleModel.Name = "txtSampleModel";
             txtSampleModel.Size = new System.Drawing.Size(216, 28);
             txtSampleModel.StyleController = layoutControl1;
@@ -482,7 +571,7 @@
             // endTimeEdit
             // 
             endTimeEdit.EditValue = new System.DateTime(2025, 12, 21, 0, 0, 0, 0);
-            endTimeEdit.Location = new System.Drawing.Point(483, 421);
+            endTimeEdit.Location = new System.Drawing.Point(483, 410);
             endTimeEdit.Name = "endTimeEdit";
             endTimeEdit.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 8.5F);
             endTimeEdit.Properties.Appearance.Options.UseFont = true;
@@ -499,7 +588,7 @@
             // startTimeEdit
             // 
             startTimeEdit.EditValue = new System.DateTime(2025, 12, 21, 0, 0, 0, 0);
-            startTimeEdit.Location = new System.Drawing.Point(181, 421);
+            startTimeEdit.Location = new System.Drawing.Point(181, 410);
             startTimeEdit.Name = "startTimeEdit";
             startTimeEdit.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 8.5F);
             startTimeEdit.Properties.Appearance.Options.UseFont = true;
@@ -512,7 +601,7 @@
             // 
             // txtArea
             // 
-            txtArea.Location = new System.Drawing.Point(587, 560);
+            txtArea.Location = new System.Drawing.Point(587, 545);
             txtArea.Name = "txtArea";
             txtArea.Properties.ReadOnly = true;
             txtArea.Size = new System.Drawing.Size(216, 28);
@@ -524,9 +613,9 @@
             panelControl1.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             panelControl1.Controls.Add(chkHasLunch);
             panelControl1.Controls.Add(txtLunchMinutes);
-            panelControl1.Location = new System.Drawing.Point(639, 386);
+            panelControl1.Location = new System.Drawing.Point(639, 376);
             panelControl1.Name = "panelControl1";
-            panelControl1.Size = new System.Drawing.Size(164, 29);
+            panelControl1.Size = new System.Drawing.Size(164, 28);
             panelControl1.TabIndex = 295;
             // 
             // chkHasLunch
@@ -549,7 +638,7 @@
             // 
             // cmbEngineer
             // 
-            cmbEngineer.Location = new System.Drawing.Point(181, 560);
+            cmbEngineer.Location = new System.Drawing.Point(181, 545);
             cmbEngineer.Name = "cmbEngineer";
             cmbEngineer.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             cmbEngineer.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
@@ -560,7 +649,7 @@
             // endDateEdit
             // 
             endDateEdit.EditValue = null;
-            endDateEdit.Location = new System.Drawing.Point(483, 386);
+            endDateEdit.Location = new System.Drawing.Point(483, 376);
             endDateEdit.Name = "endDateEdit";
             endDateEdit.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 8.5F);
             endDateEdit.Properties.Appearance.Options.UseFont = true;
@@ -574,7 +663,7 @@
             // startDateEdit
             // 
             startDateEdit.EditValue = null;
-            startDateEdit.Location = new System.Drawing.Point(181, 386);
+            startDateEdit.Location = new System.Drawing.Point(181, 376);
             startDateEdit.Name = "startDateEdit";
             startDateEdit.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 8.5F);
             startDateEdit.Properties.Appearance.Options.UseFont = true;
@@ -588,15 +677,15 @@
             // 
             // memoTestInformation
             // 
-            memoTestInformation.Location = new System.Drawing.Point(181, 242);
+            memoTestInformation.Location = new System.Drawing.Point(181, 237);
             memoTestInformation.Name = "memoTestInformation";
-            memoTestInformation.Size = new System.Drawing.Size(622, 72);
+            memoTestInformation.Size = new System.Drawing.Size(622, 67);
             memoTestInformation.StyleController = layoutControl1;
             memoTestInformation.TabIndex = 11;
             // 
             // txtProjectNo
             // 
-            txtProjectNo.Location = new System.Drawing.Point(181, 207);
+            txtProjectNo.Location = new System.Drawing.Point(181, 203);
             txtProjectNo.Name = "txtProjectNo";
             txtProjectNo.Properties.ReadOnly = true;
             txtProjectNo.Size = new System.Drawing.Size(215, 28);
@@ -605,7 +694,7 @@
             // 
             // txtProjectName
             // 
-            txtProjectName.Location = new System.Drawing.Point(587, 207);
+            txtProjectName.Location = new System.Drawing.Point(587, 203);
             txtProjectName.Name = "txtProjectName";
             txtProjectName.Properties.ReadOnly = true;
             txtProjectName.Size = new System.Drawing.Size(216, 28);
@@ -614,7 +703,7 @@
             // 
             // cmbCompany
             // 
-            cmbCompany.Location = new System.Drawing.Point(181, 137);
+            cmbCompany.Location = new System.Drawing.Point(181, 135);
             cmbCompany.Name = "cmbCompany";
             cmbCompany.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             cmbCompany.Size = new System.Drawing.Size(215, 28);
@@ -623,7 +712,7 @@
             // 
             // txtContactName
             // 
-            txtContactName.Location = new System.Drawing.Point(587, 137);
+            txtContactName.Location = new System.Drawing.Point(587, 135);
             txtContactName.Name = "txtContactName";
             txtContactName.Size = new System.Drawing.Size(216, 28);
             txtContactName.StyleController = layoutControl1;
@@ -631,7 +720,7 @@
             // 
             // txtContactPhone
             // 
-            txtContactPhone.Location = new System.Drawing.Point(181, 172);
+            txtContactPhone.Location = new System.Drawing.Point(181, 169);
             txtContactPhone.Name = "txtContactPhone";
             txtContactPhone.Size = new System.Drawing.Size(215, 28);
             txtContactPhone.StyleController = layoutControl1;
@@ -639,7 +728,7 @@
             // 
             // txtSales
             // 
-            txtSales.Location = new System.Drawing.Point(587, 102);
+            txtSales.Location = new System.Drawing.Point(587, 101);
             txtSales.Name = "txtSales";
             txtSales.Size = new System.Drawing.Size(216, 28);
             txtSales.StyleController = layoutControl1;
@@ -647,7 +736,7 @@
             // 
             // cmbJobNo
             // 
-            cmbJobNo.Location = new System.Drawing.Point(181, 102);
+            cmbJobNo.Location = new System.Drawing.Point(181, 101);
             cmbJobNo.Name = "cmbJobNo";
             cmbJobNo.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             cmbJobNo.Size = new System.Drawing.Size(215, 28);
@@ -699,7 +788,7 @@
             Root.OptionsTableLayoutItem.RowIndex = 5;
             Root.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
             Root.OptionsToolTip.IconAllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
-            Root.Size = new System.Drawing.Size(838, 791);
+            Root.Size = new System.Drawing.Size(838, 768);
             Root.TextVisible = false;
             // 
             // layoutControlGroup3
@@ -730,7 +819,7 @@
             rowDefinition6.SizeType = System.Windows.Forms.SizeType.Percent;
             layoutControlGroup3.OptionsTableLayoutGroup.RowDefinitions.AddRange(new DevExpress.XtraLayout.RowDefinition[] { rowDefinition1, rowDefinition2, rowDefinition3, rowDefinition4, rowDefinition5, rowDefinition6 });
             layoutControlGroup3.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
-            layoutControlGroup3.Size = new System.Drawing.Size(808, 319);
+            layoutControlGroup3.Size = new System.Drawing.Size(808, 309);
             layoutControlGroup3.Text = "基本資訊";
             // 
             // lblCreatedBy
@@ -739,7 +828,7 @@
             lblCreatedBy.Location = new System.Drawing.Point(406, 0);
             lblCreatedBy.Name = "lblCreatedBy";
             lblCreatedBy.OptionsTableLayoutItem.ColumnIndex = 2;
-            lblCreatedBy.Size = new System.Drawing.Size(368, 35);
+            lblCreatedBy.Size = new System.Drawing.Size(368, 34);
             lblCreatedBy.Text = "建單人員";
             lblCreatedBy.TextSize = new System.Drawing.Size(128, 22);
             // 
@@ -747,21 +836,21 @@
             // 
             lblJobNo.Control = cmbJobNo;
             lblJobNo.CustomizationFormText = "Job No.";
-            lblJobNo.Location = new System.Drawing.Point(0, 35);
+            lblJobNo.Location = new System.Drawing.Point(0, 34);
             lblJobNo.Name = "lblJobNo";
             lblJobNo.OptionsTableLayoutItem.RowIndex = 1;
-            lblJobNo.Size = new System.Drawing.Size(367, 35);
+            lblJobNo.Size = new System.Drawing.Size(367, 34);
             lblJobNo.Text = "Job No. (選填)";
             lblJobNo.TextSize = new System.Drawing.Size(128, 22);
             // 
             // lblSales
             // 
             lblSales.Control = txtSales;
-            lblSales.Location = new System.Drawing.Point(406, 35);
+            lblSales.Location = new System.Drawing.Point(406, 34);
             lblSales.Name = "lblSales";
             lblSales.OptionsTableLayoutItem.ColumnIndex = 2;
             lblSales.OptionsTableLayoutItem.RowIndex = 1;
-            lblSales.Size = new System.Drawing.Size(368, 35);
+            lblSales.Size = new System.Drawing.Size(368, 34);
             lblSales.Text = "Sales";
             lblSales.TextSize = new System.Drawing.Size(128, 22);
             // 
@@ -769,21 +858,21 @@
             // 
             lblContactPhone.Control = txtContactPhone;
             lblContactPhone.CustomizationFormText = "電話 (選填)";
-            lblContactPhone.Location = new System.Drawing.Point(0, 105);
+            lblContactPhone.Location = new System.Drawing.Point(0, 102);
             lblContactPhone.Name = "lblContactPhone";
             lblContactPhone.OptionsTableLayoutItem.RowIndex = 3;
-            lblContactPhone.Size = new System.Drawing.Size(367, 35);
+            lblContactPhone.Size = new System.Drawing.Size(367, 34);
             lblContactPhone.Text = "電話 (選填)";
             lblContactPhone.TextSize = new System.Drawing.Size(128, 22);
             // 
             // lblContactName
             // 
             lblContactName.Control = txtContactName;
-            lblContactName.Location = new System.Drawing.Point(406, 70);
+            lblContactName.Location = new System.Drawing.Point(406, 68);
             lblContactName.Name = "lblContactName";
             lblContactName.OptionsTableLayoutItem.ColumnIndex = 2;
             lblContactName.OptionsTableLayoutItem.RowIndex = 2;
-            lblContactName.Size = new System.Drawing.Size(368, 35);
+            lblContactName.Size = new System.Drawing.Size(368, 34);
             lblContactName.Text = "聯絡人 (選填)";
             lblContactName.TextSize = new System.Drawing.Size(128, 22);
             // 
@@ -791,33 +880,33 @@
             // 
             lblCompany.Control = cmbCompany;
             lblCompany.CustomizationFormText = "客戶名稱<color=red>*</color>";
-            lblCompany.Location = new System.Drawing.Point(0, 70);
+            lblCompany.Location = new System.Drawing.Point(0, 68);
             lblCompany.Name = "lblCompany";
             lblCompany.OptionsTableLayoutItem.RowIndex = 2;
             lblCompany.OptionsToolTip.AllowHtmlString = DevExpress.Utils.DefaultBoolean.True;
-            lblCompany.Size = new System.Drawing.Size(367, 35);
+            lblCompany.Size = new System.Drawing.Size(367, 34);
             lblCompany.Text = "客戶名稱";
             lblCompany.TextSize = new System.Drawing.Size(128, 22);
             // 
             // lblProjectName
             // 
             lblProjectName.Control = txtProjectName;
-            lblProjectName.Location = new System.Drawing.Point(406, 140);
+            lblProjectName.Location = new System.Drawing.Point(406, 136);
             lblProjectName.Name = "lblProjectName";
             lblProjectName.OptionsTableLayoutItem.ColumnIndex = 2;
             lblProjectName.OptionsTableLayoutItem.RowIndex = 4;
-            lblProjectName.Size = new System.Drawing.Size(368, 35);
+            lblProjectName.Size = new System.Drawing.Size(368, 34);
             lblProjectName.Text = "ProjectName";
             lblProjectName.TextSize = new System.Drawing.Size(128, 22);
             // 
             // lblTestInformation
             // 
             lblTestInformation.Control = memoTestInformation;
-            lblTestInformation.Location = new System.Drawing.Point(0, 175);
+            lblTestInformation.Location = new System.Drawing.Point(0, 170);
             lblTestInformation.Name = "lblTestInformation";
             lblTestInformation.OptionsTableLayoutItem.ColumnSpan = 3;
             lblTestInformation.OptionsTableLayoutItem.RowIndex = 5;
-            lblTestInformation.Size = new System.Drawing.Size(774, 78);
+            lblTestInformation.Size = new System.Drawing.Size(774, 73);
             lblTestInformation.Text = "測試資訊 (選填)";
             lblTestInformation.TextSize = new System.Drawing.Size(128, 22);
             // 
@@ -826,28 +915,28 @@
             lblLocation.Control = cmbLocation;
             lblLocation.Location = new System.Drawing.Point(0, 0);
             lblLocation.Name = "lblLocation";
-            lblLocation.Size = new System.Drawing.Size(367, 35);
+            lblLocation.Size = new System.Drawing.Size(367, 34);
             lblLocation.Text = "場地";
             lblLocation.TextSize = new System.Drawing.Size(128, 22);
             // 
             // lblPE
             // 
             lblPE.Control = txtPE;
-            lblPE.Location = new System.Drawing.Point(406, 105);
+            lblPE.Location = new System.Drawing.Point(406, 102);
             lblPE.Name = "lblPE";
             lblPE.OptionsTableLayoutItem.ColumnIndex = 2;
             lblPE.OptionsTableLayoutItem.RowIndex = 3;
-            lblPE.Size = new System.Drawing.Size(368, 35);
+            lblPE.Size = new System.Drawing.Size(368, 34);
             lblPE.Text = "PE";
             lblPE.TextSize = new System.Drawing.Size(128, 22);
             // 
             // lblProjectNo
             // 
             lblProjectNo.Control = txtProjectNo;
-            lblProjectNo.Location = new System.Drawing.Point(0, 140);
+            lblProjectNo.Location = new System.Drawing.Point(0, 136);
             lblProjectNo.Name = "lblProjectNo";
             lblProjectNo.OptionsTableLayoutItem.RowIndex = 4;
-            lblProjectNo.Size = new System.Drawing.Size(367, 35);
+            lblProjectNo.Size = new System.Drawing.Size(367, 34);
             lblProjectNo.Text = "ProjectNo";
             lblProjectNo.TextSize = new System.Drawing.Size(128, 22);
             // 
@@ -855,7 +944,7 @@
             // 
             layoutControlGroup4.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] { lblstartDateEdit, lblendDateEdit, layoutControlItem2, lblstartTimeEdit, lblendTimeEdit, layoutControlItem1, lblEstimatedHours, layoutControlItem11 });
             layoutControlGroup4.LayoutMode = DevExpress.XtraLayout.Utils.LayoutMode.Table;
-            layoutControlGroup4.Location = new System.Drawing.Point(0, 319);
+            layoutControlGroup4.Location = new System.Drawing.Point(0, 309);
             layoutControlGroup4.Name = "layoutControlGroup4";
             columnDefinition4.SizeType = System.Windows.Forms.SizeType.Percent;
             columnDefinition4.Width = 35D;
@@ -875,7 +964,7 @@
             rowDefinition9.Height = 34D;
             rowDefinition9.SizeType = System.Windows.Forms.SizeType.Percent;
             layoutControlGroup4.OptionsTableLayoutGroup.RowDefinitions.AddRange(new DevExpress.XtraLayout.RowDefinition[] { rowDefinition7, rowDefinition8, rowDefinition9 });
-            layoutControlGroup4.Size = new System.Drawing.Size(808, 174);
+            layoutControlGroup4.Size = new System.Drawing.Size(808, 169);
             layoutControlGroup4.Text = "時間";
             // 
             // lblstartDateEdit
@@ -883,7 +972,7 @@
             lblstartDateEdit.Control = startDateEdit;
             lblstartDateEdit.Location = new System.Drawing.Point(0, 0);
             lblstartDateEdit.Name = "lblstartDateEdit";
-            lblstartDateEdit.Size = new System.Drawing.Size(271, 35);
+            lblstartDateEdit.Size = new System.Drawing.Size(271, 34);
             lblstartDateEdit.Text = "開始日期";
             lblstartDateEdit.TextSize = new System.Drawing.Size(128, 22);
             // 
@@ -893,7 +982,7 @@
             lblendDateEdit.Location = new System.Drawing.Point(302, 0);
             lblendDateEdit.Name = "lblendDateEdit";
             lblendDateEdit.OptionsTableLayoutItem.ColumnIndex = 2;
-            lblendDateEdit.Size = new System.Drawing.Size(271, 35);
+            lblendDateEdit.Size = new System.Drawing.Size(271, 34);
             lblendDateEdit.Text = "結束日期";
             lblendDateEdit.TextSize = new System.Drawing.Size(128, 22);
             // 
@@ -903,66 +992,66 @@
             layoutControlItem2.Location = new System.Drawing.Point(604, 0);
             layoutControlItem2.Name = "layoutControlItem2";
             layoutControlItem2.OptionsTableLayoutItem.ColumnIndex = 4;
-            layoutControlItem2.Size = new System.Drawing.Size(170, 35);
+            layoutControlItem2.Size = new System.Drawing.Size(170, 34);
             layoutControlItem2.TextVisible = false;
             // 
             // lblstartTimeEdit
             // 
             lblstartTimeEdit.Control = startTimeEdit;
-            lblstartTimeEdit.Location = new System.Drawing.Point(0, 35);
+            lblstartTimeEdit.Location = new System.Drawing.Point(0, 34);
             lblstartTimeEdit.Name = "lblstartTimeEdit";
             lblstartTimeEdit.OptionsTableLayoutItem.RowIndex = 1;
-            lblstartTimeEdit.Size = new System.Drawing.Size(271, 36);
+            lblstartTimeEdit.Size = new System.Drawing.Size(271, 34);
             lblstartTimeEdit.Text = "開始時間";
             lblstartTimeEdit.TextSize = new System.Drawing.Size(128, 22);
             // 
             // lblendTimeEdit
             // 
             lblendTimeEdit.Control = endTimeEdit;
-            lblendTimeEdit.Location = new System.Drawing.Point(302, 35);
+            lblendTimeEdit.Location = new System.Drawing.Point(302, 34);
             lblendTimeEdit.Name = "lblendTimeEdit";
             lblendTimeEdit.OptionsTableLayoutItem.ColumnIndex = 2;
             lblendTimeEdit.OptionsTableLayoutItem.RowIndex = 1;
-            lblendTimeEdit.Size = new System.Drawing.Size(271, 36);
+            lblendTimeEdit.Size = new System.Drawing.Size(271, 34);
             lblendTimeEdit.Text = "結束時間";
             lblendTimeEdit.TextSize = new System.Drawing.Size(128, 22);
             // 
             // layoutControlItem1
             // 
             layoutControlItem1.Control = panelControl3;
-            layoutControlItem1.Location = new System.Drawing.Point(604, 35);
+            layoutControlItem1.Location = new System.Drawing.Point(604, 34);
             layoutControlItem1.Name = "layoutControlItem1";
             layoutControlItem1.OptionsTableLayoutItem.ColumnIndex = 4;
             layoutControlItem1.OptionsTableLayoutItem.RowIndex = 1;
-            layoutControlItem1.Size = new System.Drawing.Size(170, 36);
+            layoutControlItem1.Size = new System.Drawing.Size(170, 34);
             layoutControlItem1.TextVisible = false;
             // 
             // lblEstimatedHours
             // 
             lblEstimatedHours.Control = txtEstimatedHours;
-            lblEstimatedHours.Location = new System.Drawing.Point(302, 71);
+            lblEstimatedHours.Location = new System.Drawing.Point(302, 68);
             lblEstimatedHours.Name = "lblEstimatedHours";
             lblEstimatedHours.OptionsTableLayoutItem.ColumnIndex = 2;
             lblEstimatedHours.OptionsTableLayoutItem.RowIndex = 2;
-            lblEstimatedHours.Size = new System.Drawing.Size(271, 37);
+            lblEstimatedHours.Size = new System.Drawing.Size(271, 35);
             lblEstimatedHours.Text = "預估時間";
             lblEstimatedHours.TextSize = new System.Drawing.Size(128, 22);
             // 
             // layoutControlItem11
             // 
             layoutControlItem11.Control = panelControl4;
-            layoutControlItem11.Location = new System.Drawing.Point(573, 71);
+            layoutControlItem11.Location = new System.Drawing.Point(573, 68);
             layoutControlItem11.Name = "layoutControlItem11";
             layoutControlItem11.OptionsTableLayoutItem.ColumnIndex = 3;
             layoutControlItem11.OptionsTableLayoutItem.RowIndex = 2;
-            layoutControlItem11.Size = new System.Drawing.Size(31, 37);
+            layoutControlItem11.Size = new System.Drawing.Size(31, 35);
             layoutControlItem11.TextVisible = false;
             // 
             // layoutControlGroup6
             // 
             layoutControlGroup6.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] { layoutControlItem3, layoutControlItem5, layoutControlItem6, layoutControlItem7, layoutControlItem8, layoutControlItem9, layoutControlItem10 });
             layoutControlGroup6.LayoutMode = DevExpress.XtraLayout.Utils.LayoutMode.Table;
-            layoutControlGroup6.Location = new System.Drawing.Point(0, 493);
+            layoutControlGroup6.Location = new System.Drawing.Point(0, 478);
             layoutControlGroup6.Name = "layoutControlGroup6";
             columnDefinition9.SizeType = System.Windows.Forms.SizeType.Percent;
             columnDefinition9.Width = 47.5D;
@@ -982,7 +1071,7 @@
             rowDefinition14.Height = 30D;
             rowDefinition14.SizeType = System.Windows.Forms.SizeType.Percent;
             layoutControlGroup6.OptionsTableLayoutGroup.RowDefinitions.AddRange(new DevExpress.XtraLayout.RowDefinition[] { rowDefinition10, rowDefinition11, rowDefinition12, rowDefinition13, rowDefinition14 });
-            layoutControlGroup6.Size = new System.Drawing.Size(808, 268);
+            layoutControlGroup6.Size = new System.Drawing.Size(808, 260);
             layoutControlGroup6.Text = "測試資訊 (選填)";
             // 
             // layoutControlItem3
@@ -990,7 +1079,7 @@
             layoutControlItem3.Control = cmbEngineer;
             layoutControlItem3.Location = new System.Drawing.Point(0, 0);
             layoutControlItem3.Name = "layoutControlItem3";
-            layoutControlItem3.Size = new System.Drawing.Size(367, 35);
+            layoutControlItem3.Size = new System.Drawing.Size(367, 34);
             layoutControlItem3.Text = "工程師";
             layoutControlItem3.TextSize = new System.Drawing.Size(128, 22);
             // 
@@ -1000,18 +1089,18 @@
             layoutControlItem5.Location = new System.Drawing.Point(406, 0);
             layoutControlItem5.Name = "layoutControlItem5";
             layoutControlItem5.OptionsTableLayoutItem.ColumnIndex = 2;
-            layoutControlItem5.Size = new System.Drawing.Size(368, 35);
+            layoutControlItem5.Size = new System.Drawing.Size(368, 34);
             layoutControlItem5.Text = "區域";
             layoutControlItem5.TextSize = new System.Drawing.Size(128, 22);
             // 
             // layoutControlItem6
             // 
             layoutControlItem6.Control = txtSampleModel;
-            layoutControlItem6.Location = new System.Drawing.Point(406, 35);
+            layoutControlItem6.Location = new System.Drawing.Point(406, 34);
             layoutControlItem6.Name = "layoutControlItem6";
             layoutControlItem6.OptionsTableLayoutItem.ColumnIndex = 2;
             layoutControlItem6.OptionsTableLayoutItem.RowIndex = 1;
-            layoutControlItem6.Size = new System.Drawing.Size(368, 35);
+            layoutControlItem6.Size = new System.Drawing.Size(368, 34);
             layoutControlItem6.Text = "產品型號";
             layoutControlItem6.TextSize = new System.Drawing.Size(128, 22);
             // 
@@ -1019,100 +1108,45 @@
             // 
             layoutControlItem7.Control = txtSampleNo;
             layoutControlItem7.CustomizationFormText = "產品名稱 (選填)";
-            layoutControlItem7.Location = new System.Drawing.Point(0, 35);
+            layoutControlItem7.Location = new System.Drawing.Point(0, 34);
             layoutControlItem7.Name = "layoutControlItem7";
             layoutControlItem7.OptionsTableLayoutItem.RowIndex = 1;
-            layoutControlItem7.Size = new System.Drawing.Size(367, 35);
+            layoutControlItem7.Size = new System.Drawing.Size(367, 34);
             layoutControlItem7.Text = "產品名稱";
             layoutControlItem7.TextSize = new System.Drawing.Size(128, 22);
             // 
             // layoutControlItem8
             // 
             layoutControlItem8.Control = cmbTestMode;
-            layoutControlItem8.Location = new System.Drawing.Point(0, 70);
+            layoutControlItem8.Location = new System.Drawing.Point(0, 68);
             layoutControlItem8.Name = "layoutControlItem8";
             layoutControlItem8.OptionsTableLayoutItem.ColumnSpan = 3;
             layoutControlItem8.OptionsTableLayoutItem.RowIndex = 2;
-            layoutControlItem8.Size = new System.Drawing.Size(774, 35);
+            layoutControlItem8.Size = new System.Drawing.Size(774, 34);
             layoutControlItem8.Text = "測試模式";
             layoutControlItem8.TextSize = new System.Drawing.Size(128, 22);
             // 
             // layoutControlItem9
             // 
             layoutControlItem9.Control = cmbTestItem;
-            layoutControlItem9.Location = new System.Drawing.Point(0, 105);
+            layoutControlItem9.Location = new System.Drawing.Point(0, 102);
             layoutControlItem9.Name = "layoutControlItem9";
             layoutControlItem9.OptionsTableLayoutItem.ColumnSpan = 3;
             layoutControlItem9.OptionsTableLayoutItem.RowIndex = 3;
-            layoutControlItem9.Size = new System.Drawing.Size(774, 35);
+            layoutControlItem9.Size = new System.Drawing.Size(774, 34);
             layoutControlItem9.Text = "測試項目";
             layoutControlItem9.TextSize = new System.Drawing.Size(128, 22);
             // 
             // layoutControlItem10
             // 
             layoutControlItem10.Control = memoNote;
-            layoutControlItem10.Location = new System.Drawing.Point(0, 140);
+            layoutControlItem10.Location = new System.Drawing.Point(0, 136);
             layoutControlItem10.Name = "layoutControlItem10";
             layoutControlItem10.OptionsTableLayoutItem.ColumnSpan = 3;
             layoutControlItem10.OptionsTableLayoutItem.RowIndex = 4;
-            layoutControlItem10.Size = new System.Drawing.Size(774, 62);
+            layoutControlItem10.Size = new System.Drawing.Size(774, 58);
             layoutControlItem10.Text = "備註";
             layoutControlItem10.TextSize = new System.Drawing.Size(128, 22);
-            // 
-            // panelHeader
-            // 
-            panelHeader.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-            panelHeader.Controls.Add(btnCopyRentTime);
-            panelHeader.Controls.Add(txtBookingSeq);
-            panelHeader.Controls.Add(label1);
-            panelHeader.Controls.Add(txtBookingNo);
-            panelHeader.Controls.Add(labelControl1);
-            panelHeader.Dock = System.Windows.Forms.DockStyle.Fill;
-            panelHeader.Location = new System.Drawing.Point(3, 3);
-            panelHeader.Name = "panelHeader";
-            panelHeader.Size = new System.Drawing.Size(838, 55);
-            panelHeader.TabIndex = 4;
-            // 
-            // btnCopyRentTime
-            // 
-            btnCopyRentTime.Location = new System.Drawing.Point(696, 0);
-            btnCopyRentTime.Name = "btnCopyRentTime";
-            btnCopyRentTime.Size = new System.Drawing.Size(113, 53);
-            btnCopyRentTime.TabIndex = 219;
-            btnCopyRentTime.Text = "複製單據";
-            // 
-            // txtBookingSeq
-            // 
-            txtBookingSeq.Location = new System.Drawing.Point(587, 19);
-            txtBookingSeq.Name = "txtBookingSeq";
-            txtBookingSeq.Properties.ReadOnly = true;
-            txtBookingSeq.Size = new System.Drawing.Size(67, 28);
-            txtBookingSeq.TabIndex = 218;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(562, 25);
-            label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(17, 22);
-            label1.TabIndex = 217;
-            label1.Text = "-";
-            // 
-            // txtBookingNo
-            // 
-            txtBookingNo.Location = new System.Drawing.Point(181, 19);
-            txtBookingNo.Name = "txtBookingNo";
-            txtBookingNo.Properties.ReadOnly = true;
-            txtBookingNo.Size = new System.Drawing.Size(368, 28);
-            txtBookingNo.TabIndex = 212;
-            // 
-            // labelControl1
-            // 
-            labelControl1.Location = new System.Drawing.Point(33, 21);
-            labelControl1.Name = "labelControl1";
-            labelControl1.Size = new System.Drawing.Size(97, 22);
-            labelControl1.TabIndex = 189;
-            labelControl1.Text = "Booking No.";
             // 
             // emptySpaceItem1
             // 
@@ -1248,7 +1282,7 @@
             Appearance.Options.UseBackColor = true;
             AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            ClientSize = new System.Drawing.Size(844, 938);
+            ClientSize = new System.Drawing.Size(844, 913);
             Controls.Add(tableLayoutPanel1);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             MaximizeBox = false;
@@ -1260,7 +1294,14 @@
             tableLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)panelControl2).EndInit();
             panelControl2.ResumeLayout(false);
+            tableLayoutPanel2.ResumeLayout(false);
+            flowLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)chkHandover.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)panelHeader).EndInit();
+            panelHeader.ResumeLayout(false);
+            panelHeader.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)txtBookingSeq.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)txtBookingNo.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)layoutControl1).EndInit();
             layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)panelControl4).EndInit();
@@ -1330,11 +1371,6 @@
             ((System.ComponentModel.ISupportInitialize)layoutControlItem8).EndInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlItem9).EndInit();
             ((System.ComponentModel.ISupportInitialize)layoutControlItem10).EndInit();
-            ((System.ComponentModel.ISupportInitialize)panelHeader).EndInit();
-            panelHeader.ResumeLayout(false);
-            panelHeader.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)txtBookingSeq.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)txtBookingNo.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)emptySpaceItem1).EndInit();
             ((System.ComponentModel.ISupportInitialize)lblNote).EndInit();
             ((System.ComponentModel.ISupportInitialize)lblTestItem).EndInit();
@@ -1442,5 +1478,7 @@
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
         private DevExpress.XtraEditors.PanelControl panelControl4;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem11;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }
