@@ -320,7 +320,7 @@ namespace RentProject
 
                 if (selected.Count == 0 || !selected[0].RentTimeId.HasValue)
                 {
-                    XtraMessageBox.Show("請先選擇右側 BookingNo", "提示");
+                    XtraMessageBox.Show("請先在日曆中點選要編輯的租時單，再按「編輯」", "提示");
                     return;
                 }
 

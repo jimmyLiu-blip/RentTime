@@ -642,7 +642,7 @@ namespace RentProject
             UiSafeRunner.SafeRun(() =>
             {
                 RefreshMealAndEstimateUI();
-            }, caption:"更新午餐/晚餐與預估時間失敗");
+            }, caption: "更新午餐/晚餐與預估時間失敗");
         }
 
         private void SyncJobNoApiFlagsFromLoadedUI()

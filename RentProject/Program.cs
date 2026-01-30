@@ -14,6 +14,8 @@ namespace RentProject
         [STAThread]
         static void Main()
         {
+            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2); // DPI 支援
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 

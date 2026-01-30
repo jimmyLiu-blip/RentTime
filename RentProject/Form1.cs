@@ -9,9 +9,7 @@ using RentProject.Shared.UIModels;
 using RentProject.UI;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -55,8 +53,8 @@ namespace RentProject
             btnTestConnection.Enabled = !isLoading;
             btnView.Enabled = !isLoading;
             btnAdvancedFilter.Enabled = !isLoading;
-            btnImportExcel.Enabled = !isLoading;
-            btnExportPDF.Enabled = !isLoading;
+            btnImportExcel.Enabled = false;
+            btnExportPDF.Enabled = false;
             btnLogout.Enabled = !isLoading;
 
             // 視覺回饋
@@ -272,7 +270,7 @@ namespace RentProject
 
                 if (!id.HasValue)
                 {
-                    XtraMessageBox.Show("請先點擊要編輯的租時單", "提示");
+                    XtraMessageBox.Show("請先在清單中點選要編輯的租時單，再按「編輯」", "提示");
                     return;
                 }
 
@@ -459,7 +457,7 @@ namespace RentProject
             var loc = cmbLocationFilter.EditValue?.ToString()?.Trim();
             if (string.IsNullOrWhiteSpace(loc))
             {
-                XtraMessageBox.Show("請先選擇場地才能使用進階篩選", "提示");
+                XtraMessageBox.Show("請先選擇場地，再按「進階」", "提示");
                 return;
             }
 
@@ -554,7 +552,7 @@ namespace RentProject
                 if (selected.Count == 0)
                 {
                     XtraMessageBox.Show(
-                        _isCalendarView ? "請先點選日曆上的案件並選擇右側 BookingNo 再刪除" : "請先勾選要刪除的租時單",
+                        _isCalendarView ? "請先在日曆中點選要刪除的租時單，並選擇 BookingNo ，再按「刪除」" : "請先在清單中勾選要刪除的租時單，再按「刪除」",
                 "提示");
                     return;
                 }
@@ -619,11 +617,18 @@ namespace RentProject
         {
             await UiSafeRunner.SafeRunAsync(async () =>
             {
+                // 1. 先只支援 ProjectView 匯出
+                if (_isCalendarView)
+                {
+                    XtraMessageBox.Show("請先切換到「案件清單」畫面，再按「送出給助理」", "提示");
+                    return;
+                }
+
                 var selected = _projectView.GetCheckedRentTime();
 
                 if (selected.Count == 0)
                 {
-                    XtraMessageBox.Show("請先勾選要送出給助理的租時單", "提示");
+                    XtraMessageBox.Show("請先在清單中勾選要送出給助理的租時單，再按「送出給助理」", "提示");
                     return;
                 }
                 ;
@@ -636,7 +641,7 @@ namespace RentProject
 
                     XtraMessageBox.Show(
                         $"你勾選的資料包含「非已完成(Finished)」狀態，不能送出。\n" +
-                        $"請取消勾選後再刪除。\n\n" +
+                        $"請取消勾選後再送出。\n\n" +
                         $"筆數：{blocked.Count}\n" +
                         $"{preview}",
                         "禁止送出",
@@ -692,14 +697,14 @@ namespace RentProject
             // 1. 先只支援 ProjectView 匯出
             if (_isCalendarView)
             {
-                XtraMessageBox.Show("請先切換到「案件」畫面再匯出", "提示");
+                XtraMessageBox.Show("請先切換到「案件清單」畫面，再按「匯出 Excel」", "提示");
                 return;
             }
 
             // 2. 檢查是否有勾選（用你在 ProjectViewControl 新增的 GetCheckCount）
             if (_projectView.GetCheckCount() == 0)
             {
-                XtraMessageBox.Show("請先勾選要匯出的租時單", "提示");
+                XtraMessageBox.Show("請先在清單中勾選要匯出的租時單，再按「匯出 Excel」", "提示");
                 return;
             }
 
