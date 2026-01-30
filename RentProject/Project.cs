@@ -689,5 +689,10 @@ namespace RentProject
         {
             dxErrorProvider1.SetIconAlignment(c, ErrorIconAlignment.MiddleRight);
         }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
